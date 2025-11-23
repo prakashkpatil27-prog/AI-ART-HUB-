@@ -8,69 +8,68 @@
 <style>
     body {
         margin: 0;
-        font-family: Arial, sans-serif;
         background: #0d0d0d;
         color: white;
+        font-family: Arial, sans-serif;
     }
 
     .header {
-        padding: 20px;
         text-align: center;
-        background: linear-gradient(90deg, #000, #1a1a1a);
-        border-bottom: 1px solid #333;
-        font-size: 28px;
+        padding: 25px 0;
+        font-size: 32px;
         font-weight: bold;
-        letter-spacing: 1px;
         color: gold;
+        background: #111;
+        border-bottom: 1px solid #333;
     }
 
     .container {
         width: 90%;
         max-width: 900px;
         margin: auto;
-        padding-top: 25px;
+        padding: 25px 0;
     }
 
-    .tool-card {
+    .tool-box {
         background: #1a1a1a;
-        padding: 18px;
-        margin-bottom: 18px;
-        border-radius: 10px;
         border: 1px solid #333;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 18px;
         transition: 0.3s;
     }
 
-    .tool-card:hover {
+    .tool-box:hover {
         border: 1px solid gold;
         transform: translateY(-3px);
     }
 
     .tool-title {
-        font-size: 20px;
+        font-size: 22px;
         font-weight: bold;
-        margin-bottom: 8px;
         color: gold;
+        margin-bottom: 8px;
     }
 
     .tool-desc {
         font-size: 15px;
         opacity: 0.8;
-        margin-bottom: 12px;
+        margin-bottom: 15px;
     }
 
-    .open-btn {
+    .btn {
         background: gold;
-        color: black;
-        padding: 10px 14px;
-        border-radius: 6px;
+        padding: 10px 16px;
         border: none;
-        font-size: 15px;
-        cursor: pointer;
+        border-radius: 6px;
         font-weight: bold;
+        cursor: pointer;
+        font-size: 15px;
+        color: black;
         transition: 0.3s;
     }
 
-    .open-btn:hover {
+    .btn:hover {
         background: white;
         color: black;
     }
@@ -84,28 +83,28 @@
 
 <div class="container">
 
-    <div class="tool-card">
+    <div class="tool-box">
         <div class="tool-title">AI Video Generator</div>
-        <div class="tool-desc">Turn text into full AI-generated videos.</div>
-        <button class="open-btn">Open Tool</button>
+        <div class="tool-desc">Generate full videos from text prompts.</div>
+        <button class="btn">Open Tool</button>
     </div>
 
-    <div class="tool-card">
+    <div class="tool-box">
         <div class="tool-title">AI Face Swap</div>
-        <div class="tool-desc">Swap faces inside videos using AI.</div>
-        <button class="open-btn">Open Tool</button>
+        <div class="tool-desc">Swap faces inside videos using advanced AI.</div>
+        <button class="btn">Open Tool</button>
     </div>
 
-    <div class="tool-card">
+    <div class="tool-box">
         <div class="tool-title">AI Lip Sync</div>
-        <div class="tool-desc">Make characters speak using accurate lip sync.</div>
-        <button class="open-btn">Open Tool</button>
+        <div class="tool-desc">Make characters speak with perfect lip sync.</div>
+        <button class="btn">Open Tool</button>
     </div>
 
-    <div class="tool-card">
+    <div class="tool-box">
         <div class="tool-title">AI Video Upscaler</div>
-        <div class="tool-desc">Enhance and upscale low-quality videos.</div>
-        <button class="open-btn">Open Tool</button>
+        <div class="tool-desc">Upscale & enhance low-quality videos.</div>
+        <button class="btn">Open Tool</button>
     </div>
 
 </div>

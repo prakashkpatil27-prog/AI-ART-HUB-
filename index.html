@@ -3,65 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI HUB – Home</title>
+<title>AI Tools – Home</title>
 
 <style>
     body {
         margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
+        font-family: 'Poppins', sans-serif;
         background: #0d0d0d;
-        color: white;
+        color: #ffffff;
+    }
+
+    .header {
         text-align: center;
+        padding: 40px 20px;
+        font-size: 40px;
+        font-weight: 700;
+        color: #f8d775;
+        letter-spacing: 2px;
     }
 
     .container {
-        margin-top: 100px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        padding: 40px;
     }
 
-    h1 {
-        font-size: 40px;
-        margin-bottom: 20px;
-    }
-
-    .btn {
-        background: #4f46e5;
-        padding: 18px 35px;
-        font-size: 22px;
-        border-radius: 10px;
-        color: white;
-        text-decoration: none;
-        display: inline-block;
-        margin-top: 20px;
+    .card {
+        background: #161616;
+        border-radius: 16px;
+        padding: 25px;
+        text-align: center;
+        border: 1px solid #2b2b2b;
         transition: 0.3s;
+        cursor: pointer;
     }
 
-    .btn:hover {
-        background: #3730a3;
-        transform: scale(1.05);
+    .card:hover {
+        transform: translateY(-6px);
+        border: 1px solid #f8d775;
+        box-shadow: 0px 4px 20px rgba(255, 215, 0, 0.2);
     }
+
+    .card h2 {
+        color: #f8d775;
+        margin-bottom: 15px;
+        font-size: 22px;
+    }
+
+    .card p {
+        color: #dddddd;
+        font-size: 15px;
+    }
+
 </style>
-
 </head>
 <body>
 
+<div class="header">AI ART HUB</div>
+
 <div class="container">
-    <h1>🔥 AI HUB</h1>
-    <h3>All AI Tools In One Place</h3>
 
-    <!-- Button that links to image tools page -->
-    <a href="image-tools.html" class="btn">🖼️ Image AI Tools</a>
+    <div class="card" onclick="location.href='ai-image.html'">
+        <h2>🖼️ Image AI</h2>
+        <p>Image Generator, Background Remove, Upscaler...</p>
+    </div>
 
-    <br><br>
-    <a href="#" class="btn">🎥 Video AI Tools</a>
-    <br><br>
-    <a href="#" class="btn">🔊 Audio AI Tools</a>
-    <br><br>
-    <a href="#" class="btn">✍️ Text AI Tools</a>
-    <br><br>
-    <a href="#" class="btn">📄 Document AI Tools</a>
-    <br><br>
-    <a href="#" class="btn">🎨 Creativity AI Tools</a>
+    <div class="card" onclick="location.href='ai-video.html'">
+        <h2>🎬 Video AI</h2>
+        <p>Video Generator, Face Swap, Lip Sync...</p>
+    </div>
+
+    <div class="card" onclick="location.href='ai-audio.html'">
+        <h2>🎧 Audio AI</h2>
+        <p>Text to Speech, Voice Clone, Speech to Text...</p>
+    </div>
+
+    <div class="card" onclick="location.href='ai-text.html'">
+        <h2>✍️ Text AI</h2>
+        <p>Chatbot, Code Generator, Article Writer...</p>
+    </div>
+
+    <div class="card" onclick="location.href='ai-document.html'">
+        <h2>📄 Document AI</h2>
+        <p>PDF Chat, Summarizer, File Translator...</p>
+    </div>
+
+    <div class="card" onclick="location.href='ai-creativity.html'">
+        <h2>🎨 Creativity AI</h2>
+        <p>Meme Maker, Poster Generator, Banner Creator...</p>
+    </div>
+
 </div>
 
 </body>

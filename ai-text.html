@@ -1,0 +1,131 @@
+import 'package:flutter/material.dart';
+
+class TextToolsPage extends StatelessWidget {
+  const TextToolsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        elevation: 0,
+        title: const Text(
+          "AI Text Tools",
+          style: TextStyle(
+            color: Colors.orangeAccent,
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.orangeAccent),
+      ),
+
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+
+          children: [
+            const Text(
+              "Choose a Text AI Tool",
+              style: TextStyle(
+                color: Colors.orangeAccent,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // TOOL 1
+            textTile(
+              title: "AI Chatbot",
+              icon: Icons.smart_toy_rounded,
+              onTap: () {},
+            ),
+
+            // TOOL 2
+            textTile(
+              title: "AI Code Generator",
+              icon: Icons.code_rounded,
+              onTap: () {},
+            ),
+
+            // TOOL 3
+            textTile(
+              title: "AI Article Writer",
+              icon: Icons.article_rounded,
+              onTap: () {},
+            ),
+
+            // TOOL 4
+            textTile(
+              title: "AI Text Summarizer",
+              icon: Icons.text_snippet_rounded,
+              onTap: () {},
+            ),
+
+            // TOOL 5
+            textTile(
+              title: "AI Email Writer",
+              icon: Icons.mail_rounded,
+              onTap: () {},
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget textTile({
+    required String title,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 18),
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(18),
+
+          border: Border.all(
+            color: Colors.orangeAccent,
+            width: 2,
+          ),
+
+          boxShadow: [
+            BoxShadow(
+              color: Colors.orangeAccent.withOpacity(0.25),
+              blurRadius: 8,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.orangeAccent, size: 32),
+
+            const SizedBox(width: 20),
+
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.orangeAccent,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

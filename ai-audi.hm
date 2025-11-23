@@ -6,7 +6,8 @@ class AudioToolsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Background
+      backgroundColor: Colors.black,
+
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
@@ -49,21 +50,21 @@ class AudioToolsPage extends StatelessWidget {
             // TOOL 2
             audioTile(
               title: "AI Speech to Text",
-              icon: Icons.keyboard_voice_rounded,
+              icon: Icons.mic_rounded,
               onTap: () {},
             ),
 
             // TOOL 3
             audioTile(
               title: "AI Voice Cloner",
-              icon: Icons.person_pin_rounded,
+              icon: Icons.graphic_eq_rounded,
               onTap: () {},
             ),
 
             // TOOL 4
             audioTile(
               title: "AI Noise Remover",
-              icon: Icons.noise_control_off,
+              icon: Icons.noise_aware_rounded,
               onTap: () {},
             ),
           ],
@@ -104,9 +105,7 @@ class AudioToolsPage extends StatelessWidget {
         child: Row(
           children: [
             Icon(icon, color: Colors.orangeAccent, size: 32),
-
             const SizedBox(width: 20),
-
             Text(
               title,
               style: const TextStyle(

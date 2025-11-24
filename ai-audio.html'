@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Audio Tools</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background-color: #0b0b0b;
+      color: #fff;
+      text-align: center;
+    }
+
+    header {
+      background: linear-gradient(90deg, #000, #ff6600);
+      padding: 25px;
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 0 20px rgba(255, 102, 0, 0.5);
+    }
+
+    .container {
+      margin-top: 60px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #ff6600;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #ccc;
+      margin-bottom: 40px;
+    }
+
+    .tool-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .btn {
+      background: #1a1a1a;
+      border: 2px solid #ff6600;
+      color: #fff;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 15px rgba(255, 102, 0, 0.4);
+    }
+
+    .btn:hover {
+      background: #ff6600;
+      color: #000;
+      box-shadow: 0 0 25px rgba(255, 102, 0, 0.7);
+      transform: scale(1.05);
+    }
+
+    footer {
+      margin-top: 80px;
+      font-size: 0.9rem;
+      color: #888;
+      padding: 20px 0;
+      border-top: 1px solid #222;
+    }
+  </style>
+</head>
+<body>
+
+  <header>🎧 AI Audio Tools</header>
+
+  <div class="container">
+    <h1>Powerful AI Audio Tools</h1>
+    <p>Generate, edit, and transform sound using advanced AI technologies.</p>
+
+    <div class="tool-buttons">
+      <button class="btn">AI Text to Speech</button>
+      <button class="btn">AI Speech to Text</button>
+      <button class="btn">AI Voice Cloner</button>
+      <button class="btn">AI Music Generator</button>
+      <button class="btn">AI Noise Remover</button>
+      <button class="btn">AI Sound Enhancer</button>
+    </div>
+  </div>
+
+  <footer>© 2025 AI Art Hub — Audio Intelligence Zone</footer>
+</body>
+</html>

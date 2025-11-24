@@ -1,131 +1,133 @@
-import 'package:flutter/material.dart';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Text Generator</title>
 
-class TextToolsPage extends StatelessWidget {
-  const TextToolsPage({super.key});
+<style>
+    body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background-color: #0b0b0b;
+        color: #fff;
+        text-align: center;
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
+    header {
+        background: linear-gradient(90deg, #000, #ff6600);
+        padding: 25px;
+        font-size: 2rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+        box-shadow: 0 2px 10px rgba(255, 102, 0, 0.6);
+    }
 
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        elevation: 0,
-        title: const Text(
-          "AI Text Tools",
-          style: TextStyle(
-            color: Colors.orangeAccent,
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.orangeAccent),
-      ),
+    .container {
+        margin-top: 60px;
+        padding: 0 20px;
+    }
 
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    h1 {
+        font-size: 2.5rem;
+        color: #ff6600;
+    }
 
-          children: [
-            const Text(
-              "Choose a Text AI Tool",
-              style: TextStyle(
-                color: Colors.orangeAccent,
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+    p {
+        font-size: 1.1rem;
+        color: #ccc;
+        margin-bottom: 30px;
+    }
 
-            const SizedBox(height: 20),
+    textarea {
+        width: 90%;
+        height: 200px;
+        background: #1a1a1a;
+        border: 2px solid #ff6600;
+        color: #fff;
+        padding: 15px;
+        font-size: 1rem;
+        border-radius: 12px;
+        outline: none;
+        resize: none;
+        box-shadow: 0 0 15px rgba(255, 102, 0, 0.3);
+    }
 
-            // TOOL 1
-            textTile(
-              title: "AI Chatbot",
-              icon: Icons.smart_toy_rounded,
-              onTap: () {},
-            ),
+    .btn {
+        margin-top: 30px;
+        background: #1a1a1a;
+        border: 2px solid #ff6600;
+        color: #fff;
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 0 15px rgba(255, 102, 0, 0.4);
+    }
 
-            // TOOL 2
-            textTile(
-              title: "AI Code Generator",
-              icon: Icons.code_rounded,
-              onTap: () {},
-            ),
+    .btn:hover {
+        background: #ff6600;
+        color: #000;
+        box-shadow: 0 0 25px rgba(255, 102, 0, 0.7);
+        transform: scale(1.05);
+    }
 
-            // TOOL 3
-            textTile(
-              title: "AI Article Writer",
-              icon: Icons.article_rounded,
-              onTap: () {},
-            ),
+    .output-box {
+        width: 90%;
+        background: #111;
+        border: 2px solid #ff6600;
+        padding: 20px;
+        margin-top: 40px;
+        border-radius: 12px;
+        color: #fff;
+        font-size: 1rem;
+        min-height: 150px;
+        box-shadow: 0 0 15px rgba(255, 102, 0, 0.4);
+        text-align: left;
+        white-space: pre-wrap;
+    }
 
-            // TOOL 4
-            textTile(
-              title: "AI Text Summarizer",
-              icon: Icons.text_snippet_rounded,
-              onTap: () {},
-            ),
+    footer {
+        margin-top: 80px;
+        font-size: 0.9rem;
+        color: #888;
+        padding: 20px 0;
+        border-top: 1px solid #222;
+    }
+</style>
+</head>
 
-            // TOOL 5
-            textTile(
-              title: "AI Email Writer",
-              icon: Icons.mail_rounded,
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+<body>
 
-  Widget textTile({
-    required String title,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
+<header>AI Text Generator</header>
 
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 18),
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.circular(18),
+<div class="container">
+    <h1>Generate Text with AI</h1>
+    <p>Write your prompt below and click “Generate”.</p>
 
-          border: Border.all(
-            color: Colors.orangeAccent,
-            width: 2,
-          ),
+    <textarea id="userPrompt" placeholder="Type your prompt here..."></textarea>
 
-          boxShadow: [
-            BoxShadow(
-              color: Colors.orangeAccent.withOpacity(0.25),
-              blurRadius: 8,
-              spreadRadius: 1,
-            ),
-          ],
-        ),
+    <button class="btn" onclick="generateText()">Generate</button>
 
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.orangeAccent, size: 32),
+    <div class="output-box" id="output">Your AI text will appear here...</div>
+</div>
 
-            const SizedBox(width: 20),
+<footer>© 2025 AI Tools | All Rights Reserved</footer>
 
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.orangeAccent,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+<script>
+function generateText() {
+    let prompt = document.getElementById("userPrompt").value;
+
+    if (prompt.trim() === "") {
+        alert("Please type something!");
+        return;
+    }
+
+    document.getElementById("output").innerText = 
+        "⚙️ AI is generating text...\n(This is sample text. API connection will come later.)";
 }
+</script>
+
+</body>
+</html>

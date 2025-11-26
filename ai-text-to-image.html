@@ -13,7 +13,6 @@
         color: #222;
     }
 
-    /* Top Website Header */
     .top-header {
         width: 100%;
         padding: 20px;
@@ -26,7 +25,6 @@
         letter-spacing: 1px;
     }
 
-    /* Instruction Box */
     .instructions {
         max-width: 900px;
         margin: 40px auto;
@@ -42,20 +40,6 @@
         color: #007bff;
     }
 
-    .instructions p {
-        color: #555;
-        line-height: 1.6;
-        font-size: 1rem;
-    }
-
-    /* Main Generator Container */
-    .container {
-        max-width: 900px;
-        margin: auto;
-        padding: 20px;
-        text-align: center;
-    }
-
     textarea {
         width: 100%;
         height: 120px;
@@ -65,12 +49,6 @@
         font-size: 1rem;
         outline: none;
         resize: none;
-        box-shadow: 0 0 10px rgba(0,123,255,0.1);
-    }
-
-    textarea:focus {
-        border-color: #ff6600;
-        box-shadow: 0 0 15px rgba(255,102,0,0.3);
     }
 
     .generate-btn {
@@ -84,22 +62,18 @@
         border-radius: 10px;
         cursor: pointer;
         transition: 0.3s;
-        box-shadow: 0 6px 20px rgba(0,123,255,0.3);
     }
 
     .generate-btn:hover {
         background: #ff6600;
-        box-shadow: 0 8px 25px rgba(255,102,0,0.4);
     }
 
-    /* Output Image Box */
     .output-box {
         margin-top: 40px;
         padding: 20px;
         background: #f5f7ff;
         border-radius: 15px;
         border: 2px dashed #007bff;
-        box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
     }
 
     .output-box img {
@@ -107,7 +81,6 @@
         border-radius: 12px;
     }
 
-    /* Download Button */
     .download-btn {
         margin-top: 20px;
         padding: 12px 30px;
@@ -118,44 +91,75 @@
         border-radius: 10px;
         border: none;
         cursor: pointer;
-        transition: 0.3s;
-        box-shadow: 0 6px 20px rgba(255,102,0,0.4);
-        display: none; /* Hidden until image is generated */
+        display: none;
     }
-
-    .download-btn:hover {
-        background: #007bff;
-        box-shadow: 0 8px 25px rgba(0,123,255,0.4);
-    }
-
 </style>
 </head>
+
 <body>
 
 <div class="top-header">🔥 AI Image Generator</div>
 
 <div class="instructions">
     <h2>How to Use</h2>
-    <p>1. Type what image you want in the text box below.<br>
-       2. Click <b>Generate</b> to create an AI image.<br>
-       3. Wait for the image to appear in the output section.<br>
-       4. Click <b>Download</b> to save your AI-generated image.</p>
+    <p>
+        1. Write your image idea in the textbox.<br>
+        2. Click <b>Generate</b>.<br>
+        3. Wait for AI to create the image.<br>
+        4. Click <b>Download</b> to save your image.
+    </p>
 </div>
 
-<div class="container">
+<div class="container" style="max-width:900px;margin:auto;text-align:center;">
 
-    <textarea placeholder="Describe the image you want (e.g. A futuristic robot walking in neon city)..."></textarea>
+    <textarea id="promptInput" placeholder="Describe the image you want..."></textarea>
 
-    <button class="generate-btn">Generate Image</button>
+    <button class="generate-btn" onclick="generateImage()">Generate Image</button>
 
     <div class="output-box">
-        <p style="color:#666;">Your generated image will appear here...</p>
+        <p id="loadingText" style="color:#666;">Your generated image will appear here...</p>
         <img id="generatedImage" src="" style="display:none;">
     </div>
 
-    <button class="download-btn" id="downloadBtn">Download Image</button>
+    <button class="download-btn" id="downloadBtn" onclick="downloadImage()">Download Image</button>
 
 </div>
 
+<script>
+async function generateImage() {
+    const prompt = document.getElementById("promptInput").value;
+    if (!prompt) {
+        alert("Please enter a prompt!");
+        return;
+    }
+
+    document.getElementById("loadingText").innerText = "Generating image... please wait...";
+    document.getElementById("generatedImage").style.display = "none";
+    document.getElementById("downloadBtn").style.display = "none";
+
+    const response = await fetch("http://localhost:5000/generate-image", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ prompt })
+    });
+
+    const data = await response.json();
+    if (data.imageUrl) {
+        document.getElementById("generatedImage").src = data.imageUrl;
+        document.getElementById("generatedImage").style.display = "block";
+        document.getElementById("loadingText").innerText = "";
+        document.getElementById("downloadBtn").style.display = "inline-block";
+    }
+}
+
+function downloadImage() {
+    const img = document.getElementById("generatedImage").src;
+    const link = document.createElement("a");
+    link.href = img;
+    link.download = "ai-image.png";
+    link.click();
+}
+</script>
+
 </body>
-      </html>
+</html>

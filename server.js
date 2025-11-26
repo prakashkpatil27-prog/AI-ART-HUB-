@@ -50,3 +50,4 @@ app.listen(3000, () => {
     "node-fetch": "^3.3.2"
   }
 }
+OPENAI_API_KEY=तुम्हारी_API_KEY

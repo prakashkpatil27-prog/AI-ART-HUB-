@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Image Generator</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: #ffffff;
+        color: #222;
+    }
+
+    /* Top Website Header */
+    .top-header {
+        width: 100%;
+        padding: 20px;
+        background: linear-gradient(90deg, #007bff, #ff6600);
+        color: white;
+        font-size: 1.8rem;
+        font-weight: bold;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        letter-spacing: 1px;
+    }
+
+    /* Instruction Box */
+    .instructions {
+        max-width: 900px;
+        margin: 40px auto;
+        background: #f8f9ff;
+        padding: 25px;
+        border-left: 5px solid #007bff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .instructions h2 {
+        margin-top: 0;
+        color: #007bff;
+    }
+
+    .instructions p {
+        color: #555;
+        line-height: 1.6;
+        font-size: 1rem;
+    }
+
+    /* Main Generator Container */
+    .container {
+        max-width: 900px;
+        margin: auto;
+        padding: 20px;
+        text-align: center;
+    }
+
+    textarea {
+        width: 100%;
+        height: 120px;
+        padding: 15px;
+        border: 2px solid #007bff;
+        border-radius: 10px;
+        font-size: 1rem;
+        outline: none;
+        resize: none;
+        box-shadow: 0 0 10px rgba(0,123,255,0.1);
+    }
+
+    textarea:focus {
+        border-color: #ff6600;
+        box-shadow: 0 0 15px rgba(255,102,0,0.3);
+    }
+
+    .generate-btn {
+        margin-top: 20px;
+        background: #007bff;
+        color: white;
+        padding: 15px 40px;
+        border: none;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 6px 20px rgba(0,123,255,0.3);
+    }
+
+    .generate-btn:hover {
+        background: #ff6600;
+        box-shadow: 0 8px 25px rgba(255,102,0,0.4);
+    }
+
+    /* Output Image Box */
+    .output-box {
+        margin-top: 40px;
+        padding: 20px;
+        background: #f5f7ff;
+        border-radius: 15px;
+        border: 2px dashed #007bff;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .output-box img {
+        max-width: 100%;
+        border-radius: 12px;
+    }
+
+    /* Download Button */
+    .download-btn {
+        margin-top: 20px;
+        padding: 12px 30px;
+        background: #ff6600;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: bold;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 6px 20px rgba(255,102,0,0.4);
+        display: none; /* Hidden until image is generated */
+    }
+
+    .download-btn:hover {
+        background: #007bff;
+        box-shadow: 0 8px 25px rgba(0,123,255,0.4);
+    }
+
+</style>
+</head>
+<body>
+
+<div class="top-header">🔥 AI Image Generator</div>
+
+<div class="instructions">
+    <h2>How to Use</h2>
+    <p>1. Type what image you want in the text box below.<br>
+       2. Click <b>Generate</b> to create an AI image.<br>
+       3. Wait for the image to appear in the output section.<br>
+       4. Click <b>Download</b> to save your AI-generated image.</p>
+</div>
+
+<div class="container">
+
+    <textarea placeholder="Describe the image you want (e.g. A futuristic robot walking in neon city)..."></textarea>
+
+    <button class="generate-btn">Generate Image</button>
+
+    <div class="output-box">
+        <p style="color:#666;">Your generated image will appear here...</p>
+        <img id="generatedImage" src="" style="display:none;">
+    </div>
+
+    <button class="download-btn" id="downloadBtn">Download Image</button>
+
+</div>
+
+</body>
+      </html>

@@ -49,6 +49,7 @@
         font-size: 1rem;
         outline: none;
         resize: none;
+        box-shadow: 0 0 10px rgba(0,123,255,0.1);
     }
 
     .generate-btn {
@@ -62,10 +63,7 @@
         border-radius: 10px;
         cursor: pointer;
         transition: 0.3s;
-    }
-
-    .generate-btn:hover {
-        background: #ff6600;
+        box-shadow: 0 6px 20px rgba(0,123,255,0.3);
     }
 
     .output-box {
@@ -74,11 +72,13 @@
         background: #f5f7ff;
         border-radius: 15px;
         border: 2px dashed #007bff;
+        text-align: center;
     }
 
-    .output-box img {
+    #generatedImage {
         max-width: 100%;
         border-radius: 12px;
+        display: none;
     }
 
     .download-btn {
@@ -91,34 +91,32 @@
         border-radius: 10px;
         border: none;
         cursor: pointer;
+        transition: 0.3s;
         display: none;
     }
 </style>
 </head>
-
 <body>
 
 <div class="top-header">🔥 AI Image Generator</div>
 
 <div class="instructions">
     <h2>How to Use</h2>
-    <p>
-        1. Write your image idea in the textbox.<br>
-        2. Click <b>Generate</b>.<br>
-        3. Wait for AI to create the image.<br>
-        4. Click <b>Download</b> to save your image.
-    </p>
+    <p>1. Type your image idea in the box below.<br>
+       2. Click <b>Generate</b>.<br>
+       3. Wait for the AI to create your image.<br>
+       4. Click <b>Download</b> to save it.</p>
 </div>
 
-<div class="container" style="max-width:900px;margin:auto;text-align:center;">
+<div class="container" style="max-width:900px;margin:auto;">
 
     <textarea id="promptInput" placeholder="Describe the image you want..."></textarea>
 
     <button class="generate-btn" onclick="generateImage()">Generate Image</button>
 
     <div class="output-box">
-        <p id="loadingText" style="color:#666;">Your generated image will appear here...</p>
-        <img id="generatedImage" src="" style="display:none;">
+        <p id="placeholderText">Your generated image will appear here...</p>
+        <img id="generatedImage" src="">
     </div>
 
     <button class="download-btn" id="downloadBtn" onclick="downloadImage()">Download Image</button>
@@ -128,34 +126,31 @@
 <script>
 async function generateImage() {
     const prompt = document.getElementById("promptInput").value;
-    if (!prompt) {
-        alert("Please enter a prompt!");
-        return;
-    }
+    const img = document.getElementById("generatedImage");
+    const placeholder = document.getElementById("placeholderText");
+    const downloadBtn = document.getElementById("downloadBtn");
 
-    document.getElementById("loadingText").innerText = "Generating image... please wait...";
-    document.getElementById("generatedImage").style.display = "none";
-    document.getElementById("downloadBtn").style.display = "none";
+    placeholder.innerHTML = "Generating image... Please wait.";
 
-    const response = await fetch("http://localhost:5000/generate-image", {
+    const response = await fetch("http://localhost:3000/generate-image", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({ prompt })
     });
 
     const data = await response.json();
-    if (data.imageUrl) {
-        document.getElementById("generatedImage").src = data.imageUrl;
-        document.getElementById("generatedImage").style.display = "block";
-        document.getElementById("loadingText").innerText = "";
-        document.getElementById("downloadBtn").style.display = "inline-block";
+
+    if (data.image) {
+        img.src = data.image;
+        img.style.display = "block";
+        downloadBtn.style.display = "inline-block";
+        placeholder.style.display = "none";
     }
 }
 
 function downloadImage() {
-    const img = document.getElementById("generatedImage").src;
     const link = document.createElement("a");
-    link.href = img;
+    link.href = document.getElementById("generatedImage").src;
     link.download = "ai-image.png";
     link.click();
 }

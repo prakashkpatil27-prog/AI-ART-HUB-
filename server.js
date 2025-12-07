@@ -1,53 +1,44 @@
 import express from "express";
-import fetch from "node-fetch";
-import dotenv from "dotenv";
 import cors from "cors";
+import dotenv from "dotenv";
+import OpenAI from "openai";
 
 dotenv.config();
 
 const app = express();
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 app.post("/generate-image", async (req, res) => {
-    try {
-        const prompt = req.body.prompt;
+  try {
+    const { prompt } = req.body;
 
-        const response = await fetch("https://api.openai.com/v1/images/generations", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-            },
-            body: JSON.stringify({
-                model: "gpt-image-1",
-                prompt: prompt,
-                size: "1024x1024"
-            })
-        });
+    const result = await openai.images.generate({
+      model: "dall-e-3",
+      prompt: prompt,
+      size: "1024x1024"
+    });
 
-        const data = await response.json();
-        res.json({ image: data.data[0].url });
+    const image_base64 = result.data[0].b64_json;
 
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Image generation failed" });
-    }
-});
+    return res.json({
+      success: true,
+      image: "data:image/png;base64," + image_base64,
+    });
 
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
-});
-
-{
-  "name": "ai-art-hub-backend",
-  "version": "1.0.0",
-  "main": "server.js",
-  "type": "module",
-  "dependencies": {
-    "express": "^4.18.2",
-    "dotenv": "^16.0.3",
-    "node-fetch": "^3.3.2"
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Image generation failed",
+      error: error.message,
+    });
   }
-}
-OPENAI_API_KEY=तुम्हारी_API_KEY
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log("Server running on port " + PORT));

@@ -1,213 +1,513 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AI Image Generator</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Luxury AI Image Generator</title>
+
+<!-- Fonts (optional) -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-    body {
-        margin: 0;
-        font-family: "Poppins", sans-serif;
-        background: linear-gradient(140deg, #1a1a2e, #16213e, #0f3460);
-        color: #fff;
-        overflow-x: hidden;
-    }
+  :root{
+    --bg-1: #0f1724;
+    --bg-2: #08101b;
+    --card: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+    --accent-1: #ff5d9e;
+    --accent-2: #ff9a00;
+    --accent-3: #00d4ff;
+    --success: #2ee6a7;
+    --danger: #ff4567;
+    --muted: rgba(255,255,255,0.65);
+  }
 
-    .top-header {
-        width: 100%;
-        padding: 25px;
-        background: linear-gradient(90deg, #ff7b00, #ff0066);
-        color: white;
-        font-size: 2rem;
-        font-weight: bold;
-        text-align: center;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-        letter-spacing: 2px;
-    }
+  *{box-sizing: border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: #fff;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+  }
 
-    .container {
-        max-width: 900px;
-        margin: 40px auto;
-        background: rgba(255,255,255,0.05);
-        padding: 30px;
-        border-radius: 20px;
-        backdrop-filter: blur(12px);
-        box-shadow: 0 0 20px rgba(255,255,255,0.08);
-    }
+  .wrap{
+    width:100%;
+    max-width:1100px;
+    border-radius:18px;
+    padding:28px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    box-shadow: 0 10px 40px rgba(3,6,23,0.7);
+    border: 1px solid rgba(255,255,255,0.03);
+    display:grid;
+    grid-template-columns: 1fr 480px;
+    gap:28px;
+    align-items:start;
+  }
 
-    textarea {
-        width: 100%;
-        height: 130px;
-        padding: 18px;
-        border: none;
-        border-radius: 12px;
-        font-size: 1.1rem;
-        outline: none;
-        resize: none;
-        background: rgba(255,255,255,0.1);
-        color: white;
-        box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
-    }
+  /* Left: controls */
+  .panel {
+    padding:20px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(6px) saturate(120%);
+  }
 
-    .generate-btn {
-        margin-top: 20px;
-        background: linear-gradient(90deg, #ff0066, #ff7b00);
-        color: white;
-        padding: 15px 45px;
-        border: none;
-        font-size: 1.3rem;
-        font-weight: bold;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: 0.3s;
-        box-shadow: 0 6px 20px rgba(255,0,100,0.4);
-    }
+  .brand {
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:18px;
+  }
 
-    .generate-btn:hover {
-        transform: scale(1.05);
-    }
+  .logo {
+    width:56px;
+    height:56px;
+    border-radius:12px;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: 0 6px 30px rgba(255,90,120,0.12);
+    font-weight:700;
+    font-size:20px;
+    color:white;
+  }
 
-    .output-box {
-        margin-top: 40px;
-        padding: 25px;
-        background: rgba(255,255,255,0.1);
-        border-radius: 20px;
-        text-align: center;
-        border: 2px dashed rgba(255,255,255,0.3);
-    }
+  .brand h1{
+    font-size:1.25rem;
+    margin:0;
+    letter-spacing:0.4px;
+  }
+  .brand p{margin:0;font-size:0.9rem;color:var(--muted)}
 
-    #generatedImage {
-        max-width: 100%;
-        margin-top: 20px;
-        border-radius: 15px;
-        display: none;
-        animation: fadeIn 1s ease-in-out;
-    }
+  label{display:block;font-weight:600;margin:12px 0 8px;color:var(--muted)}
 
-    @keyframes fadeIn {
-        from {opacity: 0;}
-        to {opacity: 1;}
-    }
+  textarea#promptInput{
+    width:100%;
+    min-height:150px;
+    padding:16px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.04);
+    background: rgba(0,0,0,0.25);
+    color: #fff;
+    resize:vertical;
+    font-size:15px;
+    outline:none;
+    transition: box-shadow .18s ease, transform .12s ease;
+  }
+  textarea#promptInput:focus{
+    box-shadow: 0 8px 30px rgba(0,0,0,0.45), 0 0 0 4px rgba(255,120,120,0.06);
+    transform: translateY(-2px);
+  }
 
-    .download-btn {
-        margin-top: 20px;
-        padding: 12px 30px;
-        background: linear-gradient(90deg, #00d4ff, #008cff);
-        color: white;
-        font-size: 1.2rem;
-        font-weight: bold;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-        transition: 0.3s;
-        display: none;
-        box-shadow: 0 0 20px rgba(0,170,255,0.4);
-    }
+  .controls {
+    display:flex;
+    gap:12px;
+    margin-top:14px;
+    align-items:center;
+  }
 
-    .download-btn:hover {
-        transform: scale(1.05);
-    }
+  .generate-btn{
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    border: none;
+    padding:12px 20px;
+    color:#fff;
+    border-radius:12px;
+    font-weight:700;
+    cursor:pointer;
+    font-size:1rem;
+    box-shadow: 0 10px 30px rgba(255,120,120,0.12);
+    display:inline-flex;
+    gap:10px;
+    align-items:center;
+    transition: transform .12s ease, box-shadow .12s ease, opacity .12s;
+  }
+  .generate-btn:active{transform:scale(.99)}
+  .generate-btn[disabled]{opacity:.6;cursor:default; transform:none}
 
-    /* Error message */
-    .error {
-        display: none;
-        margin-top: 20px;
-        background: #ff2e63;
-        padding: 15px;
-        border-radius: 10px;
-        font-size: 1.1rem;
-        font-weight: bold;
-        text-align: center;
-        color: white;
-        box-shadow: 0 0 12px rgba(255,0,80,0.4);
-        animation: fadeIn 0.5s;
-    }
+  .small {
+    padding:8px 12px;
+    font-size:0.92rem;
+    border-radius:10px;
+    background: rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.03);
+    color:var(--muted);
+  }
 
-    /* Loading spinner */
-    .loader {
-        display: none;
-        margin: 20px auto;
-        border: 6px solid rgba(255,255,255,0.2);
-        border-top: 6px solid #ff0066;
-        border-radius: 50%;
-        width: 45px;
-        height: 45px;
-        animation: spin 1s linear infinite;
-    }
+  /* Right: preview */
+  .preview {
+    padding:18px;
+    border-radius:14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04));
+    border: 1px solid rgba(255,255,255,0.03);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-height:420px;
+    justify-content:flex-start;
+  }
 
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
+  .preview .meta {
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+
+  .meta .hint { color:var(--muted); font-size:0.95rem}
+
+  .result-frame{
+    width:100%;
+    margin-top:18px;
+    border-radius:12px;
+    overflow:hidden;
+    min-height:320px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    background: linear-gradient(180deg, rgba(255,255,255,0.012), rgba(0,0,0,0.08));
+    border:1px solid rgba(255,255,255,0.03);
+  }
+
+  .result-frame .empty {
+    color:var(--muted);
+    font-size:0.95rem;
+    text-align:center;
+    padding:22px;
+  }
+
+  img#generatedImage{
+    max-width:100%;
+    max-height:100%;
+    display:block;
+    border-radius:8px;
+    transform-origin:center;
+    animation: imgIn .6s cubic-bezier(.2,.9,.3,1);
+  }
+
+  @keyframes imgIn {
+    from { opacity:0; transform: scale(.98) translateY(8px) }
+    to   { opacity:1; transform: scale(1) translateY(0) }
+  }
+
+  /* Loader */
+  .loader {
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    border:6px solid rgba(255,255,255,0.06);
+    border-top-color: var(--accent-3);
+    animation:spin 1s linear infinite;
+    box-shadow: 0 6px 30px rgba(0,212,255,0.08);
+  }
+  @keyframes spin{ to{transform:rotate(360deg)} }
+
+  /* Error box */
+  .error {
+    margin-top:14px;
+    padding:12px 14px;
+    background: linear-gradient(90deg, rgba(255,69,103,0.12), rgba(255,69,103,0.06));
+    border:1px solid rgba(255,69,103,0.12);
+    color:var(--danger);
+    font-weight:700;
+    border-radius:10px;
+    display:none;
+    animation: shake .45s ease;
+  }
+  @keyframes shake {
+    0%{ transform:translateX(-6px) } 50%{ transform:translateX(6px) } 100%{ transform:translateX(0) }
+  }
+
+  .actions {
+    margin-top:14px;
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+
+  .download-btn{
+    background: linear-gradient(90deg, #00c8ff, #006bff);
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:10px;
+    font-weight:700;
+    cursor:pointer;
+    display:none;
+    box-shadow: 0 8px 30px rgba(0,120,255,0.12);
+  }
+
+  .copy-btn{
+    background: transparent;
+    color:var(--muted);
+    border:1px dashed rgba(255,255,255,0.04);
+    padding:10px 12px;
+    border-radius:10px;
+    cursor:pointer;
+  }
+
+  .note { margin-top:12px; color:var(--muted); font-size:0.9rem }
+
+  /* Responsive */
+  @media (max-width:980px){
+    .wrap{ grid-template-columns: 1fr; padding:18px }
+    .preview{ order: -1 }
+  }
 </style>
 </head>
 <body>
 
-<div class="top-header">🔥 Luxury AI Image Generator</div>
-
-<div class="container">
-    <textarea id="promptInput" placeholder="Describe your image idea in detail..."></textarea>
-
-    <button class="generate-btn" onclick="generateImage()">Generate Image</button>
-
-    <div class="loader" id="loader"></div>
-
-    <div class="error" id="errorBox">❌ Something went wrong. Try again!</div>
-
-    <div class="output-box">
-        <img id="generatedImage" src="">
+<div class="wrap">
+  <div class="panel">
+    <div class="brand">
+      <div class="logo">AI</div>
+      <div>
+        <h1>AI Art Hub</h1>
+        <p>Create premium images with one prompt — luxury UI</p>
+      </div>
     </div>
 
-    <button class="download-btn" id="downloadBtn" onclick="downloadImage()">Download Image</button>
+    <label for="promptInput">Describe your image (be specific)</label>
+    <textarea id="promptInput" placeholder="e.g. ultra-detailed fantasy city at sunset, cinematic lighting, 8k"></textarea>
+
+    <div class="controls">
+      <button id="genBtn" class="generate-btn" onclick="generateImage()">
+        <svg id="genIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Generate
+      </button>
+
+      <div class="small" id="sizeSelectWrap">
+        <label style="display:block;font-size:12px;color:var(--muted);margin-bottom:6px">Size</label>
+        <select id="sizeSelect" style="background:transparent;border:none;color:var(--muted);outline:none;font-weight:600">
+          <option value="512x512">512×512</option>
+          <option value="768x768">768×768</option>
+          <option value="1024x1024" selected>1024×1024</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="note">Tip: more descriptive prompts give better results. Try adding style, lighting & camera keywords.</div>
+
+    <div id="errorBox" class="error"></div>
+  </div>
+
+  <div class="preview">
+    <div class="meta">
+      <div class="hint">Preview</div>
+      <div class="hint" id="statusText">Idle</div>
+    </div>
+
+    <div class="result-frame" id="resultFrame">
+      <div class="empty" id="emptyText">Your generated image will appear here — press <b>Generate</b></div>
+      <!-- image injected here -->
+      <img id="generatedImage" alt="Generated artwork" crossorigin="anonymous"/>
+      <div id="loaderWrap" style="position:absolute;display:none;align-items:center;justify-content:center">
+        <div class="loader" id="loader"></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="downloadBtn" class="download-btn" onclick="downloadImage()">Download Image</button>
+      <button id="copyBtn" class="copy-btn" onclick="copyPrompt()">Copy Prompt</button>
+    </div>
+
+    <div class="note" id="infoNote">Powered by your OpenAI backend • Make sure backend URL & env are set.</div>
+  </div>
 </div>
 
 <script>
-async function generateImage() {
-    const prompt = document.getElementById("promptInput").value;
-    const img = document.getElementById("generatedImage");
-    const downloadBtn = document.getElementById("downloadBtn");
-    const loader = document.getElementById("loader");
-    const errorBox = document.getElementById("errorBox");
+  // ------------- CONFIG -------------
+  const BACKEND_URL = "https://ai-art-hub-4.onrender.com/generate-image";
+  // ------------- UI refs ------------
+  const genBtn = document.getElementById("genBtn");
+  const genIcon = document.getElementById("genIcon");
+  const sizeSelect = document.getElementById("sizeSelect");
+  const promptInput = document.getElementById("promptInput");
+  const loaderWrap = document.getElementById("loaderWrap");
+  const loader = document.getElementById("loader");
+  const generatedImage = document.getElementById("generatedImage");
+  const downloadBtn = document.getElementById("downloadBtn");
+  const emptyText = document.getElementById("emptyText");
+  const errorBox = document.getElementById("errorBox");
+  const statusText = document.getElementById("statusText");
+  const copyBtn = document.getElementById("copyBtn");
+  const resultFrame = document.getElementById("resultFrame");
 
-    img.style.display = "none";
-    downloadBtn.style.display = "none";
+  // Helper: show error
+  function showError(message){
+    errorBox.innerText = message || "Something went wrong, try again.";
+    errorBox.style.display = "block";
+    setTimeout(()=> errorBox.style.display = "none", 6000);
+    statusText.innerText = "Error";
+  }
+
+  // Helper: show loader
+  function showLoading(on=true){
+    if(on){
+      loaderWrap.style.display = "flex";
+      loaderWrap.style.top = "50%";
+      loaderWrap.style.left = "50%";
+      loaderWrap.style.transform = "translate(-50%,-50%)";
+      statusText.innerText = "Generating...";
+      genBtn.setAttribute("disabled","true");
+    } else {
+      loaderWrap.style.display = "none";
+      statusText.innerText = "Idle";
+      genBtn.removeAttribute("disabled");
+    }
+  }
+
+  // Generate image flow
+  async function generateImage(){
+    const prompt = promptInput.value.trim();
+    const size = sizeSelect.value || "1024x1024";
     errorBox.style.display = "none";
+    downloadBtn.style.display = "none";
+    generatedImage.style.display = "none";
+    emptyText.style.display = "none";
 
-    loader.style.display = "block";
+    if(!prompt){
+      showError("Please enter a prompt — be specific!");
+      return;
+    }
+
+    showLoading(true);
 
     try {
-        const response = await fetch("https://ai-art-hub-4.onrender.com/generate-image", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ prompt })
-        });
+      // Build request payload
+      const payload = { prompt, size };
 
-        const data = await response.json();
-        loader.style.display = "none";
+      const resp = await fetch(BACKEND_URL, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(payload)
+      });
 
-        if (data.image) {
-            img.src = data.image;
-            img.style.display = "block";
-            downloadBtn.style.display = "inline-block";
-        } else {
-            errorBox.style.display = "block";
-        }
+      // If backend returns non-JSON or not ok
+      if(!resp.ok){
+        const txt = await resp.text();
+        showLoading(false);
+        showError("Server error: " + (txt || resp.status));
+        return;
+      }
 
-    } catch (error) {
-        loader.style.display = "none";
-        errorBox.style.display = "block";
+      const data = await resp.json();
+      showLoading(false);
+
+      if(!data || !data.image){
+        showError("No image returned from server.");
+        return;
+      }
+
+      // Accept both data URLs and remote URLs
+      const imageSrc = data.image;
+
+      // set image src and show
+      generatedImage.src = imageSrc;
+      generatedImage.onload = () => {
+        generatedImage.style.display = "block";
+        downloadBtn.style.display = "inline-block";
+        statusText.innerText = "Done";
+      };
+      generatedImage.onerror = (e) => {
+        showError("Failed to load generated image.");
+      };
+
+      // remove empty text
+      emptyText.style.display = "none";
+
+    } catch (err) {
+      showLoading(false);
+      showError(err.message || "Network error — check backend.");
+      console.error("Generate error:", err);
     }
-}
+  }
 
-function downloadImage() {
-    const imgSrc = document.getElementById("generatedImage").src;
-    const link = document.createElement("a");
-    link.href = imgSrc;
-    link.download = "ai-image.png";
-    link.click();
-}
+  // Download: handle data: urls and remote urls properly
+  async function downloadImage(){
+    const src = generatedImage.src;
+    if(!src) return;
+
+    // If it's a data URL, download directly
+    if(src.startsWith("data:")){
+      const a = document.createElement("a");
+      a.href = src;
+      a.download = "ai-image.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      return;
+    }
+
+    // Otherwise fetch as blob and download (works cross-origin)
+    try {
+      statusText.innerText = "Preparing download...";
+      downloadBtn.disabled = true;
+
+      const res = await fetch(src, {mode: "cors"});
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "ai-image.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      // cleanup
+      setTimeout(()=> URL.revokeObjectURL(url), 10000);
+      statusText.innerText = "Downloaded";
+    } catch (err) {
+      showError("Download failed. Try right-click → Save image as...");
+      console.error("Download error:", err);
+    } finally {
+      downloadBtn.disabled = false;
+      setTimeout(()=> statusText.innerText = "Idle", 2000);
+    }
+  }
+
+  // Copy prompt
+  function copyPrompt(){
+    const text = promptInput.value.trim();
+    if(!text) return;
+    navigator.clipboard.writeText(text).then(()=>{
+      copyBtn.innerText = "Copied!";
+      setTimeout(()=> copyBtn.innerText = "Copy Prompt", 1500);
+    }).catch(()=> {
+      showError("Copy failed — allow clipboard permission.");
+    });
+  }
+
+  // Small usability: Enter (Ctrl+Enter) to submit
+  promptInput.addEventListener("keydown", (e)=>{
+    if((e.ctrlKey || e.metaKey) && e.key === 'Enter'){
+      generateImage();
+    }
+  });
+
+  // Init: place loader center
+  (function init(){
+    loaderWrap.style.width = "100%";
+    loaderWrap.style.height = "100%";
+    loaderWrap.style.position = "absolute";
+    loaderWrap.style.top = "0";
+    loaderWrap.style.left = "0";
+    loaderWrap.style.display = "none";
+    loaderWrap.style.alignItems = "center";
+    loaderWrap.style.justifyContent = "center";
+  })();
 </script>
 
 </body>
-</html>
+    </html>

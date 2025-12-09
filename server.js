@@ -1,44 +1,47 @@
 import express from "express";
-import cors from "cors";
+import fetch from "node-fetch";
 import dotenv from "dotenv";
-import OpenAI from "openai";
-
 dotenv.config();
 
 const app = express();
-app.use(cors());
 app.use(express.json());
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const HF_API_KEY = process.env.HF_API_KEY;
 
-app.post("/generate-image", async (req, res) => {
+// Stable Diffusion Model (तुम चाहे तो मॉडल बदल सकते हो)
+const MODEL_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0";
+
+app.post("/generate", async (req, res) => {
   try {
     const { prompt } = req.body;
 
-    const result = await openai.images.generate({
-      model: "dall-e-3",
-      prompt: prompt,
-      size: "1024x1024"
+    if (!prompt) {
+      return res.status(400).json({ error: "Prompt required!" });
+    }
+
+    const response = await fetch(MODEL_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${HF_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ inputs: prompt })
     });
 
-    const image_base64 = result.data[0].b64_json;
+    const arrayBuffer = await response.arrayBuffer();
+    const base64Image = Buffer.from(arrayBuffer).toString('base64');
 
-    return res.json({
-      success: true,
-      image: "data:image/png;base64," + image_base64,
+    res.json({
+      image: `data:image/png;base64,${base64Image}`
     });
 
-  } catch (error) {
-    console.error("Error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Image generation failed",
-      error: error.message,
-    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Image generation failed!" });
   }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log("Server running on port " + PORT));
+
+app.listen(3000, () => {
+  console.log("Server running on http://localhost:3000");
+});

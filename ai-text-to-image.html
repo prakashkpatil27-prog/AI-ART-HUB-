@@ -8,123 +8,128 @@
 <style>
     body {
         margin: 0;
-        padding: 0;
         font-family: "Poppins", sans-serif;
-        background: linear-gradient(135deg, #0d0d12, #1a1a27);
-        color: #fff;
+        background: linear-gradient(135deg, #ffffff, #f0f4ff);
+        color: #222;
+        overflow-x: hidden;
     }
 
     .header {
         text-align: center;
-        padding: 30px 0;
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
+        padding: 25px;
         font-size: 2rem;
-        font-weight: 700;
+        font-weight: bold;
+        background: linear-gradient(90deg, #6a11cb, #2575fc);
+        color: white;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         letter-spacing: 1px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
     .container {
-        max-width: 850px;
-        margin: 40px auto;
-        padding: 20px;
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 30px;
+        background: rgba(255,255,255,0.7);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    }
+
+    .how-to-use {
+        margin-bottom: 20px;
+        padding: 15px;
+        border-left: 5px solid #6a11cb;
+        background: #f7faff;
+        border-radius: 10px;
     }
 
     textarea {
         width: 100%;
-        height: 130px;
+        height: 120px;
         padding: 15px;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 14px;
-        color: #fff;
+        border-radius: 12px;
+        border: 2px solid #6a11cb;
         font-size: 1rem;
         outline: none;
-        transition: 0.3s;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
 
-    textarea:focus {
-        border-color: #6a5df5;
-        box-shadow: 0 0 10px rgba(106,93,245,0.5);
-    }
-
-    .btn {
-        width: 100%;
-        padding: 15px;
+    .generate-btn {
         margin-top: 20px;
+        padding: 15px 40px;
         font-size: 1.2rem;
         font-weight: bold;
         border: none;
-        border-radius: 14px;
-        cursor: pointer;
+        border-radius: 12px;
         color: white;
-        background: linear-gradient(135deg, #6a5df5, #b057ff);
+        background: linear-gradient(90deg, #6a11cb, #2575fc);
+        cursor: pointer;
         transition: 0.3s;
-        box-shadow: 0 4px 20px rgba(106,93,245,0.4);
+        text-transform: uppercase;
+        box-shadow: 0 5px 20px rgba(102, 41, 255, 0.3);
     }
 
-    .btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 25px rgba(106,93,245,0.6);
+    .generate-btn:hover {
+        transform: scale(1.05);
     }
 
-    .loading {
-        margin-top: 10px;
-        font-size: 1.1rem;
-        text-align: center;
+    .loader {
+        margin-top: 20px;
+        display: none;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #2575fc;
         animation: blink 1s infinite;
-        color: #bcbcff;
     }
 
     @keyframes blink {
-        0% {opacity: 0.2;}
-        50% {opacity: 1;}
-        100% {opacity: 0.2;}
+        0% { opacity: 0.3; }
+        50% { opacity: 1; }
+        100% { opacity: 0.3; }
     }
 
     .output-box {
         margin-top: 40px;
         padding: 20px;
-        background: rgba(255,255,255,0.05);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 14px;
+        border-radius: 15px;
         text-align: center;
+        background: #eef2ff;
+        border: 2px dashed #6a11cb;
     }
 
     #generatedImage {
         max-width: 100%;
         margin-top: 20px;
-        border-radius: 10px;
+        border-radius: 15px;
         display: none;
-        box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.2);
     }
 
-    .downloadBtn {
+    .download-btn {
         margin-top: 20px;
-        padding: 12px 35px;
+        padding: 12px 30px;
         font-size: 1.1rem;
         font-weight: bold;
-        background: linear-gradient(135deg, #ff7b39, #ff4b2b);
-        border: none;
-        border-radius: 14px;
         color: white;
+        background: linear-gradient(90deg, #ff6a00, #ee0979);
+        border: none;
+        border-radius: 10px;
         cursor: pointer;
         display: none;
+        box-shadow: 0 5px 20px rgba(255, 76, 0, 0.3);
         transition: 0.3s;
     }
 
-    .downloadBtn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(255,75,43,0.4);
+    .download-btn:hover {
+        transform: scale(1.05);
     }
 
     .error {
-        color: #ff4b4b;
-        font-size: 1.1rem;
-        text-align: center;
         margin-top: 15px;
-        animation: shake 0.3s ease-in-out;
+        color: red;
+        font-weight: bold;
+        display: none;
+        animation: shake 0.3s;
     }
 
     @keyframes shake {
@@ -138,68 +143,77 @@
 </head>
 <body>
 
-<div class="header">🔥 AI Image Generator</div>
+<div class="header">✨ AI Image Generator 2025</div>
 
 <div class="container">
 
-    <textarea id="promptInput" placeholder="Describe your dream image..."></textarea>
-
-    <button class="btn" onclick="generateImage()">Generate Image</button>
-
-    <p id="loadingText" class="loading" style="display:none;">⏳ Generating image... please wait</p>
-    <p id="errorText" class="error" style="display:none;"></p>
-
-    <div class="output-box">
-        <img id="generatedImage" src="">
+    <div class="how-to-use">
+        <b>How to Use?</b><br>
+        1. Type your prompt<br>
+        2. Click Generate<br>
+        3. Wait for AI<br>
+        4. Download your image
     </div>
 
-    <button class="downloadBtn" id="downloadBtn" onclick="downloadImage()">Download Image</button>
+    <textarea id="promptInput" placeholder="Describe your dream image..."></textarea>
+
+    <button class="generate-btn" onclick="generateImage()">Generate</button>
+
+    <div id="loader" class="loader">⏳ Generating...</div>
+    <div id="error" class="error">⚠ Something went wrong!</div>
+
+    <div class="output-box">
+        <img id="generatedImage">
+    </div>
+
+    <button class="download-btn" id="downloadBtn" onclick="downloadImage()">Download</button>
 
 </div>
 
+
 <script>
+const API_URL = "https://image-generator-backend-mzo1.onrender.com/generate";
+
 async function generateImage() {
     const prompt = document.getElementById("promptInput").value;
+    const loader = document.getElementById("loader");
+    const error = document.getElementById("error");
     const img = document.getElementById("generatedImage");
-    const loading = document.getElementById("loadingText");
-    const error = document.getElementById("errorText");
     const downloadBtn = document.getElementById("downloadBtn");
-
-    if (!prompt.trim()) {
-        error.innerHTML = "⚠️ Please enter a prompt!";
-        error.style.display = "block";
-        return;
-    }
 
     error.style.display = "none";
     img.style.display = "none";
     downloadBtn.style.display = "none";
 
-    loading.style.display = "block";
+    if (!prompt.trim()) {
+        error.innerText = "⚠ Prompt cannot be empty!";
+        error.style.display = "block";
+        return;
+    }
+
+    loader.style.display = "block";
 
     try {
-        const response = await fetch("https://ai-art-hub-4.onrender.com/generate-image", {
+        const response = await fetch(API_URL, {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt })
         });
 
         const data = await response.json();
-
-        loading.style.display = "none";
+        loader.style.display = "none";
 
         if (data.image) {
             img.src = data.image;
             img.style.display = "block";
             downloadBtn.style.display = "inline-block";
         } else {
-            error.innerHTML = "❌ Something went wrong!";
             error.style.display = "block";
         }
 
-    } catch (err) {
-        loading.style.display = "none";
-        error.innerHTML = "❌ Server Error! Try again.";
+    } catch {
+        loader.style.display = "none";
+        error.innerText = "⚠ Server Error!";
         error.style.display = "block";
     }
 }
@@ -207,7 +221,7 @@ async function generateImage() {
 function downloadImage() {
     const link = document.createElement("a");
     link.href = document.getElementById("generatedImage").src;
-    link.download = "ai-image.png";
+    link.download = "ai_image.png";
     link.click();
 }
 </script>

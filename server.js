@@ -1,19 +1,3 @@
-import express from "express";
-import fetch from "node-fetch";
-import cors from "cors";
-import dotenv from "dotenv";
-
-dotenv.config();
-const app = express();
-app.use(cors());
-app.use(express.json({ limit: "25mb" }));
-
-const HF_API_KEY = process.env.HUGGINGFACE_API_KEY;
-
-app.get("/", (req, res) => {
-  res.send("Turbo Stable Diffusion API is Running...");
-});
-
 app.post("/generate", async (req, res) => {
   try {
     const { prompt } = req.body;
@@ -33,17 +17,18 @@ app.post("/generate", async (req, res) => {
       }
     );
 
+    // 🔥 Auto Detect Image Type (IMPORTANT)
+    const contentType = response.headers.get("content-type") || "image/png";
+
     const buffer = Buffer.from(await response.arrayBuffer());
     const base64Image = buffer.toString("base64");
 
     res.json({
-      image: `data:image/png;base64,${base64Image}`
+      image: `data:${contentType};base64,${base64Image}`
     });
+
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Image generation failed" });
   }
 });
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log("Server running on " + PORT));

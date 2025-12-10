@@ -11,15 +11,15 @@ app.use(express.json({ limit: "25mb" }));
 const HF_API_KEY = process.env.HUGGINGFACE_API_KEY;
 
 app.get("/", (req, res) => {
-  res.send("Stable Diffusion Image API is Running...");
+  res.send("Turbo Stable Diffusion API is Running...");
 });
 
 app.post("/generate", async (req, res) => {
   try {
-    const { prompt, size } = req.body;
+    const { prompt } = req.body;
 
     const response = await fetch(
-      "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
+      "https://api-inference.huggingface.co/models/stabilityai/sdxl-turbo",
       {
         method: "POST",
         headers: {
@@ -28,20 +28,22 @@ app.post("/generate", async (req, res) => {
         },
         body: JSON.stringify({
           inputs: prompt,
-          parameters: { width: 512, height: 512 },
+          parameters: { guidance_scale: 0.0 },
         }),
       }
     );
 
-    const buffer = await response.arrayBuffer();
-    const base64Image = Buffer.from(buffer).toString("base64");
+    const buffer = Buffer.from(await response.arrayBuffer());
+    const base64Image = buffer.toString("base64");
 
-    res.json({ image: base64Image });
+    res.json({
+      image: `data:image/png;base64,${base64Image}`
+    });
   } catch (err) {
-    console.error(err);
+    console.log(err);
     res.status(500).json({ error: "Image generation failed" });
   }
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log("Server running on " + PORT));

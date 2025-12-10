@@ -4,25 +4,28 @@ import fetch from "node-fetch";
 import dotenv from "dotenv";
 
 dotenv.config();
-
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "25mb" }));
 
 const HF_API_KEY = process.env.HF_API_KEY;
 
-// TEST Route
+// TEST ROUTE
 app.get("/", (req, res) => {
-    res.send("AI Image Generator Server is Running...");
+  res.send("🔥 AI Image Generator Backend Running Successfully!");
 });
 
-// MAIN API
+// MAIN IMAGE GENERATOR
 app.post("/generate", async (req, res) => {
   try {
     const { prompt } = req.body;
 
+    if (!prompt || prompt.trim() === "") {
+      return res.status(400).json({ error: "Prompt is required!" });
+    }
+
     const response = await fetch(
-      "https://api-inference.huggingface.co/models/stabilityai/sdxl-turbo",
+      "https://router.huggingface.co/models/stabilityai/sdxl-turbo",
       {
         method: "POST",
         headers: {
@@ -36,23 +39,32 @@ app.post("/generate", async (req, res) => {
       }
     );
 
-    const contentType = response.headers.get("content-type") || "image/png";
-    const buffer = Buffer.from(await response.arrayBuffer());
-    const base64Image = buffer.toString("base64");
+    const contentType = response.headers.get("content-type") || "";
 
-    res.json({
-      image: `data:${contentType};base64,${base64Image}`
+    // 🛑 If huggingface returns JSON instead of image → error
+    if (contentType.includes("application/json")) {
+      const err = await response.json();
+      console.log("HF API ERROR:", err);
+      return res.status(500).json({
+        error: "HF API returned an error",
+        details: err,
+      });
+    }
+
+    // 🖼 Convert returned image to base64
+    const buffer = Buffer.from(await response.arrayBuffer());
+    const base64 = buffer.toString("base64");
+
+    return res.json({
+      image: `data:${contentType};base64,${base64}`,
     });
 
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Image generation failed" });
+  } catch (error) {
+    console.error("SERVER ERROR:", error);
+    return res.status(500).json({ error: "Image generation failed" });
   }
 });
 
-// PORT (Render uses this automatically)
-const port = process.env.PORT || 3000;
-
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+// PORT
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

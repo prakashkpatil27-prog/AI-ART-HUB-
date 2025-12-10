@@ -1,3 +1,22 @@
+import express from "express";
+import cors from "cors";
+import fetch from "node-fetch";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const HF_API_KEY = process.env.HF_API_KEY;
+
+// TEST Route
+app.get("/", (req, res) => {
+    res.send("AI Image Generator Server is Running...");
+});
+
+// MAIN API
 app.post("/generate", async (req, res) => {
   try {
     const { prompt } = req.body;
@@ -17,16 +36,7 @@ app.post("/generate", async (req, res) => {
       }
     );
 
-    const contentType = response.headers.get("content-type") || "";
-
-    // ❗ If HuggingFace returns JSON → it's an error
-    if (contentType.includes("application/json")) {
-      const errorJson = await response.json();
-      console.log("HF Error:", errorJson);
-      return res.status(500).json({ error: "AI failed to generate image." });
-    }
-
-    // ✔ If true image
+    const contentType = response.headers.get("content-type") || "image/png";
     const buffer = Buffer.from(await response.arrayBuffer());
     const base64Image = buffer.toString("base64");
 
@@ -38,4 +48,11 @@ app.post("/generate", async (req, res) => {
     console.log(err);
     res.status(500).json({ error: "Image generation failed" });
   }
+});
+
+// PORT (Render uses this automatically)
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });

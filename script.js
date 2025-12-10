@@ -32,6 +32,8 @@ async function generateImage() {
     if (data.image) {
       img.src = data.image;
       img.style.display = "block";
+
+      downloadBtn.href = data.image;
       downloadBtn.style.display = "inline-block";
     } else {
       error.innerText = "⚠ Failed to generate image!";
@@ -43,12 +45,4 @@ async function generateImage() {
     error.innerText = "⚠ Server Error!";
     error.style.display = "block";
   }
-}
-
-function downloadImage() {
-  const img = document.getElementById("generatedImage").src;
-  const link = document.createElement("a");
-  link.href = img;
-  link.download = "generated_image.png";
-  link.click();
 }

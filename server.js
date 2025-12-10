@@ -17,9 +17,16 @@ app.post("/generate", async (req, res) => {
       }
     );
 
-    // 🔥 Auto Detect Image Type (IMPORTANT)
-    const contentType = response.headers.get("content-type") || "image/png";
+    const contentType = response.headers.get("content-type") || "";
 
+    // ❗ If HuggingFace returns JSON → it's an error
+    if (contentType.includes("application/json")) {
+      const errorJson = await response.json();
+      console.log("HF Error:", errorJson);
+      return res.status(500).json({ error: "AI failed to generate image." });
+    }
+
+    // ✔ If true image
     const buffer = Buffer.from(await response.arrayBuffer());
     const base64Image = buffer.toString("base64");
 

@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Image Generator</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <h1>AI Image Generator</h1>
+  <div class="container">
+    <h1>AI Image Generator</h1>
 
-  <input id="promptInput" type="text" placeholder="Enter your prompt..." />
+    <input type="text" id="promptInput" placeholder="Enter your prompt...">
 
-  <button onclick="generateImage()">Generate</button>
+    <button onclick="generateImage()">Generate</button>
 
-  <div id="loader" style="display:none;">⏳ Generating...</div>
-  <div id="error" style="display:none; color:red;"></div>
+    <div id="loader" class="loader">Generating...</div>
 
-  <img id="generatedImage" style="display:none; width:300px;" />
-  <button id="downloadBtn" style="display:none;" onclick="downloadImage()">Download</button>
+    <p id="error" class="error"></p>
+
+    <img id="generatedImage" />
+
+    <a id="downloadBtn" download="generated.jpg">Download Image</a>
+  </div>
 
   <script src="script.js"></script>
 </body>

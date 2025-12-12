@@ -1,48 +1,65 @@
-const API_URL = "https://image-generator-backend-mzo1.onrender.com/generate";
+const API_KEY = "YOUR_API_KEY_HERE";  // ← यहाँ अपनी API key डालो
 
 async function generateImage() {
-  const prompt = document.getElementById("promptInput").value;
-  const loader = document.getElementById("loader");
-  const error = document.getElementById("error");
-  const img = document.getElementById("generatedImage");
-  const downloadBtn = document.getElementById("downloadBtn");
+    const prompt = document.getElementById("promptInput").value;
+    const style = document.getElementById("styleSelect").value;
+    const size = document.getElementById("sizeSelect").value;
 
-  error.style.display = "none";
-  img.style.display = "none";
-  downloadBtn.style.display = "none";
+    const loader = document.getElementById("loader");
+    const error = document.getElementById("error");
+    const img = document.getElementById("generatedImage");
+    const downloadBtn = document.getElementById("downloadBtn");
 
-  if (!prompt.trim()) {
-    error.innerText = "⚠ Prompt cannot be empty!";
-    error.style.display = "block";
-    return;
-  }
+    error.style.display = "none";
+    img.style.display = "none";
+    downloadBtn.style.display = "none";
+    loader.style.display = "block";
 
-  loader.style.display = "block";
+    try {
+        const start = await fetch("https://aihorde.net/api/v2/generate/async", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "apikey": API_KEY
+            },
+            body: JSON.stringify({
+                prompt: `${prompt}, ${style} style`,
+                params: { width: Number(size), height: Number(size) }
+            })
+        });
 
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt })
-    });
+        const startData = await start.json();
+        const id = startData.id;
 
-    const data = await response.json();
-    loader.style.display = "none";
+        let result;
+        while (true) {
+            await new Promise(r => setTimeout(r, 3000));
 
-    if (data.image) {
-      img.src = data.image;
-      img.style.display = "block";
+            const check = await fetch(`https://aihorde.net/api/v2/generate/async/${id}`);
+            result = await check.json();
 
-      downloadBtn.href = data.image;
-      downloadBtn.style.display = "inline-block";
-    } else {
-      error.innerText = "⚠ Failed to generate image!";
-      error.style.display = "block";
+            if (result.done) break;
+        }
+
+        loader.style.display = "none";
+
+        const base64 = result.generations[0].img;
+        img.src = "data:image/png;base64," + base64;
+        img.style.display = "block";
+        downloadBtn.style.display = "block";
+
+    } catch (err) {
+        loader.style.display = "none";
+        error.innerText = "⚠ Error generating image!";
+        error.style.display = "block";
     }
+}
 
-  } catch {
-    loader.style.display = "none";
-    error.innerText = "⚠ Server Error!";
-    error.style.display = "block";
-  }
+
+function downloadImage() {
+    const img = document.getElementById("generatedImage").src;
+    const a = document.createElement("a");
+    a.href = img;
+    a.download = "ai-image.png";
+    a.click();
 }

@@ -1,4 +1,4 @@
-const API_KEY = "YOUR_API_KEY_HERE";  // ← यहाँ अपनी API key डालो
+const API_KEY = "YOUR_API_KEY_HERE";tdaGYyw-zIATHQ1_Bz5xdg
 
 async function generateImage() {
     const prompt = document.getElementById("promptInput").value;

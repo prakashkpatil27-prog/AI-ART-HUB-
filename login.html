@@ -7,124 +7,82 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         body { background-color: #050505; color: white; font-family: 'Outfit', sans-serif; }
-        .glass-box {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        .glass-box { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
     </style>
 </head>
 <body class="h-screen w-full flex items-center justify-center relative overflow-hidden">
 
-    <!-- Background Decoration -->
-    <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-[-1]">
-        <div class="absolute top-10 left-10 w-64 h-64 bg-violet-600 rounded-full mix-blend-multiply filter blur-[100px] opacity-30"></div>
-        <div class="absolute bottom-10 right-10 w-64 h-64 bg-pink-600 rounded-full mix-blend-multiply filter blur-[100px] opacity-30"></div>
+    <!-- Background -->
+    <div class="absolute top-0 left-0 w-full h-full z-[-1]">
+        <div class="absolute bottom-10 left-10 w-64 h-64 bg-pink-600 rounded-full mix-blend-multiply filter blur-[100px] opacity-30"></div>
     </div>
 
-    <!-- Login Card -->
-    <div class="glass-box p-8 md:p-10 rounded-2xl shadow-2xl w-full max-w-md mx-4 relative">
-        
-        <!-- Back Button -->
-        <a href="index.html" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
-            <i class="fa-solid fa-xmark text-xl"></i>
-        </a>
+    <div class="glass-box p-8 rounded-2xl shadow-2xl w-full max-w-md mx-4 relative">
+        <a href="index.html" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></a>
 
-        <div class="text-center mb-8">
-            <div class="w-12 h-12 bg-gradient-to-br from-violet-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <i class="fa-solid fa-paintbrush text-white text-lg"></i>
-            </div>
+        <div class="text-center mb-6">
             <h2 class="text-2xl font-bold">Welcome Back</h2>
-            <p class="text-sm text-gray-400 mt-2">Login to AI ART HUB to continue</p>
+            <p class="text-sm text-gray-400 mt-2">Login to continue</p>
         </div>
 
-        <form>
+        <form id="loginForm">
             <div class="mb-4">
-                <label class="block text-gray-300 text-sm font-bold mb-2">Email Address</label>
-                <input type="email" class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500 transition-colors" placeholder="hello@example.com">
+                <label class="block text-gray-300 text-sm font-bold mb-2">Email</label>
+                <input type="email" id="loginEmail" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500" placeholder="name@example.com">
             </div>
             
             <div class="mb-6">
                 <label class="block text-gray-300 text-sm font-bold mb-2">Password</label>
-                <input type="password" class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500 transition-colors" placeholder="••••••••">
-                <div class="text-right mt-2">
-                    <a href="#" class="text-xs text-violet-400 hover:text-violet-300">Forgot Password?</a>
-                </div>
+                <input type="password" id="loginPassword" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500" placeholder="••••••••">
             </div>
 
-            <button type="button" class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 rounded-lg text-white font-bold shadow-lg transform transition hover:scale-[1.02]">
+            <button type="submit" id="loginBtn" class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 rounded-lg text-white font-bold transition">
                 Log In
             </button>
         </form>
 
-        <div class="my-6 flex items-center">
-            <div class="flex-grow border-t border-white/10"></div>
-            <span class="mx-4 text-gray-500 text-xs uppercase">Or continue with</span>
-            <div class="flex-grow border-t border-white/10"></div>
-        </div>
-
-        <div class="flex gap-4">
-            <button class="flex-1 py-2 px-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center transition-colors">
-                <i class="fa-brands fa-google text-white"></i>
-            </button>
-            <button class="flex-1 py-2 px-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center transition-colors">
-                <i class="fa-brands fa-github text-white"></i>
-            </button>
-        </div>
-
-        <p class="text-center text-gray-500 text-sm mt-8">
-            Don't have an account? <a href="#" class="text-violet-400 hover:text-white">Sign up</a>
+        <p class="text-center text-gray-500 text-sm mt-6">
+            Don't have an account? <a href="signup.html" class="text-violet-400 hover:text-white">Sign up</a>
         </p>
     </div>
 
-    <!-- login.html के अंदर नीचे यह Script जोड़ें (</body> से ठीक पहले) -->
+    <!-- 🔥 FIREBASE SCRIPT 🔥 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-<!-- पुराने Form में button का type="submit" और id="loginForm" जोड़ना न भूलें -->
-<!-- और Email input की id="loginEmail" और Password input की id="loginPassword" रखें -->
+        // 👇 वही API Config यहाँ भी पेस्ट करें 👇
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY_HERE",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "SENDER_ID",
+            appId: "APP_ID"
+        };
 
-<!-- Firebase Logic -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-    // 🔥 वही Config यहाँ भी पेस्ट करें
-    const firebaseConfig = {
-        apiKey: "AIzaSyCJDymW01_yensm3h-O8kO3kcYnKPb_NRE",
-        authDomain: "aiartwebsite.firebaseapp.com",
-        projectId: "aiartwebsite",
-        storageBucket: "aiartwebsite.firbasestorage.app",
-        messagingSenderId: "183698414868",
-        appId: "1:183698414868:web:a699d15b1f6c3c32123601"
-    };
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const btn = document.getElementById('loginBtn');
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+            btn.innerText = "Checking...";
 
-    // अगर आपके फॉर्म में id="loginForm" नहीं है तो उसे html में जाकर add करें
-    const loginForm = document.querySelector('form'); 
-    
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        // HTML input fields में id="loginEmail" और id="loginPassword" जरूर लिखें
-        const email = document.querySelector('input[type="email"]').value;
-        const password = document.querySelector('input[type="password"]').value;
-
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                alert("Login Successful!");
-                window.location.href = "index.html";
-            })
-            .catch((error) => {
-                alert("Login Failed: " + error.message);
-            });
-    });
-</script>
-
-    
-
-    
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    window.location.href = "index.html"; // Success
+                })
+                .catch((error) => {
+                    btn.innerText = "Log In";
+                    alert("Login Failed: " + error.message);
+                });
+        });
+    </script>
 </body>
 </html>

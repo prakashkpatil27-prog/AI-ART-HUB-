@@ -80,5 +80,51 @@
         </p>
     </div>
 
+    <!-- login.html के अंदर नीचे यह Script जोड़ें (</body> से ठीक पहले) -->
+
+<!-- पुराने Form में button का type="submit" और id="loginForm" जोड़ना न भूलें -->
+<!-- और Email input की id="loginEmail" और Password input की id="loginPassword" रखें -->
+
+<!-- Firebase Logic -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    // 🔥 वही Config यहाँ भी पेस्ट करें
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY_HERE",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "SENDER_ID",
+        appId: "APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // अगर आपके फॉर्म में id="loginForm" नहीं है तो उसे html में जाकर add करें
+    const loginForm = document.querySelector('form'); 
+    
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // HTML input fields में id="loginEmail" और id="loginPassword" जरूर लिखें
+        const email = document.querySelector('input[type="email"]').value;
+        const password = document.querySelector('input[type="password"]').value;
+
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                alert("Login Successful!");
+                window.location.href = "index.html";
+            })
+            .catch((error) => {
+                alert("Login Failed: " + error.message);
+            });
+    });
+</script>
+
+    
+
+    
 </body>
 </html>

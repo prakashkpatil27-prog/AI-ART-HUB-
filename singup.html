@@ -38,7 +38,7 @@
                 <input type="password" id="signupPassword" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500" placeholder="••••••••">
             </div>
 
-            <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 rounded-lg text-white font-bold transition">
+            <button type="submit" id="submitBtn" class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 rounded-lg text-white font-bold transition">
                 Sign Up
             </button>
         </form>
@@ -48,12 +48,13 @@
         </p>
     </div>
 
-    <!-- Firebase Logic -->
+    <!-- 🔥 FIREBASE SCRIPT 🔥 -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"; 
 
-        // 🔥 यहाँ अपना Firebase Config पेस्ट करें (Step 1 वाला)
+        // 👇 यहाँ अपना API Config पेस्ट करें 👇
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY_HERE",
             authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -65,20 +66,40 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
 
-        document.getElementById('signupForm').addEventListener('submit', (e) => {
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('signupEmail').value;
             const password = document.getElementById('signupPassword').value;
+            const btn = document.getElementById('submitBtn');
 
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    alert("Account Created! Redirecting...");
-                    window.location.href = "index.html"; // Home page par bhej do
-                })
-                .catch((error) => {
-                    alert("Error: " + error.message);
+            try {
+                btn.innerText = "Processing...";
+                
+                // 1. Create User
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // 2. Save Data to Firestore
+                await setDoc(doc(db, "users", user.uid), {
+                    email: email,
+                    plan: "free",
+                    createdAt: new Date()
                 });
+
+                alert("Account Created! Redirecting...");
+                window.location.href = "index.html";
+
+            } catch (error) {
+                console.error("Error:", error);
+                btn.innerText = "Sign Up";
+                
+                // Common Errors Explain
+                if(error.code === 'auth/email-already-in-use') alert("Email already exists. Please Login.");
+                else if(error.code === 'permission-denied') alert("Database Error: Please set Firestore rules to 'Test Mode' in Firebase Console.");
+                else alert("Error: " + error.message);
+            }
         });
     </script>
 </body>

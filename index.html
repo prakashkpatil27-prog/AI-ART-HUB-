@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI ART HUB - Create & Inspire</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        primary: '#8b5cf6', // Violet
+                        secondary: '#ec4899', // Pink
+                        dark: '#050505',
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #050505; color: white; overflow-x: hidden; }
+        
+        .text-gradient {
+            background: linear-gradient(to right, #c084fc, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+        }
+
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        
+        /* Dropdown Animation */
+        #settingsDropdown {
+            transition: all 0.2s ease-in-out;
+            transform-origin: top right;
+        }
+        .hidden-dropdown {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+        .show-dropdown {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body class="antialiased relative">
+
+    <!-- Background Effects -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-violet-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 start-0 border-b border-white/10 bg-dark/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between p-4">
+            
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-gradient-to-br from-violet-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-paintbrush text-white text-sm"></i>
+                </div>
+                <span class="text-2xl font-bold text-white tracking-wide">AI ART <span class="text-violet-400">HUB</span></span>
+            </a>
+
+            <!-- Right Side: Login & Settings -->
+            <div class="flex items-center space-x-4 relative">
+                <!-- Login Link -->
+                <a href="login.html" class="text-gray-300 hover:text-white font-medium transition-colors">
+                    Login
+                </a>
+
+                <!-- Settings Button -->
+                <div class="relative">
+                    <button onclick="toggleSettings()" class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center border border-white/10 transition-colors">
+                        <i class="fa-solid fa-gear text-white"></i>
+                    </button>
+
+                    <!-- Settings Dropdown Menu -->
+                    <div id="settingsDropdown" class="absolute right-0 mt-2 w-48 bg-[#0F0F16] border border-white/10 rounded-xl shadow-2xl hidden-dropdown z-50">
+                        <div class="py-2">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white"><i class="fa-solid fa-user mr-2"></i> Profile</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white"><i class="fa-solid fa-language mr-2"></i> Language</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white"><i class="fa-solid fa-moon mr-2"></i> Theme</a>
+                            <div class="border-t border-white/10 my-1"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-white/5"><i class="fa-solid fa-power-off mr-2"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32">
+        <div class="px-4 mx-auto max-w-7xl">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- Left Side: Main Text -->
+                <div class="text-center lg:text-left">
+                    <h1 class="mb-6 text-5xl font-extrabold tracking-tight leading-tight text-white md:text-7xl" data-aos="fade-up">
+                        Turn Words into <br>
+                        <span class="text-gradient">Masterpieces</span>
+                    </h1>
+                    <p class="mb-8 text-lg text-gray-400 lg:text-xl" data-aos="fade-up" data-aos-delay="100">
+                        The ultimate AI art generator. Type a prompt, choose a style, and watch the magic happen in seconds.
+                    </p>
+                    
+                    <!-- Main Call to Action (Links to Generation Page) -->
+                    <div data-aos="fade-up" data-aos-delay="200">
+                        <a href="generate.html" class="inline-flex justify-center items-center py-4 px-10 text-lg font-bold text-center text-white rounded-full bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 shadow-lg shadow-violet-500/40 transition-transform transform hover:scale-105">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Start Creating Now
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Side: How It Works (Instructions) -->
+                <div class="relative" data-aos="fade-left" data-aos-delay="300">
+                    <div class="glass-card p-8 rounded-3xl border border-white/10 relative overflow-hidden">
+                        <!-- Decorative Header -->
+                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+                            <h3 class="text-xl font-bold text-white"><i class="fa-regular fa-lightbulb text-yellow-400 mr-2"></i> How to use</h3>
+                            <div class="flex gap-1">
+                                <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                                <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                                <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                            </div>
+                        </div>
+
+                        <!-- Steps List -->
+                        <div class="space-y-6">
+                            <!-- Step 1 -->
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center font-bold border border-violet-500/30">1</div>
+                                <div>
+                                    <h4 class="text-white font-semibold">Enter your prompt</h4>
+                                    <p class="text-sm text-gray-400 mt-1">Describe what you want to see. Example: "A cyberpunk city in rain".</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 2 -->
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-pink-500/20 text-pink-400 flex items-center justify-center font-bold border border-pink-500/30">2</div>
+                                <div>
+                                    <h4 class="text-white font-semibold">Select Art Style</h4>
+                                    <p class="text-sm text-gray-400 mt-1">Choose from 3D render, Anime, Oil Painting, or Realistic.</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center font-bold border border-green-500/30">3</div>
+                                <div>
+                                    <h4 class="text-white font-semibold">Download & Share</h4>
+                                    <p class="text-sm text-gray-400 mt-1">Click generate and download your 4K high-quality artwork.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Floating Badge -->
+                        <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-gradient-to-br from-violet-600 to-pink-600 blur-2xl opacity-40"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 text-gray-500 text-sm border-t border-white/5">
+        <p>© 2025 AI ART HUB. All rights reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+
+        // Settings Dropdown Logic
+        function toggleSettings() {
+            const dropdown = document.getElementById('settingsDropdown');
+            if (dropdown.classList.contains('hidden-dropdown')) {
+                dropdown.classList.remove('hidden-dropdown');
+                dropdown.classList.add('show-dropdown');
+            } else {
+                dropdown.classList.add('hidden-dropdown');
+                dropdown.classList.remove('show-dropdown');
+            }
+        }
+
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('button') && !event.target.matches('.fa-gear')) {
+                const dropdown = document.getElementById('settingsDropdown');
+                if (dropdown.classList.contains('show-dropdown')) {
+                    dropdown.classList.add('hidden-dropdown');
+                    dropdown.classList.remove('show-dropdown');
+                }
+            }
+        }
+    </script>
+</body>
+                              </html>

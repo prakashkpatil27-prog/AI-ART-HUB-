@@ -10,6 +10,13 @@
     <style>
         body { background-color: #050505; color: white; font-family: 'Outfit', sans-serif; }
         .glass-box { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .hidden-section { display: none; }
+        
+        /* Dropdown styling */
+        select option {
+            background-color: #1a1a1a;
+            color: white;
+        }
     </style>
 </head>
 <body class="h-screen w-full flex items-center justify-center relative overflow-hidden">
@@ -27,33 +34,84 @@
             <p class="text-sm text-gray-400 mt-2">Login to continue</p>
         </div>
 
-        <form id="loginForm">
+        <!-- Toggle Buttons -->
+        <div class="flex gap-2 mb-6 p-1 bg-white/5 rounded-lg">
+            <button onclick="showEmail()" id="tabEmail" class="flex-1 py-2 text-sm rounded-md bg-white/10 text-white transition">Email</button>
+            <button onclick="showPhone()" id="tabPhone" class="flex-1 py-2 text-sm rounded-md text-gray-400 hover:text-white transition">Phone</button>
+        </div>
+
+        <!-- 1. EMAIL FORM -->
+        <form id="emailForm">
             <div class="mb-4">
-                <label class="block text-gray-300 text-sm font-bold mb-2">Email</label>
-                <input type="email" id="loginEmail" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500" placeholder="name@example.com">
+                <input type="email" id="loginEmail" class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500" placeholder="Email Address">
+            </div>
+            <div class="mb-6">
+                <input type="password" id="loginPassword" class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500" placeholder="Password">
+            </div>
+            <button type="submit" id="loginBtn" class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 rounded-lg text-white font-bold transition">Log In</button>
+        </form>
+
+        <!-- 2. PHONE FORM -->
+        <form id="phoneForm" class="hidden-section">
+            <div class="mb-4">
+                <label class="block text-gray-300 text-sm font-bold mb-2">Mobile Number</label>
+                <div class="flex gap-2">
+                    <!-- Country Code Dropdown -->
+                    <select id="countryCode" class="w-24 px-2 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500">
+                        <option value="+91">🇮🇳 +91</option>
+                        <option value="+1">🇺🇸 +1</option>
+                        <option value="+44">🇬🇧 +44</option>
+                        <option value="+971">🇦🇪 +971</option>
+                        <option value="+92">🇵🇰 +92</option>
+                        <option value="+880">🇧🇩 +880</option>
+                    </select>
+                    
+                    <!-- Phone Input -->
+                    <input type="tel" id="phoneNumber" class="flex-1 px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500" placeholder="9876543210">
+                </div>
             </div>
             
-            <div class="mb-6">
-                <label class="block text-gray-300 text-sm font-bold mb-2">Password</label>
-                <input type="password" id="loginPassword" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500" placeholder="••••••••">
+            <!-- Recaptcha Container (Visible) -->
+            <div id="recaptcha-container" class="mb-4 flex justify-center"></div>
+
+            <!-- OTP Input (Hidden initially) -->
+            <div id="otpSection" class="hidden-section mb-4">
+                <label class="block text-gray-300 text-sm font-bold mb-2 text-center">Enter OTP</label>
+                <input type="text" id="otpCode" class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white text-center tracking-[0.5em] text-xl focus:outline-none focus:border-green-500" placeholder="------">
             </div>
 
-            <button type="submit" id="loginBtn" class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 rounded-lg text-white font-bold transition">
-                Log In
+            <button type="button" id="getOtpBtn" class="w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 rounded-lg text-white font-bold transition">
+                Get OTP
+            </button>
+            
+            <button type="button" id="verifyOtpBtn" class="hidden-section w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-pink-600 rounded-lg text-white font-bold transition">
+                Verify & Login
             </button>
         </form>
+
+        <div class="my-6 flex items-center">
+            <div class="flex-grow border-t border-white/10"></div>
+            <span class="mx-4 text-gray-500 text-xs uppercase">Or</span>
+            <div class="flex-grow border-t border-white/10"></div>
+        </div>
+
+        <!-- GitHub Button -->
+        <button id="githubLoginBtn" class="w-full py-3 px-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center transition gap-3">
+            <i class="fa-brands fa-github text-xl"></i> Login with GitHub
+        </button>
 
         <p class="text-center text-gray-500 text-sm mt-6">
             Don't have an account? <a href="signup.html" class="text-violet-400 hover:text-white">Sign up</a>
         </p>
     </div>
 
-    <!-- 🔥 FIREBASE SCRIPT (With YOUR Keys) 🔥 -->
+    <!-- 🔥 FIREBASE LOGIC 🔥 -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, GithubAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // 👇 आपकी असली KEYS यहाँ लगा दी गई हैं 👇
+        // YOUR CONFIG
         const firebaseConfig = {
           apiKey: "AIzaSyCJDymW01_yensm3h-O8kO3kcYnKPb_NRE",
           authDomain: "aiartwebsite.firebaseapp.com",
@@ -65,24 +123,138 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
 
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
+        // --- UI TOGGLE LOGIC ---
+        window.showEmail = () => {
+            document.getElementById('emailForm').style.display = 'block';
+            document.getElementById('phoneForm').style.display = 'none';
+            document.getElementById('tabEmail').classList.replace('text-gray-400', 'text-white');
+            document.getElementById('tabEmail').classList.add('bg-white/10');
+            document.getElementById('tabPhone').classList.replace('text-white', 'text-gray-400');
+            document.getElementById('tabPhone').classList.remove('bg-white/10');
+        }
+        window.showPhone = () => {
+            document.getElementById('emailForm').style.display = 'none';
+            document.getElementById('phoneForm').style.display = 'block';
+            document.getElementById('tabPhone').classList.replace('text-gray-400', 'text-white');
+            document.getElementById('tabPhone').classList.add('bg-white/10');
+            document.getElementById('tabEmail').classList.replace('text-white', 'text-gray-400');
+            document.getElementById('tabEmail').classList.remove('bg-white/10');
+        }
+
+        // --- 1. EMAIL LOGIN ---
+        document.getElementById('emailForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             const btn = document.getElementById('loginBtn');
-
             btn.innerText = "Checking...";
 
             signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    window.location.href = "index.html"; // Success
-                })
-                .catch((error) => {
-                    btn.innerText = "Log In";
-                    alert("Login Failed: " + error.message);
+                .then(() => window.location.href = "index.html")
+                .catch((err) => { btn.innerText = "Log In"; alert(err.message); });
+        });
+
+        // --- 2. GITHUB LOGIN ---
+        document.getElementById('githubLoginBtn').addEventListener('click', async () => {
+            const provider = new GithubAuthProvider();
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                
+                // Save GitHub User info to Database if not exists
+                const userRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(userRef);
+                
+                if (!docSnap.exists()) {
+                    await setDoc(userRef, {
+                        fullName: user.displayName || "GitHub User",
+                        email: user.email,
+                        plan: "free",
+                        createdAt: new Date()
+                    });
+                }
+                
+                window.location.href = "index.html";
+            } catch (error) {
+                alert("GitHub Error: " + error.message);
+            }
+        });
+
+        // --- 3. PHONE LOGIN ---
+        
+        // Setup Recaptcha
+        window.setupRecaptcha = () => {
+            if(!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    'size': 'normal', // 'normal' shows the checkbox, 'invisible' hides it
+                    'callback': (response) => {
+                        // reCAPTCHA solved, you can auto-trigger OTP here if you want
+                        console.log("Captcha Solved");
+                    }
                 });
+                window.recaptchaVerifier.render();
+            }
+        }
+
+        // Send OTP
+        document.getElementById('getOtpBtn').addEventListener('click', () => {
+            const countryCode = document.getElementById('countryCode').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            
+            if(!phoneNumber) return alert("Please enter phone number");
+
+            // Combine Country Code + Number (e.g., +919876543210)
+            const fullPhoneNumber = countryCode + phoneNumber;
+
+            setupRecaptcha();
+            const appVerifier = window.recaptchaVerifier;
+
+            signInWithPhoneNumber(auth, fullPhoneNumber, appVerifier)
+                .then((confirmationResult) => {
+                    window.confirmationResult = confirmationResult;
+                    alert("OTP Sent to " + fullPhoneNumber);
+                    
+                    // UI Updates
+                    document.getElementById('otpSection').style.display = 'block';
+                    document.getElementById('verifyOtpBtn').style.display = 'block';
+                    document.getElementById('getOtpBtn').style.display = 'none';
+                    document.getElementById('recaptcha-container').style.display = 'none'; // Hide captcha after success
+                }).catch((error) => {
+                    alert("SMS Error: " + error.message);
+                    console.error(error);
+                    // Reset Captcha if error
+                    if(window.recaptchaVerifier) window.recaptchaVerifier.clear();
+                });
+        });
+
+        // Verify OTP
+        document.getElementById('verifyOtpBtn').addEventListener('click', () => {
+            const code = document.getElementById('otpCode').value;
+            if(!code) return alert("Enter OTP");
+
+            window.confirmationResult.confirm(code).then(async (result) => {
+                const user = result.user;
+                
+                // Save Phone User info to Database
+                const userRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(userRef);
+                
+                if (!docSnap.exists()) {
+                    await setDoc(userRef, {
+                        fullName: "Mobile User",
+                        phone: user.phoneNumber,
+                        plan: "free",
+                        createdAt: new Date()
+                    });
+                }
+
+                window.location.href = "index.html";
+            }).catch((error) => {
+                alert("Wrong OTP or Expired");
+            });
         });
     </script>
 </body>
-</html>
+    </html>

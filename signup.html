@@ -4,23 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - AI ART HUB</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         body { background-color: #050505; color: white; font-family: 'Outfit', sans-serif; }
-        .glass-box { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        
+        /* Glass Effect */
+        .glass-box {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
 <body class="h-screen w-full flex items-center justify-center relative overflow-hidden">
 
-    <!-- Background -->
+    <!-- Background Animation -->
     <div class="absolute top-0 left-0 w-full h-full z-[-1]">
         <div class="absolute top-10 right-10 w-64 h-64 bg-violet-600 rounded-full mix-blend-multiply filter blur-[100px] opacity-30"></div>
+        <div class="absolute bottom-10 left-10 w-64 h-64 bg-pink-600 rounded-full mix-blend-multiply filter blur-[100px] opacity-30"></div>
     </div>
 
+    <!-- Signup Card -->
     <div class="glass-box p-8 rounded-2xl shadow-2xl w-full max-w-md mx-4 relative">
-        <a href="index.html" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></a>
+        
+        <!-- Close Button -->
+        <a href="index.html" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </a>
 
         <div class="text-center mb-6">
             <h2 class="text-2xl font-bold">Create Account</h2>
@@ -28,77 +47,127 @@
         </div>
 
         <form id="signupForm">
+            <!-- Full Name Field -->
             <div class="mb-4">
-                <label class="block text-gray-300 text-sm font-bold mb-2">Email</label>
-                <input type="email" id="signupEmail" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500" placeholder="name@example.com">
-            </div>
-            
-            <div class="mb-6">
-                <label class="block text-gray-300 text-sm font-bold mb-2">Password</label>
-                <input type="password" id="signupPassword" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500" placeholder="••••••••">
+                <label class="block text-gray-300 text-sm font-bold mb-2">Full Name</label>
+                <input type="text" id="fullName" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500 transition-colors" placeholder="John Doe">
             </div>
 
-            <button type="submit" id="submitBtn" class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 rounded-lg text-white font-bold transition">
+            <!-- Email Field -->
+            <div class="mb-4">
+                <label class="block text-gray-300 text-sm font-bold mb-2">Email Address</label>
+                <input type="email" id="signupEmail" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500 transition-colors" placeholder="name@example.com">
+            </div>
+            
+            <!-- Password Field -->
+            <div class="mb-6">
+                <label class="block text-gray-300 text-sm font-bold mb-2">Password</label>
+                <input type="password" id="signupPassword" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500 transition-colors" placeholder="••••••••">
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submitBtn" class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 rounded-lg text-white font-bold shadow-lg transform transition hover:scale-[1.02]">
                 Sign Up
             </button>
         </form>
+
+        <!-- Divider -->
+        <div class="my-6 flex items-center">
+            <div class="flex-grow border-t border-white/10"></div>
+            <span class="mx-4 text-gray-500 text-xs uppercase">Or continue with</span>
+            <div class="flex-grow border-t border-white/10"></div>
+        </div>
+
+        <!-- GitHub Button -->
+        <button id="githubBtn" class="w-full py-3 px-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center transition gap-3 text-white">
+            <i class="fa-brands fa-github text-xl"></i> Sign up with GitHub
+        </button>
 
         <p class="text-center text-gray-500 text-sm mt-6">
             Already have an account? <a href="login.html" class="text-violet-400 hover:text-white">Log in</a>
         </p>
     </div>
 
-    <!-- 🔥 FIREBASE SCRIPT 🔥 -->
+    <!-- 🔥 FIREBASE LOGIC 🔥 -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, GithubAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"; 
 
-        // 👇 यहाँ अपना API Config पेस्ट करें 👇
+        // YOUR API CONFIG
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY_HERE",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "SENDER_ID",
-            appId: "APP_ID"
+          apiKey: "AIzaSyCJDymW01_yensm3h-O8kO3kcYnKPb_NRE",
+          authDomain: "aiartwebsite.firebaseapp.com",
+          projectId: "aiartwebsite",
+          storageBucket: "aiartwebsite.firebasestorage.app",
+          messagingSenderId: "183698414868",
+          appId: "1:183698414868:web:a699d15b1f6c3c32123601"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // 1. Email/Password Sign Up
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            const name = document.getElementById('fullName').value;
             const email = document.getElementById('signupEmail').value;
             const password = document.getElementById('signupPassword').value;
             const btn = document.getElementById('submitBtn');
 
             try {
-                btn.innerText = "Processing...";
+                btn.innerText = "Creating Account..."; // Loading text
                 
-                // 1. Create User
+                // A. Create User in Auth
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // 2. Save Data to Firestore
+                // B. Save User Details in Database
                 await setDoc(doc(db, "users", user.uid), {
+                    fullName: name,
                     email: email,
-                    plan: "free",
+                    plan: "free",        // Default plan
                     createdAt: new Date()
                 });
 
-                alert("Account Created! Redirecting...");
+                // C. Redirect to Home
+                alert("Account Created Successfully!");
                 window.location.href = "index.html";
 
             } catch (error) {
-                console.error("Error:", error);
-                btn.innerText = "Sign Up";
+                console.error(error);
+                btn.innerText = "Sign Up"; // Reset button text
                 
-                // Common Errors Explain
-                if(error.code === 'auth/email-already-in-use') alert("Email already exists. Please Login.");
-                else if(error.code === 'permission-denied') alert("Database Error: Please set Firestore rules to 'Test Mode' in Firebase Console.");
-                else alert("Error: " + error.message);
+                if(error.code === 'auth/email-already-in-use') {
+                    alert("This email is already registered. Please Login.");
+                } else if(error.code === 'auth/weak-password') {
+                    alert("Password should be at least 6 characters.");
+                } else {
+                    alert("Error: " + error.message);
+                }
+            }
+        });
+
+        // 2. GitHub Sign Up
+        document.getElementById('githubBtn').addEventListener('click', async () => {
+            const provider = new GithubAuthProvider();
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                
+                // Save GitHub User to Database (Merge prevents overwriting if exists)
+                await setDoc(doc(db, "users", user.uid), {
+                    fullName: user.displayName || "GitHub User",
+                    email: user.email,
+                    plan: "free",
+                    createdAt: new Date()
+                }, { merge: true });
+
+                window.location.href = "index.html";
+            } catch (error) {
+                alert("GitHub Error: " + error.message);
             }
         });
     </script>

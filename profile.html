@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - AI ART HUB</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        body { background-color: #050505; color: white; font-family: 'Outfit', sans-serif; overflow-x: hidden; }
+        
+        /* Glass Effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Animated Background Blobs */
+        @keyframes blob { 0% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0px, 0px) scale(1); } }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+
+        /* Profile Image Hover Overlay */
+        .profile-img-container:hover .overlay { opacity: 1; }
+    </style>
+</head>
+<body class="min-h-screen relative flex items-center justify-center py-10 px-4">
+
+    <!-- Background Animation -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-violet-600 rounded-full mix-blend-multiply filter blur-[100px] opacity-20 animate-blob"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-600 rounded-full mix-blend-multiply filter blur-[100px] opacity-20 animate-blob animation-delay-2000"></div>
+    </div>
+
+    <!-- Back Button -->
+    <a href="index.html" class="absolute top-6 left-6 flex items-center text-gray-400 hover:text-white transition-colors z-50">
+        <i class="fa-solid fa-arrow-left mr-2"></i> Back to Home
+    </a>
+
+    <!-- Main Profile Card -->
+    <div class="glass-card w-full max-w-4xl rounded-3xl p-8 md:p-12 relative" data-aos="zoom-in">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-start mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-white">Profile Settings</h1>
+                <p class="text-gray-400 text-sm mt-1">Manage your account and preferences</p>
+            </div>
+            <div id="planBadge" class="px-4 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-bold uppercase tracking-wider text-gray-400">
+                Loading...
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            
+            <!-- Left Column: Photo & Stats -->
+            <div class="flex flex-col items-center space-y-6">
+                
+                <!-- Profile Image Upload -->
+                <div class="relative w-32 h-32 profile-img-container cursor-pointer group">
+                    <img id="profileImage" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-full h-full rounded-full object-cover border-4 border-white/10 shadow-2xl">
+                    
+                    <!-- Hover Overlay -->
+                    <div class="overlay absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 transition-opacity duration-300" onclick="document.getElementById('fileInput').click()">
+                        <i class="fa-solid fa-camera text-white text-xl"></i>
+                    </div>
+                    <input type="file" id="fileInput" class="hidden" accept="image/*">
+                </div>
+
+                <div class="text-center">
+                    <h2 id="displayNameDisplay" class="text-xl font-bold">User</h2>
+                    <p id="emailDisplay" class="text-sm text-gray-400">user@example.com</p>
+                </div>
+
+                <!-- Stats Box -->
+                <div class="w-full bg-white/5 rounded-xl p-4 border border-white/10">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs text-gray-400">Images Generated</span>
+                        <span class="text-violet-400 font-bold">12</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-1.5">
+                        <div class="bg-gradient-to-r from-violet-500 to-pink-500 h-1.5 rounded-full" style="width: 45%"></div>
+                    </div>
+                    <p class="text-[10px] text-gray-500 mt-2 text-right">45% to next level</p>
+                </div>
+            </div>
+
+            <!-- Right Column: Edit Form -->
+            <div class="md:col-span-2 space-y-6">
+                
+                <!-- Full Name -->
+                <div>
+                    <label class="block text-gray-400 text-xs font-bold uppercase mb-2">Full Name</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-4 top-3.5 text-gray-500"></i>
+                        <input type="text" id="fullNameInput" class="w-full pl-10 pr-4 py-3 rounded-xl bg-black/20 border border-white/10 text-white focus:outline-none focus:border-violet-500 transition-colors" placeholder="Enter your name">
+                    </div>
+                </div>
+
+                <!-- Email (Read Only) -->
+                <div>
+                    <label class="block text-gray-400 text-xs font-bold uppercase mb-2">Email Address <span class="text-gray-600 normal-case">(Cannot be changed)</span></label>
+                    <div class="relative">
+                        <i class="fa-solid fa-envelope absolute left-4 top-3.5 text-gray-500"></i>
+                        <input type="email" id="emailInput" disabled class="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/5 text-gray-400 cursor-not-allowed">
+                    </div>
+                </div>
+
+                <!-- Bio -->
+                <div>
+                    <label class="block text-gray-400 text-xs font-bold uppercase mb-2">Bio / About</label>
+                    <textarea id="bioInput" rows="3" class="w-full px-4 py-3 rounded-xl bg-black/20 border border-white/10 text-white focus:outline-none focus:border-violet-500 transition-colors" placeholder="Tell us something about yourself..."></textarea>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                    <button id="logoutBtn" class="text-red-400 hover:text-red-300 text-sm font-semibold transition">
+                        <i class="fa-solid fa-right-from-bracket mr-1"></i> Sign Out
+                    </button>
+                    
+                    <button id="saveBtn" class="px-8 py-3 rounded-xl bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 text-white font-bold shadow-lg shadow-violet-500/20 transform transition hover:scale-105">
+                        Save Changes
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+
+        // Image Preview Logic
+        const fileInput = document.getElementById('fileInput');
+        const profileImage = document.getElementById('profileImage');
+
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profileImage.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+
+    <!-- 🔥 FIREBASE LOGIC 🔥 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // 👇 YOUR CONFIG HERE 👇
+        const firebaseConfig = {
+          apiKey: "AIzaSyCJDymW01_yensm3h-O8kO3kcYnKPb_NRE",
+          authDomain: "aiartwebsite.firebaseapp.com",
+          projectId: "aiartwebsite",
+          storageBucket: "aiartwebsite.firebasestorage.app",
+          messagingSenderId: "183698414868",
+          appId: "1:183698414868:web:a699d15b1f6c3c32123601"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        // 1. Load User Data
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                
+                // Fill Basic Info
+                document.getElementById('emailInput').value = user.email;
+                document.getElementById('emailDisplay').innerText = user.email;
+                
+                if(user.photoURL) {
+                    document.getElementById('profileImage').src = user.photoURL;
+                }
+
+                // Fetch Extra Data from Firestore
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('fullNameInput').value = data.fullName || user.displayName || "";
+                    document.getElementById('displayNameDisplay').innerText = data.fullName || user.displayName || "User";
+                    document.getElementById('bioInput').value = data.bio || "";
+                    
+                    // Plan Badge Logic
+                    const badge = document.getElementById('planBadge');
+                    if(data.plan === 'premium') {
+                        badge.innerText = "PRO PLAN";
+                        badge.className = "px-4 py-1 rounded-full bg-yellow-500/20 border border-yellow-500/50 text-xs font-bold text-yellow-400 shadow-[0_0_10px_rgba(234,179,8,0.3)]";
+                    } else {
+                        badge.innerText = "FREE PLAN";
+                    }
+                }
+            } else {
+                // If not logged in, go back to login
+                window.location.href = "login.html";
+            }
+        });
+
+        // 2. Save Changes
+        document.getElementById('saveBtn').addEventListener('click', async () => {
+            if(!currentUser) return;
+
+            const newName = document.getElementById('fullNameInput').value;
+            const newBio = document.getElementById('bioInput').value;
+            const btn = document.getElementById('saveBtn');
+
+            try {
+                btn.innerText = "Saving...";
+                
+                // Update Auth Profile (Name)
+                await updateProfile(currentUser, {
+                    displayName: newName
+                });
+
+                // Update Firestore (Name & Bio)
+                const userRef = doc(db, "users", currentUser.uid);
+                await updateDoc(userRef, {
+                    fullName: newName,
+                    bio: newBio
+                });
+
+                // Update UI immediately
+                document.getElementById('displayNameDisplay').innerText = newName;
+                
+                alert("Profile Updated Successfully!");
+                btn.innerText = "Save Changes";
+
+            } catch (error) {
+                console.error(error);
+                alert("Error updating profile: " + error.message);
+                btn.innerText = "Save Changes";
+            }
+        });
+
+        // 3. Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            signOut(auth).then(() => window.location.href = "login.html");
+        });
+
+    </script>
+</body>
+  </html>

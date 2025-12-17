@@ -1,1 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PureCode AI Hub</title>
+    <style>
+        /* --- CSS VARIABLES (Colors) --- */
+        :root {
+            --bg-color: #050507;
+            --card-bg: #121216;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --gradient-main: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+        }
 
+        /* --- BASIC RESET --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- BACKGROUND GLOW --- */
+        .bg-glow {
+            position: absolute;
+            top: -10%; left: 50%;
+            transform: translateX(-50%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1; pointer-events: none;
+        }
+
+        /* --- HEADER --- */
+        header { text-align: center; margin-top: 60px; margin-bottom: 50px; max-width: 800px; }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 15px; border-radius: 50px;
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+            border: 1px solid rgba(255, 255, 255, 0.1); color: #ec4899;
+            display: inline-block; margin-bottom: 15px;
+        }
+
+        h1 { font-size: 3.5rem; line-height: 1.1; font-weight: 800; margin-bottom: 20px; }
+
+        .gradient-text {
+            background: var(--gradient-main);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block;
+        }
+
+        p.subtitle { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px; }
+
+        /* --- GRID --- */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px; width: 100%; max-width: 1200px;
+        }
+
+        /* --- CARD --- */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px; padding: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+
+        .card-icon { font-size: 2rem; margin-bottom: 15px; }
+        .card h3 { font-size: 1.25rem; margin-bottom: 10px; }
+        .card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; flex-grow: 1; }
+
+        /* --- BUTTONS --- */
+        .btn-launch {
+            background: var(--gradient-main);
+            color: white; border: none; padding: 12px;
+            border-radius: 8px; font-weight: 600; text-align: center;
+            text-decoration: none; display: block;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+            transition: opacity 0.2s;
+        }
+        .btn-launch:hover { opacity: 0.9; box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5); }
+
+        @media (max-width: 600px) { h1 { font-size: 2.5rem; } .bg-glow { width: 100%; } }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <header>
+        <div class="badge">No API • No GPU • Pure Code</div>
+        <h1>
+            Create Without Limits <br>
+            <span class="gradient-text">Pure Logic Tools</span>
+        </h1>
+        <p class="subtitle">
+            शक्तिशाली AI टूल्स जो आपके ब्राउज़र में चलते हैं। <br>
+            100% प्राइवेसी के साथ बिना किसी सर्वर के।
+        </p>
+    </header>
+
+    <section class="tools-grid">
+
+        <!-- Tool 1 -->
+        <div class="card">
+            <div class="card-icon">🛡️</div>
+            <h3>Smart Privacy Redactor</h3>
+            <p>टेक्स्ट से ईमेल और फोन नंबर को ऑटोमैटिकली छिपाएं।</p>
+            <!-- LINK ADDED HERE -->
+            <a href="redactor.html" class="btn-launch">Launch Redactor</a>
+        </div>
+
+        <!-- Tool 2 -->
+        <div class="card">
+            <div class="card-icon">⚡</div>
+            <h3>Instant Image Lite</h3>
+            <p>बिना क्वालिटी खोए इमेज का साइज कम करें (Compression)।</p>
+            <!-- LINK ADDED HERE -->
+            <a href="compressor.html" class="btn-launch">Open Compressor</a>
+        </div>
+
+        <!-- Tool 3 -->
+        <div class="card">
+            <div class="card-icon">🔐</div>
+            <h3>Entropy Security Check</h3>
+            <p>पासवर्ड स्ट्रेंथ को गणितीय तरीके से चेक करें।</p>
+            <!-- LINK ADDED HERE -->
+            <a href="password.html" class="btn-launch">Check Password</a>
+        </div>
+
+        <!-- Tool 4 -->
+        <div class="card">
+            <div class="card-icon">🎨</div>
+            <h3>Palette Generator</h3>
+            <p>किसी भी फोटो से 5 मुख्य रंग (Hex Codes) निकालें।</p>
+            <!-- LINK ADDED HERE -->
+            <a href="palette.html" class="btn-launch">Get Colors</a>
+        </div>
+
+        <!-- Tool 5 -->
+        <div class="card">
+            <div class="card-icon">🗣️</div>
+            <h3>Voice Synthesizer</h3>
+            <p>टेक्स्ट लिखें और AI (ब्राउज़र) उसे बोलकर सुनाएगा।</p>
+            <!-- LINK ADDED HERE -->
+            <a href="voice.html" class="btn-launch">Start Listening</a>
+        </div>
+
+         <!-- Tool 6 -->
+         <div class="card">
+            <div class="card-icon">📱</div>
+            <h3>Instant QR Matrix</h3>
+            <p>वाईफाई या लिंक के लिए तुरंत QR कोड जनरेट करें।</p>
+            <!-- LINK ADDED HERE -->
+            <a href="qr.html" class="btn-launch">Create QR</a>
+        </div>
+
+    </section>
+
+</body>
+              </html>

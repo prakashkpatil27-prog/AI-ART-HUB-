@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+            <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,6 +11,8 @@
             --card-bg: #121216;
             --text-main: #ffffff;
             --text-muted: #a1a1aa;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
             --gradient-main: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
         }
 
@@ -44,7 +46,7 @@
             background: rgba(255, 255, 255, 0.1);
             padding: 5px 15px; border-radius: 50px;
             font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
-            border: 1px solid rgba(255, 255, 255, 0.1); color: #ec4899;
+            border: 1px solid rgba(255, 255, 255, 0.1); color: var(--accent-pink);
             display: inline-block; margin-bottom: 15px;
         }
 
@@ -93,6 +95,47 @@
             transition: opacity 0.2s;
         }
         .btn-launch:hover { opacity: 0.9; box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5); }
+        
+        .btn-outline {
+            background: transparent; border: 1px solid var(--text-muted); color: var(--text-main);
+            box-shadow: none;
+        }
+        .btn-outline:hover { border-color: white; background: rgba(255,255,255,0.05); }
+
+        /* --- PRICING SECTION --- */
+        .pricing-section {
+            margin-top: 100px;
+            width: 100%; max-width: 1000px; text-align: center;
+            margin-bottom: 50px;
+        }
+        .pricing-title { font-size: 2.5rem; margin-bottom: 40px; }
+        
+        .pricing-cards {
+            display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+        }
+        
+        .price-card {
+            flex: 1; min-width: 300px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px; border-radius: 16px;
+            display: flex; flex-direction: column;
+            position: relative;
+        }
+        
+        .price-card.featured {
+            border: 1px solid var(--accent-pink);
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.15);
+        }
+
+        .price-tag { font-size: 3rem; font-weight: bold; margin: 20px 0; }
+        .price-tag span { font-size: 1rem; color: var(--text-muted); font-weight: normal; }
+
+        .features-list { list-style: none; text-align: left; margin: 20px 0; flex-grow: 1; }
+        .features-list li { margin-bottom: 12px; color: var(--text-muted); display: flex; align-items: center; }
+        .features-list li::before {
+            content: "✓"; color: var(--accent-purple); margin-right: 10px; font-weight: bold;
+        }
 
         @media (max-width: 600px) { h1 { font-size: 2.5rem; } .bg-glow { width: 100%; } }
     </style>
@@ -101,26 +144,27 @@
 
     <div class="bg-glow"></div>
 
+    <!-- HEADER -->
     <header>
         <div class="badge">No API • No GPU • Pure Code</div>
         <h1>
-            Create Without Limits <br>
+            Unlock the Power of <br>
             <span class="gradient-text">Pure Logic Tools</span>
         </h1>
         <p class="subtitle">
-            शक्तिशाली AI टूल्स जो आपके ब्राउज़र में चलते हैं। <br>
-            100% प्राइवेसी के साथ बिना किसी सर्वर के।
+            Powerful AI tools running directly in your browser.<br>
+            Fast, private, and efficient.
         </p>
     </header>
 
+    <!-- TOOLS GRID -->
     <section class="tools-grid">
 
         <!-- Tool 1 -->
         <div class="card">
             <div class="card-icon">🛡️</div>
             <h3>Smart Privacy Redactor</h3>
-            <p>टेक्स्ट से ईमेल और फोन नंबर को ऑटोमैटिकली छिपाएं।</p>
-            <!-- LINK ADDED HERE -->
+            <p>Automatically redact emails and phone numbers from any text.</p>
             <a href="redactor.html" class="btn-launch">Launch Redactor</a>
         </div>
 
@@ -128,8 +172,7 @@
         <div class="card">
             <div class="card-icon">⚡</div>
             <h3>Instant Image Lite</h3>
-            <p>बिना क्वालिटी खोए इमेज का साइज कम करें (Compression)।</p>
-            <!-- LINK ADDED HERE -->
+            <p>Compress image size significantly without losing visible quality.</p>
             <a href="compressor.html" class="btn-launch">Open Compressor</a>
         </div>
 
@@ -137,8 +180,7 @@
         <div class="card">
             <div class="card-icon">🔐</div>
             <h3>Entropy Security Check</h3>
-            <p>पासवर्ड स्ट्रेंथ को गणितीय तरीके से चेक करें।</p>
-            <!-- LINK ADDED HERE -->
+            <p>Mathematically calculate how long it takes to crack your password.</p>
             <a href="password.html" class="btn-launch">Check Password</a>
         </div>
 
@@ -146,8 +188,7 @@
         <div class="card">
             <div class="card-icon">🎨</div>
             <h3>Palette Generator</h3>
-            <p>किसी भी फोटो से 5 मुख्य रंग (Hex Codes) निकालें।</p>
-            <!-- LINK ADDED HERE -->
+            <p>Extract the top 5 dominant colors (Hex Codes) from any image.</p>
             <a href="palette.html" class="btn-launch">Get Colors</a>
         </div>
 
@@ -155,8 +196,7 @@
         <div class="card">
             <div class="card-icon">🗣️</div>
             <h3>Voice Synthesizer</h3>
-            <p>टेक्स्ट लिखें और AI (ब्राउज़र) उसे बोलकर सुनाएगा।</p>
-            <!-- LINK ADDED HERE -->
+            <p>Convert written text into natural-sounding speech instantly.</p>
             <a href="voice.html" class="btn-launch">Start Listening</a>
         </div>
 
@@ -164,12 +204,47 @@
          <div class="card">
             <div class="card-icon">📱</div>
             <h3>Instant QR Matrix</h3>
-            <p>वाईफाई या लिंक के लिए तुरंत QR कोड जनरेट करें।</p>
-            <!-- LINK ADDED HERE -->
+            <p>Generate secure QR codes for Wi-Fi, Links, and Text offline.</p>
             <a href="qr.html" class="btn-launch">Create QR</a>
         </div>
 
     </section>
 
+    <!-- PRICING SECTION (NEW) -->
+    <section class="pricing-section">
+        <h2 class="pricing-title">Choose Your Plan</h2>
+        <div class="pricing-cards">
+            
+            <!-- Free Plan -->
+            <div class="price-card">
+                <h3>Starter</h3>
+                <div class="price-tag">$0 <span>/month</span></div>
+                <ul class="features-list">
+                    <li>Access to basic tools</li>
+                    <li>Standard processing speed</li>
+                    <li>Browser-based privacy</li>
+                    <li>Community support</li>
+                </ul>
+                <a href="#" class="btn-launch btn-outline">Get Started</a>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="price-card featured">
+                <div class="badge" style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #ec4899; color: white; border: none;">MOST POPULAR</div>
+                <h3>Pro Access</h3>
+                <div class="price-tag">$9 <span>/month</span></div>
+                <ul class="features-list">
+                    <li>Unlock all Premium Tools</li>
+                    <li>Batch processing (Unlimited)</li>
+                    <li>Priority Email Support</li>
+                    <li>Ad-free experience</li>
+                    <li>Early access to new tools</li>
+                </ul>
+                <a href="#" class="btn-launch">Upgrade Now</a>
+            </div>
+
+        </div>
+    </section>
+
 </body>
-              </html>
+            </html>

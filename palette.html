@@ -1,1 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palette Generator | AI ART HUB</title>
+    <!-- Use same CSS as previous tools -->
+    <style>
+        :root { --bg-color: #050507; --card-bg: #121216; --text-main: #ffffff; --text-muted: #a1a1aa; --accent-pink: #ec4899; --accent-purple: #a855f7; --gradient-main: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); --border-color: rgba(255, 255, 255, 0.1); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        .bg-glow { position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none; }
+        
+        nav { width: 100%; max-width: 1000px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-top: 10px; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
+        .back-btn { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .back-btn:hover { color: white; }
 
+        .tool-header { text-align: center; max-width: 700px; margin-bottom: 30px; }
+        .tool-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .tool-header p { color: var(--text-muted); font-size: 1.1rem; }
+
+        /* HOW TO USE BOX */
+        .guide-box { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 12px; padding: 25px; margin-bottom: 40px; width: 100%; max-width: 800px; }
+        .guide-title { color: var(--accent-purple); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; font-weight: bold; }
+        .guide-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
+        .step { display: flex; flex-direction: column; gap: 8px; }
+        .step-icon { font-size: 1.5rem; margin-bottom: 5px; }
+        .step strong { color: white; font-size: 1rem; }
+        .step span { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+
+        /* TOOL UI */
+        .workspace { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; max-width: 900px; }
+        @media (max-width: 768px) { .workspace { grid-template-columns: 1fr; } }
+
+        .upload-area { background: var(--card-bg); border: 2px dashed var(--border-color); border-radius: 16px; height: 350px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; position: relative; overflow: hidden; }
+        .upload-area:hover { border-color: var(--accent-pink); background: rgba(236, 72, 153, 0.05); }
+        .upload-icon { font-size: 3rem; margin-bottom: 15px; }
+        .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        
+        #previewImg { position: absolute; width: 100%; height: 100%; object-fit: cover; display: none; }
+
+        .palette-display { display: flex; flex-direction: column; gap: 15px; justify-content: center; }
+        .color-card { display: flex; align-items: center; background: var(--card-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); transition: transform 0.2s; }
+        .color-card:hover { transform: translateX(5px); border-color: var(--accent-pink); }
+        .color-box { width: 50px; height: 50px; border-radius: 6px; margin-right: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.3); }
+        .color-code { font-family: monospace; font-size: 1.1rem; flex-grow: 1; }
+        .copy-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; }
+        .copy-btn:hover { border-color: white; color: white; }
+
+        .btn-action { grid-column: 1 / -1; background: var(--gradient-main); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <nav>
+        <div class="logo">AI ART <span style="color:var(--accent-pink)">HUB</span></div>
+        <a href="index.html" class="back-btn">← Back to Hub</a>
+    </nav>
+    <header class="tool-header">
+        <h1>Palette Generator</h1>
+        <p>Extract beautiful color schemes from any image instantly.</p>
+    </header>
+
+    <!-- HOW TO USE -->
+    <div class="guide-box">
+        <div class="guide-title">How to Use</div>
+        <div class="guide-steps">
+            <div class="step"><div class="step-icon">🖼️</div><strong>1. Upload Image</strong><span>Select any photo to analyze its colors.</span></div>
+            <div class="step"><div class="step-icon">🎨</div><strong>2. Auto Extract</strong><span>AI identifies the 5 most dominant colors.</span></div>
+            <div class="step"><div class="step-icon">📋</div><strong>3. Copy Codes</strong><span>Click 'Copy' to get the HEX code for your design.</span></div>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <!-- Left: Upload -->
+        <div class="upload-area">
+            <img id="previewImg" alt="Preview">
+            <div id="uploadPlaceholder" style="text-align:center">
+                <span class="upload-icon">☁️</span>
+                <h3>Click to Upload</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem">JPG, PNG supported</p>
+            </div>
+            <input type="file" id="imageInput" class="file-input" accept="image/*">
+        </div>
+
+        <!-- Right: Colors -->
+        <div class="palette-display" id="paletteContainer">
+            <p style="color:var(--text-muted); text-align:center;">Upload an image to see colors here.</p>
+        </div>
+    </div>
+
+    <!-- Logic -->
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const previewImg = document.getElementById('previewImg');
+        const paletteContainer = document.getElementById('paletteContainer');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+
+        imageInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    previewImg.src = event.target.result;
+                    previewImg.style.display = 'block';
+                    uploadPlaceholder.style.display = 'none';
+                    // Delay slightly to allow image to load in memory
+                    setTimeout(extractColors, 100);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function extractColors() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = previewImg.naturalWidth;
+            canvas.height = previewImg.naturalHeight;
+            ctx.drawImage(previewImg, 0, 0);
+
+            // Simple quantization logic (Performance friendly)
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            const colorCounts = {};
+            
+            // Skip pixels to speed up (every 10th pixel)
+            for (let i = 0; i < imageData.length; i += 40) {
+                const r = imageData[i];
+                const g = imageData[i + 1];
+                const b = imageData[i + 2];
+                // Bin colors (rounding to nearest 10 to group similar shades)
+                const key = `${Math.round(r/10)*10},${Math.round(g/10)*10},${Math.round(b/10)*10}`;
+                colorCounts[key] = (colorCounts[key] || 0) + 1;
+            }
+
+            // Sort by frequency
+            const sortedColors = Object.keys(colorCounts).sort((a, b) => colorCounts[b] - colorCounts[a]).slice(0, 5);
+            
+            // Generate HTML
+            paletteContainer.innerHTML = '';
+            sortedColors.forEach(rgbStr => {
+                const [r, g, b] = rgbStr.split(',');
+                const hex = rgbToHex(Number(r), Number(g), Number(b));
+                
+                paletteContainer.innerHTML += `
+                    <div class="color-card">
+                        <div class="color-box" style="background: ${hex}"></div>
+                        <span class="color-code">${hex}</span>
+                        <button class="copy-btn" onclick="navigator.clipboard.writeText('${hex}'); this.innerText='Copied!'">Copy</button>
+                    </div>
+                `;
+            });
+        }
+
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+        }
+    </script>
+</body>
+      </html>

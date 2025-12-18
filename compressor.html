@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Compressor | AI ART HUB</title>
     <style>
-        /* --- CONSISTENT THEME (Dark & Neon) --- */
+        /* --- THEME COLORS (Dark & Neon) --- */
         :root {
             --bg-color: #050507;
             --card-bg: #121216;
@@ -30,7 +30,7 @@
             padding: 20px;
         }
 
-        /* --- GLOW BACKGROUND --- */
+        /* --- BACKGROUND GLOW --- */
         .bg-glow {
             position: absolute;
             top: -20%; left: 50%;
@@ -44,7 +44,7 @@
         nav {
             width: 100%; max-width: 1000px;
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 40px; padding-top: 20px;
+            margin-bottom: 30px; padding-top: 10px;
         }
 
         .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
@@ -57,14 +57,37 @@
         /* --- HEADER --- */
         .tool-header { text-align: center; max-width: 700px; margin-bottom: 30px; }
         .tool-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
-        .tool-header p { color: var(--text-muted); }
+        .tool-header p { color: var(--text-muted); font-size: 1.1rem; }
+
+        /* --- HOW TO USE SECTION (NEW) --- */
+        .guide-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(236, 72, 153, 0.2);
+            border-radius: 12px; padding: 25px;
+            margin-bottom: 40px; width: 100%; max-width: 800px;
+        }
+
+        .guide-title { 
+            color: var(--accent-pink); font-size: 0.9rem; text-transform: uppercase; 
+            letter-spacing: 1px; margin-bottom: 15px; font-weight: bold; 
+        }
+
+        .guide-steps { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 20px; 
+        }
+
+        .step { display: flex; flex-direction: column; gap: 8px; }
+        .step-icon { font-size: 1.5rem; margin-bottom: 5px; }
+        .step strong { color: white; font-size: 1rem; }
+        .step span { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
 
         /* --- UPLOAD ZONE --- */
         .upload-area {
             width: 100%; max-width: 800px;
             background: rgba(255,255,255,0.02);
             border: 2px dashed var(--border-color);
-            border-radius: 16px; padding: 50px;
+            border-radius: 16px; padding: 40px;
             text-align: center; cursor: pointer;
             transition: 0.3s; position: relative;
         }
@@ -83,12 +106,12 @@
         /* --- CONTROLS --- */
         .controls {
             width: 100%; max-width: 800px;
-            margin: 30px 0; display: none; /* Hidden until image loaded */
+            margin: 20px 0; display: none; /* Hidden until image loaded */
             background: var(--card-bg); padding: 20px; border-radius: 12px;
             border: 1px solid var(--border-color);
         }
 
-        .slider-container { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .slider-container { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
         .slider-label { min-width: 120px; font-weight: 600; }
         
         input[type=range] {
@@ -103,7 +126,7 @@
         /* --- PREVIEW GRID --- */
         .preview-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-            width: 100%; max-width: 800px; display: none; /* Hidden initally */
+            width: 100%; max-width: 800px; display: none; margin-top: 20px;
         }
         
         @media (max-width: 600px) { .preview-grid { grid-template-columns: 1fr; } }
@@ -115,7 +138,7 @@
 
         .img-card img {
             max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px;
-            max-height: 300px; object-fit: contain;
+            max-height: 250px; object-fit: contain;
         }
 
         .size-tag {
@@ -127,8 +150,8 @@
         .btn-download {
             background: var(--gradient-main); color: white; border: none;
             padding: 12px 30px; border-radius: 8px; font-weight: bold;
-            cursor: pointer; margin-top: 20px; width: 100%;
-            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+            cursor: pointer; margin-top: 20px; width: 100%; display: block; text-decoration: none;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); text-align: center;
         }
         .btn-download:hover { opacity: 0.9; }
 
@@ -144,26 +167,54 @@
         <a href="index.html" class="back-btn">← Back to Hub</a>
     </nav>
 
+    <!-- Header -->
     <header class="tool-header">
         <h1>Instant Image Lite</h1>
-        <p>Compress images locally in your browser. No server uploads, 100% privacy.</p>
+        <p>Intelligent image compression that runs entirely in your browser.</p>
     </header>
+
+    <!-- PROFESSIONAL HOW TO USE SECTION -->
+    <div class="guide-box">
+        <div class="guide-title">How to Use</div>
+        <div class="guide-steps">
+            <div class="step">
+                <div class="step-icon">📂</div>
+                <strong>1. Upload Image</strong>
+                <span>Drag & drop or select any JPG/PNG image (Max 10MB recommended).</span>
+            </div>
+            <div class="step">
+                <div class="step-icon">🎚️</div>
+                <strong>2. Adjust Quality</strong>
+                <span>Use the slider to balance between file size and image clarity.</span>
+            </div>
+            <div class="step">
+                <div class="step-icon">👁️</div>
+                <strong>3. Preview Result</strong>
+                <span>Compare the original and compressed versions side-by-side.</span>
+            </div>
+            <div class="step">
+                <div class="step-icon">💾</div>
+                <strong>4. Download</strong>
+                <span>Save the optimized image instantly to your device.</span>
+            </div>
+        </div>
+    </div>
 
     <!-- 1. Upload Section -->
     <div class="upload-area" id="dropZone">
-        <span class="upload-icon">📂</span>
-        <h3>Click or Drag & Drop Image</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Supports JPG, PNG, WEBP</p>
+        <span class="upload-icon">☁️</span>
+        <h3>Click or Drag Image Here</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Supports High Res JPG, PNG, WEBP</p>
         <input type="file" id="imageInput" class="file-input" accept="image/*">
     </div>
 
     <!-- 2. Quality Controls -->
     <div class="controls" id="controlsPanel">
         <div class="slider-container">
-            <span class="slider-label">Quality: <span id="qualityValue" style="color:var(--accent-pink)">70%</span></span>
+            <span class="slider-label">Compression: <span id="qualityValue" style="color:var(--accent-pink)">70%</span></span>
             <input type="range" id="qualitySlider" min="1" max="100" value="70">
         </div>
-        <p style="font-size: 0.85rem; color: var(--text-muted);">Lower quality = Smaller file size.</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Slide Left for smaller size, Right for better quality.</p>
     </div>
 
     <!-- 3. Preview Section -->
@@ -178,14 +229,14 @@
         <!-- Compressed -->
         <div class="img-card" style="border-color: var(--accent-pink);">
             <div class="size-tag" style="background: rgba(236, 72, 153, 0.2); color: var(--accent-pink);">
-                Result: <span id="compressedSize">0 KB</span>
+                Optimized: <span id="compressedSize">0 KB</span>
             </div>
             <img id="compressedImg" src="" alt="Compressed">
             <a id="downloadLink" class="btn-download" download="compressed-image.jpg">Download Image</a>
         </div>
     </div>
 
-    <!-- JS LOGIC (Pure Browser Code) -->
+    <!-- JS LOGIC (Browser Native) -->
     <script>
         const imageInput = document.getElementById('imageInput');
         const qualitySlider = document.getElementById('qualitySlider');
@@ -228,7 +279,7 @@
 
         function handleFile(file) {
             if (!file.type.startsWith('image/')) {
-                alert('Please upload an image file.');
+                alert('Please upload a valid image file.');
                 return;
             }
             originalFile = file;
@@ -242,9 +293,14 @@
             };
             reader.readAsDataURL(file);
 
-            // UI Updates
+            // UI Updates (Reveal controls)
             document.getElementById('controlsPanel').style.display = 'block';
             document.getElementById('previewPanel').style.display = 'grid';
+            
+            // Scroll to controls smoothly
+            setTimeout(() => {
+                document.getElementById('controlsPanel').scrollIntoView({ behavior: 'smooth' });
+            }, 300);
         }
 
         // Main Logic: Image Loaded -> Compress
@@ -257,17 +313,17 @@
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
 
-            // Set canvas size to image size
+            // Set canvas size
             canvas.width = img.width;
             canvas.height = img.height;
 
             // Draw image on canvas
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-            // Compress Logic (quality 0.1 to 1.0)
+            // Compress Logic (quality 0.01 to 1.0)
             const quality = qualitySlider.value / 100;
 
-            // Convert canvas to Blob (JPG format usually compresses best)
+            // Convert canvas to Blob (JPG usually offers best compression)
             canvas.toBlob((blob) => {
                 
                 // Update Compressed View
@@ -279,9 +335,16 @@
                 const downloadLink = document.getElementById('downloadLink');
                 downloadLink.href = url;
                 
-                // Calculate Savings
-                const saved = ((originalFile.size - blob.size) / originalFile.size * 100).toFixed(1);
-                downloadLink.innerText = `Download (Save ${saved}%)`;
+                // Calculate Savings %
+                let saved = 0;
+                if(originalFile.size > 0) {
+                     saved = ((originalFile.size - blob.size) / originalFile.size * 100).toFixed(1);
+                }
+                
+                // Prevent negative saving display if size increases (rare but possible with low quality original)
+                if (saved < 0) saved = 0;
+                
+                downloadLink.innerHTML = `Download <span style="font-weight:400; font-size:0.9em; opacity:0.8; margin-left:5px;">(Save ${saved}%)</span>`;
 
             }, 'image/jpeg', quality);
         }
@@ -298,4 +361,4 @@
     </script>
 
 </body>
-  </html>
+    </html>

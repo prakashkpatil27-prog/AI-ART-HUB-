@@ -1,1 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Compressor | AI ART HUB</title>
+    <style>
+        /* --- CONSISTENT THEME (Dark & Neon) --- */
+        :root {
+            --bg-color: #050507;
+            --card-bg: #121216;
+            --input-bg: #1a1a20;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+            --gradient-main: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- GLOW BACKGROUND --- */
+        .bg-glow {
+            position: absolute;
+            top: -20%; left: 50%;
+            transform: translateX(-50%);
+            width: 800px; height: 600px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1; pointer-events: none;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            width: 100%; max-width: 1000px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 40px; padding-top: 20px;
+        }
+
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
+        .back-btn {
+            color: var(--text-muted); text-decoration: none; font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        .back-btn:hover { color: white; }
+
+        /* --- HEADER --- */
+        .tool-header { text-align: center; max-width: 700px; margin-bottom: 30px; }
+        .tool-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .tool-header p { color: var(--text-muted); }
+
+        /* --- UPLOAD ZONE --- */
+        .upload-area {
+            width: 100%; max-width: 800px;
+            background: rgba(255,255,255,0.02);
+            border: 2px dashed var(--border-color);
+            border-radius: 16px; padding: 50px;
+            text-align: center; cursor: pointer;
+            transition: 0.3s; position: relative;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--accent-pink);
+            background: rgba(236, 72, 153, 0.05);
+        }
+
+        .upload-icon { font-size: 3rem; margin-bottom: 15px; display: block; }
+        .file-input {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; cursor: pointer;
+        }
+
+        /* --- CONTROLS --- */
+        .controls {
+            width: 100%; max-width: 800px;
+            margin: 30px 0; display: none; /* Hidden until image loaded */
+            background: var(--card-bg); padding: 20px; border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .slider-container { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .slider-label { min-width: 120px; font-weight: 600; }
+        
+        input[type=range] {
+            flex-grow: 1; height: 6px; border-radius: 5px;
+            background: #333; outline: none; appearance: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            appearance: none; width: 20px; height: 20px; border-radius: 50%;
+            background: var(--accent-pink); cursor: pointer;
+        }
+
+        /* --- PREVIEW GRID --- */
+        .preview-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+            width: 100%; max-width: 800px; display: none; /* Hidden initally */
+        }
+        
+        @media (max-width: 600px) { .preview-grid { grid-template-columns: 1fr; } }
+
+        .img-card {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 15px; text-align: center;
+        }
+
+        .img-card img {
+            max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px;
+            max-height: 300px; object-fit: contain;
+        }
+
+        .size-tag {
+            background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 4px;
+            font-size: 0.8rem; display: inline-block; margin-bottom: 10px;
+        }
+
+        /* --- DOWNLOAD BUTTON --- */
+        .btn-download {
+            background: var(--gradient-main); color: white; border: none;
+            padding: 12px 30px; border-radius: 8px; font-weight: bold;
+            cursor: pointer; margin-top: 20px; width: 100%;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+        }
+        .btn-download:hover { opacity: 0.9; }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <!-- Nav with AI ART HUB Logo -->
+    <nav>
+        <div class="logo">AI ART <span style="color:var(--accent-pink)">HUB</span></div>
+        <a href="index.html" class="back-btn">← Back to Hub</a>
+    </nav>
+
+    <header class="tool-header">
+        <h1>Instant Image Lite</h1>
+        <p>Compress images locally in your browser. No server uploads, 100% privacy.</p>
+    </header>
+
+    <!-- 1. Upload Section -->
+    <div class="upload-area" id="dropZone">
+        <span class="upload-icon">📂</span>
+        <h3>Click or Drag & Drop Image</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Supports JPG, PNG, WEBP</p>
+        <input type="file" id="imageInput" class="file-input" accept="image/*">
+    </div>
+
+    <!-- 2. Quality Controls -->
+    <div class="controls" id="controlsPanel">
+        <div class="slider-container">
+            <span class="slider-label">Quality: <span id="qualityValue" style="color:var(--accent-pink)">70%</span></span>
+            <input type="range" id="qualitySlider" min="1" max="100" value="70">
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Lower quality = Smaller file size.</p>
+    </div>
+
+    <!-- 3. Preview Section -->
+    <div class="preview-grid" id="previewPanel">
+        
+        <!-- Original -->
+        <div class="img-card">
+            <div class="size-tag">Original: <span id="originalSize">0 KB</span></div>
+            <img id="originalImg" src="" alt="Original">
+        </div>
+
+        <!-- Compressed -->
+        <div class="img-card" style="border-color: var(--accent-pink);">
+            <div class="size-tag" style="background: rgba(236, 72, 153, 0.2); color: var(--accent-pink);">
+                Result: <span id="compressedSize">0 KB</span>
+            </div>
+            <img id="compressedImg" src="" alt="Compressed">
+            <a id="downloadLink" class="btn-download" download="compressed-image.jpg">Download Image</a>
+        </div>
+    </div>
+
+    <!-- JS LOGIC (Pure Browser Code) -->
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const qualitySlider = document.getElementById('qualitySlider');
+        const qualityValue = document.getElementById('qualityValue');
+        const dropZone = document.getElementById('dropZone');
+
+        // Logic Elements
+        let originalFile = null;
+        const reader = new FileReader();
+        const img = new Image();
+
+        // Handle Drag & Drop Visuals
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if(e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        // Handle Click Upload
+        imageInput.addEventListener('change', (e) => {
+            if(e.target.files.length) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        // Update when slider moves
+        qualitySlider.addEventListener('input', () => {
+            qualityValue.innerText = qualitySlider.value + "%";
+            if(originalFile) compressImage();
+        });
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload an image file.');
+                return;
+            }
+            originalFile = file;
+            
+            // Show file size
+            document.getElementById('originalSize').innerText = formatBytes(file.size);
+            
+            // Read and Load
+            reader.onload = (e) => {
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            // UI Updates
+            document.getElementById('controlsPanel').style.display = 'block';
+            document.getElementById('previewPanel').style.display = 'grid';
+        }
+
+        // Main Logic: Image Loaded -> Compress
+        img.onload = () => {
+            document.getElementById('originalImg').src = img.src;
+            compressImage();
+        };
+
+        function compressImage() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas size to image size
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            // Draw image on canvas
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            // Compress Logic (quality 0.1 to 1.0)
+            const quality = qualitySlider.value / 100;
+
+            // Convert canvas to Blob (JPG format usually compresses best)
+            canvas.toBlob((blob) => {
+                
+                // Update Compressed View
+                const url = URL.createObjectURL(blob);
+                document.getElementById('compressedImg').src = url;
+                document.getElementById('compressedSize').innerText = formatBytes(blob.size);
+
+                // Setup Download Button
+                const downloadLink = document.getElementById('downloadLink');
+                downloadLink.href = url;
+                
+                // Calculate Savings
+                const saved = ((originalFile.size - blob.size) / originalFile.size * 100).toFixed(1);
+                downloadLink.innerText = `Download (Save ${saved}%)`;
+
+            }, 'image/jpeg', quality);
+        }
+
+        // Helper: Format Bytes to KB/MB
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+    </script>
+
+</body>
+  </html>

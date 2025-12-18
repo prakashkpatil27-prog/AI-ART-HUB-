@@ -1,1 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Synthesizer | AI ART HUB</title>
+    <!-- CSS (Same as others) -->
+    <style>
+        :root { --bg-color: #050507; --card-bg: #121216; --input-bg: #1a1a20; --text-main: #ffffff; --text-muted: #a1a1aa; --accent-pink: #ec4899; --accent-purple: #a855f7; --gradient-main: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        .bg-glow { position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none; }
+        
+        nav { width: 100%; max-width: 1000px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-top: 10px; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
+        .back-btn { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .back-btn:hover { color: white; }
 
+        .tool-header { text-align: center; max-width: 700px; margin-bottom: 30px; }
+        .tool-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+
+        /* GUIDES */
+        .guide-box { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(236, 72, 153, 0.2); border-radius: 12px; padding: 25px; margin-bottom: 30px; width: 100%; max-width: 800px; }
+        .guide-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .step strong { display: block; color:white; margin-bottom:5px; } .step span{ color:var(--text-muted); font-size:0.9rem; }
+        @media (max-width: 600px) { .guide-steps { grid-template-columns: 1fr; } }
+
+        /* UI */
+        .tool-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 30px; width: 100%; max-width: 800px; }
+        
+        textarea { width: 100%; height: 150px; background: var(--input-bg); border: 2px solid rgba(255,255,255,0.1); color: white; padding: 15px; border-radius: 10px; resize: none; font-size: 1rem; margin-bottom: 20px; outline: none; }
+        textarea:focus { border-color: var(--accent-purple); }
+
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        select { background: var(--input-bg); color: white; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); width: 100%; outline: none; }
+        
+        .buttons { display: flex; gap: 15px; }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-play { background: var(--gradient-main); color: white; }
+        .btn-stop { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); }
+        .btn:hover { opacity: 0.9; } .btn-stop:hover { border-color: white; color: white; }
+
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <nav>
+        <div class="logo">AI ART <span style="color:var(--accent-pink)">HUB</span></div>
+        <a href="index.html" class="back-btn">← Back to Hub</a>
+    </nav>
+    <header class="tool-header">
+        <h1>Voice Synthesizer</h1>
+        <p>Convert text to lifelike speech using browser native AI.</p>
+    </header>
+
+    <div class="guide-box">
+        <div class="guide-steps">
+            <div class="step"><strong>1. Type Text</strong><span>Enter content you want to hear.</span></div>
+            <div class="step"><strong>2. Select Voice</strong><span>Choose from available system voices.</span></div>
+            <div class="step"><strong>3. Listen</strong><span>Press play to start speaking.</span></div>
+        </div>
+    </div>
+
+    <div class="tool-card">
+        <textarea id="textInput" placeholder="Type something here to convert into speech..."></textarea>
+        
+        <div class="controls">
+            <div>
+                <label style="color:var(--text-muted); font-size:0.8rem; display:block; margin-bottom:5px;">Select Voice</label>
+                <select id="voiceSelect"><option>Loading voices...</option></select>
+            </div>
+            <div>
+                <label style="color:var(--text-muted); font-size:0.8rem; display:block; margin-bottom:5px;">Speed</label>
+                <input type="range" id="rate" min="0.5" max="2" value="1" step="0.1" style="width:100%">
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn btn-play" onclick="speak()">▶ Play Audio</button>
+            <button class="btn btn-stop" onclick="stop()">⏹ Stop</button>
+        </div>
+    </div>
+
+    <script>
+        const synth = window.speechSynthesis;
+        const voiceSelect = document.getElementById('voiceSelect');
+        const textInput = document.getElementById('textInput');
+        let voices = [];
+
+        function loadVoices() {
+            voices = synth.getVoices();
+            voiceSelect.innerHTML = '';
+            voices.forEach(voice => {
+                const option = document.createElement('option');
+                option.textContent = `${voice.name} (${voice.lang})`;
+                option.value = voice.name;
+                voiceSelect.appendChild(option);
+            });
+        }
+
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+        loadVoices();
+
+        function speak() {
+            if (synth.speaking) {
+                console.error('Already speaking...');
+                return;
+            }
+            if (textInput.value !== '') {
+                const speakText = new SpeechSynthesisUtterance(textInput.value);
+                const selectedVoice = voiceSelect.selectedOptions[0].getAttribute('data-name');
+                
+                voices.forEach(voice => {
+                    if (voice.name === voiceSelect.value) {
+                        speakText.voice = voice;
+                    }
+                });
+
+                speakText.rate = document.getElementById('rate').value;
+                synth.speak(speakText);
+            }
+        }
+
+        function stop() {
+            if (synth.speaking) {
+                synth.cancel();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,1 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instant QR Matrix | AI ART HUB</title>
+    <!-- Lightweight QR Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        :root { --bg-color: #050507; --card-bg: #121216; --input-bg: #1a1a20; --text-main: #ffffff; --text-muted: #a1a1aa; --accent-pink: #ec4899; --accent-purple: #a855f7; --gradient-main: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        .bg-glow { position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none; }
+        
+        nav { width: 100%; max-width: 1000px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-top: 10px; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
+        .back-btn { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .back-btn:hover { color: white; }
 
+        .tool-header { text-align: center; max-width: 700px; margin-bottom: 30px; }
+        .tool-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+
+        /* GUIDE */
+        .guide-box { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 12px; padding: 25px; margin-bottom: 30px; width: 100%; max-width: 800px; }
+        .guide-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .step strong { display: block; color:white; margin-bottom:5px; } .step span{ color:var(--text-muted); font-size:0.9rem; }
+
+        /* UI */
+        .tool-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 40px; width: 100%; max-width: 500px; display: flex; flex-direction: column; align-items: center; }
+        
+        input { width: 100%; background: var(--input-bg); border: 2px solid rgba(255,255,255,0.1); color: white; padding: 12px; border-radius: 8px; margin-bottom: 20px; outline: none; }
+        input:focus { border-color: var(--accent-pink); }
+        
+        #qrcode { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; min-height: 150px; min-width: 150px; display: flex; align-items: center; justify-content: center; color: black; }
+        
+        .btn-gen { background: var(--gradient-main); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); }
+        .btn-gen:hover { opacity: 0.9; }
+
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <nav>
+        <div class="logo">AI ART <span style="color:var(--accent-pink)">HUB</span></div>
+        <a href="index.html" class="back-btn">← Back to Hub</a>
+    </nav>
+    <header class="tool-header">
+        <h1>Instant QR Matrix</h1>
+        <p>Generate secure QR codes for links, text, or Wi-Fi.</p>
+    </header>
+
+    <div class="guide-box">
+        <div class="guide-steps">
+            <div class="step"><strong>1. Enter Data</strong><span>Paste a link or type any text.</span></div>
+            <div class="step"><strong>2. Generate</strong><span>Click button to create matrix code.</span></div>
+            <div class="step"><strong>3. Scan</strong><span>Use any phone camera to scan it.</span></div>
+        </div>
+    </div>
+
+    <div class="tool-card">
+        <input type="text" id="qrText" placeholder="https://example.com">
+        <div id="qrcode">QR Code will appear here</div>
+        <button class="btn-gen" onclick="generateQR()">⚡ Generate QR</button>
+    </div>
+
+    <script>
+        function generateQR() {
+            const text = document.getElementById("qrText").value;
+            const container = document.getElementById("qrcode");
+            
+            if(text === "") { alert("Please enter some text!"); return; }
+            
+            container.innerHTML = ""; // Clear previous
+            new QRCode(container, {
+                text: text,
+                width: 180,
+                height: 180,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+    </script>
+</body>
+                                </html>

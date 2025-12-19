@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Generator | AI ART HUB</title>
+    <style>
+        /* --- CONSISTENT THEME --- */
+        :root { --bg-color: #050507; --card-bg: #121216; --input-bg: #1a1a20; --text-main: #ffffff; --text-muted: #a1a1aa; --accent-pink: #ec4899; --accent-purple: #a855f7; --gradient-main: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); --border-color: rgba(255, 255, 255, 0.1); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        .bg-glow { position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none; }
+        
+        /* NAV & HEADER */
+        nav { width: 100%; max-width: 1000px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-top: 10px; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
+        .back-btn { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .back-btn:hover { color: white; }
+
+        .tool-header { text-align: center; max-width: 700px; margin-bottom: 30px; }
+        .tool-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .tool-header p { color: var(--text-muted); font-size: 1.1rem; }
+
+        /* HOW TO USE BOX */
+        .guide-box { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(236, 72, 153, 0.2); border-radius: 12px; padding: 25px; margin-bottom: 40px; width: 100%; max-width: 800px; }
+        .guide-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
+        .step { display: flex; flex-direction: column; gap: 8px; }
+        .step-icon { font-size: 1.5rem; margin-bottom: 5px; }
+        .step strong { color: white; font-size: 1rem; }
+        .step span { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+
+        /* TOOL UI */
+        .workspace { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 20px; }
+
+        .input-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; }
+        
+        label { display: block; color: var(--text-muted); margin-bottom: 8px; font-size: 0.9rem; }
+        
+        textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; color: white; resize: vertical; min-height: 80px; outline: none; font-size: 1rem; }
+        textarea:focus { border-color: var(--accent-purple); }
+
+        /* Dropdowns Grid */
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 20px; }
+        @media(max-width: 600px){ .options-grid { grid-template-columns: 1fr; } }
+
+        select { width: 100%; background: var(--input-bg); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; color: white; outline: none; cursor: pointer; }
+
+        /* Action Buttons */
+        .btn-generate { background: var(--gradient-main); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 100%; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); transition: 0.2s; }
+        .btn-generate:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* Output Area */
+        .output-section { margin-top: 10px; display: none; }
+        .result-box { background: #000; border: 1px solid var(--accent-purple); padding: 20px; border-radius: 8px; color: #a855f7; font-family: monospace; line-height: 1.6; position: relative; }
+        
+        .copy-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.1); border: none; color: white; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+        .copy-btn:hover { background: var(--accent-pink); }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <nav>
+        <div class="logo">AI ART <span style="color:var(--accent-pink)">HUB</span></div>
+        <a href="index.html" class="back-btn">← Back to Hub</a>
+    </nav>
+
+    <header class="tool-header">
+        <h1>AI Prompt Generator</h1>
+        <p>Turn simple ideas into highly detailed, professional AI art prompts.</p>
+    </header>
+
+    <!-- Professional How-to-Use -->
+    <div class="guide-box">
+        <div class="guide-title" style="color:var(--accent-purple); font-weight:bold; margin-bottom:15px; text-transform:uppercase; letter-spacing:1px; font-size:0.9rem;">How to Use</div>
+        <div class="guide-steps">
+            <div class="step"><div class="step-icon">💡</div><strong>1. Enter Idea</strong><span>Type a basic subject (e.g., "A futuristic cat").</span></div>
+            <div class="step"><div class="step-icon">🎨</div><strong>2. Choose Style</strong><span>Select artistic vibes, lighting, and camera settings.</span></div>
+            <div class="step"><div class="step-icon">✨</div><strong>3. Generate</strong><span>Get a complex prompt ready for Midjourney or Dall-E.</span></div>
+        </div>
+    </div>
+
+    <div class="workspace">
+        
+        <div class="input-card">
+            <label>Main Subject</label>
+            <textarea id="mainSubject" placeholder="e.g. An astronaut sitting on Mars drinking coffee..."></textarea>
+
+            <div class="options-grid">
+                <div>
+                    <label>Art Style</label>
+                    <select id="artStyle">
+                        <option value="">Auto (Random)</option>
+                        <option value="Cyberpunk">Cyberpunk</option>
+                        <option value="Realistic">Photorealistic</option>
+                        <option value="Anime">Anime Studio Ghibli</option>
+                        <option value="Oil Painting">Oil Painting</option>
+                        <option value="3D Render">3D Pixar Style</option>
+                        <option value="Dark Fantasy">Dark Fantasy</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Lighting</label>
+                    <select id="lighting">
+                        <option value="">Auto (Random)</option>
+                        <option value="Cinematic Lighting">Cinematic</option>
+                        <option value="Neon Lights">Neon Glow</option>
+                        <option value="Natural Sunlight">Natural Sunlight</option>
+                        <option value="Volumetric Fog">Volumetric Fog</option>
+                        <option value="Studio Lighting">Studio Softbox</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Camera/View</label>
+                    <select id="camera">
+                        <option value="">Auto (Random)</option>
+                        <option value="Wide Angle">Wide Angle</option>
+                        <option value="Macro Lens">Macro Close-up</option>
+                        <option value="Drone View">Drone View</option>
+                        <option value="Bokeh">Bokeh Background</option>
+                        <option value="8K Resolution">8K Ultra HD</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-generate" onclick="generatePrompt()">✨ Generate Magic Prompt</button>
+        </div>
+
+        <div class="output-section" id="outputSection">
+            <div class="result-box">
+                <span id="finalPrompt">Your prompt will appear here...</span>
+                <button class="copy-btn" onclick="copyText()">Copy</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LOGIC (Pure Code) -->
+    <script>
+        // Database of "Magic Words" to make prompts look professional
+        const styles = ["Cyberpunk", "Steampunk", "Synthwave", "Renaissance Painting", "Unreal Engine 5 Render", "Hyper-Realistic", "Concept Art", "Digital Illustration", "Pop Art", "Gothic"];
+        const lights = ["Cinematic Lighting", "Bioluminescent Glow", "Golden Hour", "God Rays", "Rim Lighting", "Soft Studio Lighting", "Dramatic Shadows"];
+        const qualities = ["8K resolution", "highly detailed", "sharp focus", "masterpiece", "trending on ArtStation", "HDR", "intricate details", "vivid colors"];
+        const artists = ["by Greg Rutkowski", "by Stanley Artgerm", "by Alphonse Mucha", "by H.R. Giger", "style of Van Gogh"];
+
+        function getRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function generatePrompt() {
+            const subject = document.getElementById('mainSubject').value.trim();
+            let style = document.getElementById('artStyle').value;
+            let light = document.getElementById('lighting').value;
+            let cam = document.getElementById('camera').value;
+
+            if(!subject) {
+                alert("Please enter a main subject first!");
+                return;
+            }
+
+            // If user selected 'Auto', pick random
+            if(!style) style = getRandom(styles);
+            if(!light) light = getRandom(lights);
+            
+            // Construct the prompt
+            // Formula: Subject + Style + Lighting + Camera + Quality Boosters
+            let final = `${subject}, ${style} style, ${light}, `;
+            
+            if(cam) final += `${cam}, `;
+            
+            // Add random quality boosters
+            final += `${getRandom(qualities)}, ${getRandom(qualities)}, `;
+            
+            // Add random artist for flavor
+            final += `${getRandom(artists)}`;
+
+            // Display
+            document.getElementById('finalPrompt').innerText = final;
+            document.getElementById('outputSection').style.display = 'block';
+        }
+
+        function copyText() {
+            const text = document.getElementById('finalPrompt').innerText;
+            navigator.clipboard.writeText(text);
+            const btn = document.querySelector('.copy-btn');
+            btn.innerText = "Copied!";
+            setTimeout(() => btn.innerText = "Copy", 2000);
+        }
+    </script>
+
+</body>
+                          </html>

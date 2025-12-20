@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Bio Generator | AI ART HUB</title>
+    <style>
+        /* --- CONSISTENT THEME (Dark & Neon) --- */
+        :root {
+            --bg-color: #050507;
+            --card-bg: #121216;
+            --input-bg: #1a1a20;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+            --gradient-main: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- BACKGROUND GLOW --- */
+        .bg-glow {
+            position: absolute;
+            top: -20%; left: 50%;
+            transform: translateX(-50%);
+            width: 800px; height: 600px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1; pointer-events: none;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            width: 100%; max-width: 1000px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; padding-top: 10px;
+        }
+
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
+        .back-btn {
+            color: var(--text-muted); text-decoration: none; font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        .back-btn:hover { color: white; }
+
+        /* --- HEADER --- */
+        .tool-header { text-align: center; max-width: 700px; margin-bottom: 30px; }
+        .tool-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .tool-header p { color: var(--text-muted); font-size: 1.1rem; }
+
+        /* --- HOW TO USE BOX --- */
+        .guide-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(236, 72, 153, 0.2);
+            border-radius: 12px; padding: 25px;
+            margin-bottom: 40px; width: 100%; max-width: 800px;
+        }
+        .guide-title { 
+            color: var(--accent-pink); font-size: 0.9rem; text-transform: uppercase; 
+            letter-spacing: 1px; margin-bottom: 15px; font-weight: bold; 
+        }
+        .guide-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
+        .step { display: flex; flex-direction: column; gap: 8px; }
+        .step-icon { font-size: 1.5rem; margin-bottom: 5px; }
+        .step strong { color: white; font-size: 1rem; }
+        .step span { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+
+        /* --- TOOL WORKSPACE --- */
+        .workspace {
+            width: 100%; max-width: 800px;
+            display: flex; flex-direction: column; gap: 25px;
+        }
+
+        .input-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 30px;
+        }
+
+        .form-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;
+        }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; color: var(--text-muted); margin-bottom: 8px; font-size: 0.9rem; }
+        
+        input, select {
+            width: 100%; background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px; border-radius: 8px;
+            color: white; outline: none; font-size: 1rem;
+        }
+        input:focus, select:focus { border-color: var(--accent-pink); }
+
+        .btn-generate {
+            background: var(--gradient-main); color: white; border: none;
+            padding: 15px; border-radius: 8px; font-weight: bold;
+            cursor: pointer; width: 100%; font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); transition: 0.2s;
+        }
+        .btn-generate:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* --- RESULTS SECTION --- */
+        .results-container { display: none; flex-direction: column; gap: 15px; }
+        
+        .bio-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 20px;
+            position: relative; transition: 0.3s;
+        }
+        .bio-card:hover { border-color: var(--accent-purple); background: rgba(168, 85, 247, 0.05); }
+
+        .bio-text { font-size: 1.1rem; line-height: 1.6; color: white; padding-right: 60px; }
+        .bio-tag {
+            display: inline-block; font-size: 0.75rem; color: var(--accent-pink);
+            background: rgba(236, 72, 153, 0.1); padding: 4px 8px; border-radius: 4px;
+            margin-bottom: 10px; text-transform: uppercase; font-weight: bold;
+        }
+
+        .copy-btn {
+            position: absolute; top: 20px; right: 20px;
+            background: transparent; border: 1px solid var(--border-color);
+            color: var(--text-muted); padding: 5px 12px; border-radius: 6px;
+            cursor: pointer; font-size: 0.85rem; transition: 0.2s;
+        }
+        .copy-btn:hover { border-color: white; color: white; }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <nav>
+        <div class="logo">AI ART <span style="color:var(--accent-pink)">HUB</span></div>
+        <a href="index.html" class="back-btn">← Back to Hub</a>
+    </nav>
+
+    <header class="tool-header">
+        <h1>Smart Bio Creator</h1>
+        <p>Generate perfectly formatted bios for LinkedIn, Instagram, and Twitter using Logic AI.</p>
+    </header>
+
+    <!-- HOW TO USE -->
+    <div class="guide-box">
+        <div class="guide-title">How to Use</div>
+        <div class="guide-steps">
+            <div class="step">
+                <div class="step-icon">📝</div>
+                <strong>1. Enter Details</strong>
+                <span>Fill in your role, hobbies, or keywords (e.g., "Designer, Travel, Pizza").</span>
+            </div>
+            <div class="step">
+                <div class="step-icon">🎭</div>
+                <strong>2. Select Vibe</strong>
+                <span>Choose a style: Professional, Aesthetic, Funny, or Minimal.</span>
+            </div>
+            <div class="step">
+                <div class="step-icon">⚡</div>
+                <strong>3. Copy Bio</strong>
+                <span>Get 3 unique variations instantly. Click copy to use.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="workspace">
+        
+        <!-- Input Form -->
+        <div class="input-card">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Platform</label>
+                    <select id="platform">
+                        <option value="instagram">Instagram</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="twitter">Twitter / X</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Vibe / Style</label>
+                    <select id="vibe">
+                        <option value="professional">Professional</option>
+                        <option value="aesthetic">Aesthetic / Chill</option>
+                        <option value="funny">Funny / Witty</option>
+                        <option value="minimal">Minimalist</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Your Role / Job Title</label>
+                <input type="text" id="role" placeholder="e.g. Graphic Designer, Student, Founder">
+            </div>
+
+            <div class="form-group">
+                <label>Keywords / Hobbies (Separate with comma)</label>
+                <input type="text" id="keywords" placeholder="e.g. Coffee, Coding, Photography, Gym">
+            </div>
+
+            <div class="form-group">
+                <label>Call to Action (Optional)</label>
+                <input type="text" id="cta" placeholder="e.g. DM for Collab, Check my website">
+            </div>
+
+            <button class="btn-generate" onclick="generateBio()">✨ Generate Bios</button>
+        </div>
+
+        <!-- Output Results -->
+        <div class="results-container" id="resultsArea">
+            
+            <!-- Result 1 -->
+            <div class="bio-card">
+                <span class="bio-tag">Option 1</span>
+                <p class="bio-text" id="bio1">Result will appear here...</p>
+                <button class="copy-btn" onclick="copyText('bio1', this)">Copy</button>
+            </div>
+
+            <!-- Result 2 -->
+            <div class="bio-card">
+                <span class="bio-tag">Option 2</span>
+                <p class="bio-text" id="bio2">Result will appear here...</p>
+                <button class="copy-btn" onclick="copyText('bio2', this)">Copy</button>
+            </div>
+
+            <!-- Result 3 -->
+            <div class="bio-card">
+                <span class="bio-tag">Option 3</span>
+                <p class="bio-text" id="bio3">Result will appear here...</p>
+                <button class="copy-btn" onclick="copyText('bio3', this)">Copy</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- LOGIC (Pure JS Template Engine) -->
+    <script>
+        function generateBio() {
+            // Get Inputs
+            const platform = document.getElementById('platform').value;
+            const vibe = document.getElementById('vibe').value;
+            const role = document.getElementById('role').value || "Creator";
+            const keywordsRaw = document.getElementById('keywords').value;
+            const cta = document.getElementById('cta').value || "Say Hi 👋";
+
+            // Process Keywords (Split by comma)
+            let keywords = keywordsRaw.split(',').map(k => k.trim()).filter(k => k !== "");
+            if(keywords.length === 0) keywords = ["Lifestyle", "Work"]; // Fallback
+
+            // Emojis Dictionary
+            const emojis = {
+                tech: ["💻", "🚀", "⚡", "🤖"],
+                art: ["🎨", "✨", "🖌️", "📸"],
+                chill: ["☕", "☁️", "🌙", "🎧"],
+                work: ["🏢", "💼", "📈", "🤝"]
+            };
+
+            // Helper to get random item
+            const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+            const icon = rand(vibe === 'professional' ? emojis.work : emojis.art);
+
+            let bios = [];
+
+            // --- LOGIC ENGINE ---
+
+            // 1. LINKEDIN LOGIC (Professional)
+            if (platform === 'linkedin') {
+                if (vibe === 'funny') {
+                    bios.push(`Professional ${role} by day, ${keywords[0]} lover by night. 🌙 | ${cta}`);
+                    bios.push(`I do ${role} stuff so you don't have to. 💼 | Enthusiast of ${keywords.join(" & ")}.`);
+                    bios.push(`Helping companies scale with ${role} skills. Fueled by ${keywords[0] || 'Coffee'}. ☕`);
+                } else {
+                    bios.push(`${role} | Passionate about ${keywords.join(" • ")} | ${cta}`);
+                    bios.push(`Building things as a ${role}. 🚀 Focused on ${keywords[0]} and ${keywords[1] || 'Growth'}.`);
+                    bios.push(`Helping brands grow through ${role}. Specialist in ${keywords[0]}. ${cta}`);
+                }
+            } 
+            
+            // 2. INSTAGRAM LOGIC (Visual & Emoji heavy)
+            else if (platform === 'instagram') {
+                if (vibe === 'aesthetic') {
+                    bios.push(`☁️ ${role} <br>✨ ${keywords.join(" | ")} <br>🌙 ${cta}`);
+                    bios.push(`${role} // ${keywords[0]} <br>📍 Earth <br>📩 ${cta}`);
+                    bios.push(`Just a ${role} in a chaotic world. 🪐<br>Loves: ${keywords.join(", ")}`);
+                } else if (vibe === 'minimal') {
+                    bios.push(`${role}. ${keywords[0]}. ${keywords[1] || ''}.`);
+                    bios.push(`${role} based in 📍. ${cta}`);
+                    bios.push(`${keywords.join(" • ")}`);
+                } else {
+                    // Default / Funny
+                    bios.push(`👋 I'm a ${role}<br>❤️ ${keywords.join(" + ")}<br>👇 ${cta}`);
+                    bios.push(`${role} 🚀<br>Obsessed with ${keywords[0]} 🍕<br>${cta}`);
+                    bios.push(`Official account of a ${role}.<br>Living for ${keywords.join(" & ")}. ✨`);
+                }
+            }
+
+            // 3. TWITTER LOGIC (Short & Punchy)
+            else {
+                bios.push(`${role}. ${keywords.join(", ")}. ${cta}`);
+                bios.push(`${icon} ${role} | ${keywords[0]} enthusiast. ${cta}`);
+                bios.push(`Tweeting about ${keywords.join(" and ")} as a ${role}.`);
+            }
+
+            // Fallback logic if array is not full (just in case)
+            while(bios.length < 3) {
+                bios.push(`${role} | ${keywords.join(" | ")} | ${cta}`);
+            }
+
+            // Display Results
+            document.getElementById('bio1').innerHTML = bios[0];
+            document.getElementById('bio2').innerHTML = bios[1];
+            document.getElementById('bio3').innerHTML = bios[2];
+
+            document.getElementById('resultsArea').style.display = 'flex';
+            
+            // Scroll to results
+            document.getElementById('resultsArea').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyText(elementId, btnElement) {
+            // Get text, replace <br> with newlines for copying
+            let text = document.getElementById(elementId).innerText;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                let originalText = btnElement.innerText;
+                btnElement.innerText = "Copied!";
+                btnElement.style.color = "#10b981"; // Green color
+                btnElement.style.borderColor = "#10b981";
+
+                setTimeout(() => {
+                    btnElement.innerText = originalText;
+                    btnElement.style.color = "";
+                    btnElement.style.borderColor = "";
+                }, 2000);
+            });
+        }
+    </script>
+
+</body>
+  </html>

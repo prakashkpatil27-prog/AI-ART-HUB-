@@ -1,1 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflex Titan | AI ART HUB</title>
+    <style>
+        /* Gaming Theme (Green/Red) */
+        :root { --bg-color: #050507; --card-bg: #121216; --text-main: #ffffff; --success: #22c55e; --error: #ef4444; --waiting: #3b82f6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; user-select: none; }
+        body { background-color: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; }
 
+        nav { padding: 20px; width: 100%; max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; z-index: 10; }
+        .logo { font-weight: 800; font-size: 1.4rem; }
+        .back-btn { color: #aaa; text-decoration: none; }
+
+        /* The Main Game Area */
+        .game-area {
+            flex-grow: 1; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            cursor: pointer; transition: background 0.2s;
+            text-align: center; padding: 20px;
+        }
+
+        /* States */
+        .state-idle { background: var(--bg-color); }
+        .state-waiting { background: #ce2828; } /* Red */
+        .state-now { background: var(--success); } /* Green */
+        .state-result { background: var(--card-bg); }
+
+        h1 { font-size: 3rem; margin-bottom: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        p { font-size: 1.2rem; opacity: 0.8; max-width: 600px; line-height: 1.5; }
+        
+        .icon-large { font-size: 5rem; margin-bottom: 20px; display: block; }
+
+        /* Guide Box */
+        .guide-box {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(255,255,255,0.05); padding: 15px 30px; border-radius: 50px;
+            font-size: 0.9rem; pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">REFLEX <span style="color:#22c55e">TITAN</span></div>
+        <a href="index.html" class="back-btn">← Back to Hub</a>
+    </nav>
+
+    <!-- Game Area changes color based on JS -->
+    <div id="gameScreen" class="game-area state-idle" onmousedown="handleClick()">
+        <span class="icon-large">⚡</span>
+        <h1 id="mainTitle">Test Your Speed</h1>
+        <p id="subTitle">Click anywhere to start. <br> When the screen turns <b>GREEN</b>, click as fast as you can!</p>
+    </div>
+
+    <div class="guide-box">
+        Average Human Reaction: <b>250ms</b>. Pro Gamers: <b>150ms</b>.
+    </div>
+
+    <script>
+        const screen = document.getElementById('gameScreen');
+        const title = document.getElementById('mainTitle');
+        const sub = document.getElementById('subTitle');
+
+        let startTime = 0;
+        let endTime = 0;
+        let timerOut;
+        let gameState = 'idle'; // idle, waiting, now, result
+
+        function handleClick() {
+            if (gameState === 'idle' || gameState === 'result') {
+                startGame();
+            } else if (gameState === 'waiting') {
+                tooEarly();
+            } else if (gameState === 'now') {
+                endGame();
+            }
+        }
+
+        function startGame() {
+            gameState = 'waiting';
+            screen.className = 'game-area state-waiting';
+            title.innerText = "Wait for Green...";
+            sub.innerText = "Do not click yet.";
+            
+            // Random time between 2 to 5 seconds
+            const randomDelay = Math.floor(Math.random() * 3000) + 2000;
+            
+            clearTimeout(timerOut);
+            timerOut = setTimeout(() => {
+                if (gameState === 'waiting') {
+                    showGreen();
+                }
+            }, randomDelay);
+        }
+
+        function showGreen() {
+            gameState = 'now';
+            screen.className = 'game-area state-now';
+            title.innerText = "CLICK NOW!";
+            sub.innerText = "";
+            startTime = Date.now();
+        }
+
+        function endGame() {
+            endTime = Date.now();
+            gameState = 'result';
+            const reactionTime = endTime - startTime;
+            
+            screen.className = 'game-area state-result';
+            title.innerText = reactionTime + " ms";
+            
+            let msg = "";
+            if(reactionTime < 150) msg = "Godlike! 🏆 Are you a robot?";
+            else if(reactionTime < 200) msg = "Pro Gamer Level! 🎮";
+            else if(reactionTime < 300) msg = "Average Human Speed. Not bad. 👍";
+            else msg = "Bit slow... Wake up! ☕";
+
+            sub.innerHTML = `${msg}<br><br><span style='color:#3b82f6; font-weight:bold'>Click to try again</span>`;
+        }
+
+        function tooEarly() {
+            gameState = 'result';
+            clearTimeout(timerOut);
+            screen.className = 'game-area state-idle'; // Reset color
+            title.innerText = "Too Early! ⚠️";
+            sub.innerText = "You clicked before the green color. Wait for the signal. Click to retry.";
+        }
+    </script>
+</body>
+      </html>

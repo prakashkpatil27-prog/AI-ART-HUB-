@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 
     <style>
-        /* --- THEME --- */
+        /* --- THEME (Consistent Dark & Neon) --- */
         :root { --bg-color: #050507; --card-bg: #121216; --text-main: #ffffff; --text-muted: #a1a1aa; --accent-cyan: #06b6d4; --accent-purple: #a855f7; --gradient-main: linear-gradient(135deg, #06b6d4 0%, #a855f7 100%); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
@@ -28,7 +28,7 @@
         .tool-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .tool-header p { color: var(--text-muted); font-size: 1.1rem; }
 
-        /* HOW TO USE */
+        /* HOW TO USE GUIDE */
         .guide-box { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(6,182,212, 0.2); border-radius: 12px; padding: 25px; margin-bottom: 40px; width: 100%; max-width: 800px; }
         .guide-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .step strong { color: white; display:block; margin-bottom:5px; } .step span { color: var(--text-muted); font-size: 0.9rem; }
@@ -36,23 +36,23 @@
         @media (max-width: 600px) { .guide-steps { grid-template-columns: 1fr; } }
 
         /* VIDEO WORKSPACE */
-        .workspace { position: relative; width: 100%; max-width: 640px; background: #000; border-radius: 16px; overflow: hidden; border: 2px solid #333; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        .workspace { position: relative; width: 100%; max-width: 640px; background: #000; border-radius: 16px; overflow: hidden; border: 2px solid #333; box-shadow: 0 0 30px rgba(0,0,0,0.5); min-height: 480px; display: flex; align-items: center; justify-content: center; }
         
         /* Video and Canvas stack on top of each other */
         .output_canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; }
-        .input_video { width: 100%; height: auto; transform: scaleX(-1); /* Mirror effect */ display: block; }
+        .input_video { width: 100%; height: auto; transform: scaleX(-1); /* Mirror effect */ display: block; object-fit: cover; }
         
         /* Controls */
         .controls-area { margin-top: 20px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; justify-content: center; }
         .btn-cam { background: var(--gradient-main); color: white; border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
         .btn-cam:hover { opacity: 0.9; transform: scale(1.05); }
-        .btn-stop { background: #ef4444; }
-
+        
         /* Status Badge */
         .status-badge { background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
-        .dot { width: 10px; height: 10px; background: #555; border-radius: 50%; }
+        .dot { width: 10px; height: 10px; background: #555; border-radius: 50%; transition: background 0.3s; }
         .dot.active { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
         .dot.loading { background: #eab308; animation: pulse 1s infinite; }
+        .dot.error { background: #ef4444; }
 
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
@@ -74,18 +74,17 @@
 
     <div class="guide-box">
         <div class="guide-steps">
-            <div class="step"><div class="step-icon">📸</div><strong>1. Allow Camera</strong><span>Grant permission to access your webcam.</span></div>
-            <div class="step"><div class="step-icon">🤖</div><strong>2. Load Model</strong><span>Wait a few seconds for the AI model to initialize.</span></div>
-            <div class="step"><div class="step-icon">✨</div><strong>3. Detect</strong><span>Move your head to see the 3D mesh tracking.</span></div>
+            <div class="step"><div class="step-icon">📸</div><strong>1. Allow Camera</strong><span>Click 'Start' and Allow permission when asked.</span></div>
+            <div class="step"><div class="step-icon">🤖</div><strong>2. Load Model</strong><span>Wait a few seconds for AI initialization.</span></div>
+            <div class="step"><div class="step-icon">✨</div><strong>3. Detect</strong><span>See the 3D mesh track your face instantly.</span></div>
         </div>
     </div>
 
     <!-- MAIN VIDEO AREA -->
     <div class="workspace">
-        <!-- Hidden video element for processing -->
         <video class="input_video" autoplay playsinline muted></video>
-        <!-- Canvas for drawing the mesh -->
         <canvas class="output_canvas"></canvas>
+        <div id="loaderMsg" style="color: #666; position:absolute; z-index:0;">Camera is off</div>
     </div>
 
     <div class="controls-area">
@@ -96,7 +95,7 @@
         <button class="btn-cam" id="startBtn" onclick="startCamera()">📷 Start Camera</button>
     </div>
 
-    <!-- LOGIC -->
+    <!-- IMPROVED LOGIC WITH ERROR HANDLING -->
     <script>
         const videoElement = document.querySelector('.input_video');
         const canvasElement = document.querySelector('.output_canvas');
@@ -104,53 +103,38 @@
         const statusText = document.getElementById('statusText');
         const statusDot = document.getElementById('statusDot');
         const startBtn = document.getElementById('startBtn');
+        const loaderMsg = document.getElementById('loaderMsg');
 
         let camera = null;
         let faceMesh = null;
         let isRunning = false;
 
-        // 1. Setup Face Mesh
+        // 1. Setup Face Mesh Drawing Logic
         function onResults(results) {
-            // Update Status once results start coming
+            // Update Status visually
             if(statusText.innerText !== "Tracking Active") {
                 statusText.innerText = "Tracking Active";
                 statusDot.className = "dot active";
+                loaderMsg.style.display = 'none';
             }
 
-            // Prepare Canvas
             canvasElement.width = videoElement.videoWidth;
             canvasElement.height = videoElement.videoHeight;
             
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
             
-            // Mirror the canvas context to match mirrored video
+            // Mirror logic
             canvasCtx.translate(canvasElement.width, 0);
             canvasCtx.scale(-1, 1);
 
-            // Draw Landmarks
             if (results.multiFaceLandmarks) {
                 for (const landmarks of results.multiFaceLandmarks) {
-                    
-                    // Draw Mesh Lines (Tesselation)
-                    drawConnectors(canvasCtx, landmarks, FACEMESH_TESSELATION, 
-                        {color: '#C0C0C070', lineWidth: 1});
-                    
-                    // Draw Right Eye
-                    drawConnectors(canvasCtx, landmarks, FACEMESH_RIGHT_EYE, 
-                        {color: '#06b6d4', lineWidth: 2}); // Cyan
-                    
-                    // Draw Left Eye
-                    drawConnectors(canvasCtx, landmarks, FACEMESH_LEFT_EYE, 
-                        {color: '#06b6d4', lineWidth: 2}); // Cyan
-                    
-                    // Draw Lips
-                    drawConnectors(canvasCtx, landmarks, FACEMESH_LIPS, 
-                        {color: '#a855f7', lineWidth: 2}); // Purple
-                    
-                    // Draw Face Oval
-                    drawConnectors(canvasCtx, landmarks, FACEMESH_FACE_OVAL, 
-                        {color: '#E0E0E0', lineWidth: 2});
+                    drawConnectors(canvasCtx, landmarks, FACEMESH_TESSELATION, {color: '#C0C0C070', lineWidth: 1});
+                    drawConnectors(canvasCtx, landmarks, FACEMESH_RIGHT_EYE, {color: '#06b6d4', lineWidth: 2});
+                    drawConnectors(canvasCtx, landmarks, FACEMESH_LEFT_EYE, {color: '#06b6d4', lineWidth: 2});
+                    drawConnectors(canvasCtx, landmarks, FACEMESH_LIPS, {color: '#a855f7', lineWidth: 2});
+                    drawConnectors(canvasCtx, landmarks, FACEMESH_FACE_OVAL, {color: '#E0E0E0', lineWidth: 2});
                 }
             }
             canvasCtx.restore();
@@ -158,10 +142,6 @@
 
         // 2. Initialize Model
         async function initModel() {
-            statusText.innerText = "Loading AI Model...";
-            statusDot.className = "dot loading";
-            startBtn.disabled = true;
-
             faceMesh = new FaceMesh({locateFile: (file) => {
                 return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
             }});
@@ -176,29 +156,68 @@
             faceMesh.onResults(onResults);
         }
 
-        // 3. Start Camera Logic
+        // 3. Start Camera with ERROR HANDLING
         async function startCamera() {
             if(isRunning) return;
             
-            if(!faceMesh) {
-                await initModel();
+            // UI Updates
+            statusText.innerText = "Requesting Access...";
+            statusDot.className = "dot loading";
+            startBtn.disabled = true;
+
+            try {
+                // Initialize Model if not ready
+                if(!faceMesh) {
+                    statusText.innerText = "Loading AI Model...";
+                    await initModel();
+                }
+
+                statusText.innerText = "Starting Camera...";
+                
+                // Initialize Camera
+                camera = new Camera(videoElement, {
+                    onFrame: async () => {
+                        await faceMesh.send({image: videoElement});
+                    },
+                    width: 640,
+                    height: 480
+                });
+
+                // Attempt to start camera (This is where permission error happens)
+                await camera.start();
+                
+                // Success
+                isRunning = true;
+                startBtn.innerText = "Running...";
+                startBtn.style.background = "#22c55e"; // Green
+
+            } catch (error) {
+                // FAILURE HANDLING
+                console.error("Camera Error:", error);
+                statusDot.className = "dot error";
+                
+                let errorMsg = "Unknown Error";
+                
+                if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                    // This handles the user clicking "Block"
+                    alert("⚠️ Permission Denied!\n\nPlease click the 'Lock 🔒' icon in your URL bar (top left) and Allow Camera access.");
+                    errorMsg = "Permission Denied";
+                } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+                    alert("⚠️ No Camera Found!\n\nPlease connect a webcam to use this tool.");
+                    errorMsg = "No Camera Found";
+                } else {
+                    alert("⚠️ Error: " + error.message);
+                    errorMsg = "System Error";
+                }
+
+                statusText.innerText = errorMsg;
+                
+                // Reset Button so they can try again
+                startBtn.disabled = false;
+                startBtn.innerText = "Try Again";
+                startBtn.style.background = "#ef4444"; // Red
             }
-
-            statusText.innerText = "Starting Camera...";
-            
-            camera = new Camera(videoElement, {
-                onFrame: async () => {
-                    await faceMesh.send({image: videoElement});
-                },
-                width: 640,
-                height: 480
-            });
-
-            await camera.start();
-            isRunning = true;
-            startBtn.innerText = "Running...";
-            startBtn.style.background = "#22c55e"; // Green
         }
     </script>
 </body>
-          </html>
+    </html>

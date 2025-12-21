@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - AI ART HUB</title>
     
-    <!-- Tailwind CSS (For Navbar) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -32,7 +32,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding-top: 80px; /* Space for Navbar */
+            padding-top: 80px;
         }
 
         /* --- BACKGROUND GLOW --- */
@@ -46,7 +46,7 @@
         }
 
         /* --- HEADER --- */
-        header { text-align: center; margin-bottom: 50px; max-width: 800px; padding: 0 20px; }
+        header { text-align: center; margin-bottom: 40px; max-width: 800px; padding: 0 20px; }
 
         .badge {
             background: rgba(255, 255, 255, 0.1);
@@ -56,20 +56,20 @@
             display: inline-block; margin-bottom: 15px;
         }
 
-        h1 { font-size: 3.5rem; line-height: 1.1; font-weight: 800; margin-bottom: 20px; }
+        h1 { font-size: 3rem; line-height: 1.1; font-weight: 800; margin-bottom: 15px; }
 
         .gradient-text {
             background: var(--gradient-main);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block;
         }
 
-        p.subtitle { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px; }
+        p.subtitle { color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin-bottom: 30px; }
 
         /* --- GRID --- */
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px; width: 100%; max-width: 1200px; padding: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px; width: 100%; max-width: 1200px; padding: 20px; padding-bottom: 50px;
         }
 
         /* --- CARD --- */
@@ -102,8 +102,6 @@
         }
         .btn-launch:hover { opacity: 0.9; box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5); }
 
-        @media (max-width: 600px) { h1 { font-size: 2.5rem; } .bg-glow { width: 100%; } }
-        
         /* Loader */
         #auth-loader {
             position: fixed; inset: 0; background: #050507; z-index: 9999;
@@ -121,7 +119,7 @@
 
     <div class="bg-glow"></div>
 
-    <!-- NAVBAR (Added for Navigation) -->
+    <!-- NAVBAR -->
     <nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-[#050507]/80 backdrop-blur-md">
         <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
             <a href="index.html" class="flex items-center space-x-2 text-white no-underline">
@@ -131,7 +129,7 @@
                 <span class="text-xl font-bold">AI ART <span class="text-purple-400">HUB</span></span>
             </a>
             <div class="flex items-center gap-4">
-                <a href="index.html" class="text-gray-400 hover:text-white text-sm">Home</a>
+                <a href="index.html" class="text-gray-400 hover:text-white text-sm no-underline">Home</a>
                 <a href="profile.html" class="w-8 h-8 rounded-full bg-gray-700 overflow-hidden border border-white/20">
                     <img id="navProfileImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-full h-full object-cover">
                 </a>
@@ -141,53 +139,29 @@
 
     <!-- HEADER -->
     <header>
-        <div class="badge">DASHBOARD</div>
+        <div class="badge">CREATOR DASHBOARD</div>
         <h1>
             Unlock the Power of <br>
             <span class="gradient-text">Pure Logic Tools</span>
         </h1>
         <p class="subtitle">
-            Powerful AI tools running directly in your browser.<br>
+            Powerful AI & Utility tools running directly in your browser.<br>
             Fast, private, and efficient.
         </p>
     </header>
 
-    <!-- TOOLS GRID -->
+    <!-- TOOLS GRID (12 Tools + Image Gen) -->
     <section class="tools-grid">
 
-        <!-- Tool 1: Image Generator -->
-        <div class="card">
+        <!-- 0. AI Image Generator (Main Tool) -->
+        <div class="card" style="border-color: rgba(168, 85, 247, 0.6);">
             <div class="card-icon">🎨</div>
             <h3>AI Image Generator</h3>
             <p>Create stunning 8K visuals, anime art, and realistic photos from text prompts.</p>
             <a href="image-tool.html" class="btn-launch">Launch Generator</a>
         </div>
 
-        <!-- Tool 2: Prompt Generator -->
-        <div class="card">
-            <div class="card-icon">✨</div>
-            <h3>AI Prompt Generator</h3>
-            <p>Create professional inputs for Midjourney & Dall-E instantly.</p>
-            <a href="text-tools.html" class="btn-launch">Create Prompt</a>
-        </div>
-
-        <!-- Tool 3: Bio Generator -->
-        <div class="card">
-            <div class="card-icon">📝</div>
-            <h3>Smart Bio Creator</h3>
-            <p>Generate catchy bios for Instagram, Twitter, and LinkedIn.</p>
-            <a href="text-tools.html" class="btn-launch">Generate Bio</a>
-        </div>
-
-        <!-- Tool 4: Hashtag Generator -->
-        <div class="card">
-            <div class="card-icon">#️⃣</div>
-            <h3>Hashtag Generator</h3>
-            <p>Generate viral hashtags for your social media posts.</p>
-            <a href="text-tools.html" class="btn-launch">Get Hashtags</a>
-        </div>
-
-        <!-- Tool 5: Privacy Redactor -->
+        <!-- 1. Smart Privacy Redactor -->
         <div class="card">
             <div class="card-icon">🛡️</div>
             <h3>Smart Privacy Redactor</h3>
@@ -195,12 +169,92 @@
             <a href="redactor.html" class="btn-launch">Launch Redactor</a>
         </div>
 
-        <!-- Tool 6: QR Generator -->
+        <!-- 2. Instant Image Lite -->
+        <div class="card">
+            <div class="card-icon">⚡</div>
+            <h3>Instant Image Lite</h3>
+            <p>Compress image size significantly without losing visible quality.</p>
+            <a href="compressor.html" class="btn-launch">Open Compressor</a>
+        </div>
+
+        <!-- 3. Entropy Security Check -->
+        <div class="card">
+            <div class="card-icon">🔐</div>
+            <h3>Entropy Security Check</h3>
+            <p>Mathematically calculate how long it takes to crack your password.</p>
+            <a href="password.html" class="btn-launch">Check Password</a>
+        </div>
+
+        <!-- 4. Palette Generator -->
+        <div class="card">
+            <div class="card-icon">🎨</div>
+            <h3>Palette Generator</h3>
+            <p>Extract the top 5 dominant colors (Hex Codes) from any image.</p>
+            <a href="palette.html" class="btn-launch">Get Colors</a>
+        </div>
+
+        <!-- 5. Voice Synthesizer -->
+        <div class="card">
+            <div class="card-icon">🗣️</div>
+            <h3>Voice Synthesizer</h3>
+            <p>Convert written text into natural-sounding speech instantly.</p>
+            <a href="voice.html" class="btn-launch">Start Listening</a>
+        </div>
+
+        <!-- 6. Instant QR Matrix -->
         <div class="card">
             <div class="card-icon">📱</div>
             <h3>Instant QR Matrix</h3>
             <p>Generate secure QR codes for Wi-Fi, Links, and Text offline.</p>
             <a href="qr.html" class="btn-launch">Create QR</a>
+        </div>
+
+        <!-- 7. AI Prompt Generator -->
+        <div class="card">
+            <div class="card-icon">✨</div>
+            <h3>AI Prompt Generator</h3>
+            <p>Create professional inputs for Midjourney & Dall-E instantly.</p>
+            <a href="prompt.html" class="btn-launch">Create Prompt</a>
+        </div>
+
+        <!-- 8. Smart Bio Creator -->
+        <div class="card">
+            <div class="card-icon">📝</div>
+            <h3>Smart Bio Creator</h3>
+            <p>Generate catchy bios for Instagram, Twitter, and LinkedIn.</p>
+            <a href="bio.html" class="btn-launch">Generate Bio</a>
+        </div>
+
+        <!-- 9. Face Landmarks AI -->
+        <div class="card">
+            <div class="card-icon">👤</div>
+            <h3>Face Landmarks AI</h3>
+            <p>Detect face mesh and landmarks using browser webcam.</p>
+            <a href="face.html" class="btn-launch">Scan Face</a>
+        </div>
+
+        <!-- 10. Sentiment Scanner -->
+        <div class="card">
+            <div class="card-icon">❤️</div>
+            <h3>Sentiment Scanner</h3>
+            <p>Analyze if a text is Positive, Negative, or Neutral.</p>
+            <a href="sentiment.html" class="btn-launch">Analyze Text</a>
+        </div>
+
+        <!-- 11. Zen Breath Mode -->
+        <div class="card">
+            <div class="card-icon">🧘</div>
+            <h3>Zen Breath Mode</h3>
+            <p>Reduce stress with 4-7-8 guided visual breathing.</p>
+            <a href="breathe.html" class="btn-launch">Start Breathing</a>
+        </div>
+
+        <!-- 12. Reflex Titan -->
+        <div class="card">
+            <div class="card-icon">⚡</div>
+            <h3>Reflex Titan</h3>
+            <p>Test your reaction speed (ms). Perfect for gamers.</p>
+            <a href="reflex.html" class="btn-launch">Test Reflex</a>
         </div>
 
     </section>
@@ -237,4 +291,4 @@
     </script>
 
 </body>
-  </html>                    
+            </html>

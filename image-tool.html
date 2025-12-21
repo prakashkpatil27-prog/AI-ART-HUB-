@@ -11,54 +11,45 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- CSS VARIABLES --- */
+        /* --- CSS VARIABLES (Consistent UI) --- */
         :root {
             --bg-color: #050507;
             --card-bg: #121216;
             --text-main: #ffffff;
-            --text-muted: #a1a1aa;
             --accent-purple: #a855f7;
             --accent-pink: #ec4899;
-            --gradient-main: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: 'Segoe UI', sans-serif;
-            min-height: 100vh;
-            display: flex; flex-direction: column;
+            overflow-x: hidden;
         }
 
-        /* Glass Panel */
+        /* Glass Effect */
         .glass-panel {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-        }
-
-        /* Button */
-        .btn-generate {
-            background: var(--gradient-main);
-            color: white; font-weight: bold;
             transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
-        }
-        .btn-generate:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
         }
 
-        /* Message Card Animation */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Loading Scanline Animation */
+        .scanline {
+            width: 100%; height: 100px; z-index: 10;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(168, 85, 247, 0.5) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1; position: absolute; bottom: 100%;
+            animation: scanline 2s linear infinite;
         }
-        .message-card {
-            animation: slideUp 0.5s ease-out forwards;
-            border: 1px solid var(--accent-purple);
-            background: linear-gradient(180deg, rgba(168, 85, 247, 0.1) 0%, rgba(0,0,0,0) 100%);
+        @keyframes scanline { 0% { bottom: 100%; } 100% { bottom: -100%; } }
+
+        /* Trust Message Box */
+        .trust-box {
+            background: rgba(234, 179, 8, 0.05);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            border-radius: 12px; padding: 15px;
+            margin-top: 20px;
         }
 
         /* Loader */
@@ -68,7 +59,7 @@
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col pt-20">
 
     <!-- 🔒 SECURITY LOADER -->
     <div id="auth-loader">
@@ -76,145 +67,163 @@
         <p class="text-gray-400 text-sm tracking-widest animate-pulse">VERIFYING ACCESS...</p>
     </div>
 
-    <!-- NAVBAR -->
-    <nav class="border-b border-white/10 bg-[#050507]/80 backdrop-blur-md fixed w-full z-50">
+    <!-- Navbar -->
+    <nav class="border-b border-white/10 bg-[#050507]/80 backdrop-blur-md fixed top-0 w-full z-50">
         <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
-            <a href="generate.html" class="flex items-center space-x-2 text-gray-300 hover:text-white transition">
-                <i class="fa-solid fa-arrow-left"></i>
-                <span class="font-semibold">Back to Dashboard</span>
+            <a href="generate.html" class="flex items-center space-x-2 text-white no-underline">
+                <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-arrow-left text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-bold">Back to <span class="text-purple-400">Dashboard</span></span>
             </a>
-            <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-xs text-purple-300">
-                <span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
-                Beta Version
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span>Server Online</span>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- MAIN CONTENT -->
-    <main class="flex-grow pt-24 pb-10 px-4 flex flex-col md:flex-row gap-6 max-w-7xl mx-auto w-full h-full">
+    <!-- Main Content -->
+    <main class="flex-grow px-4 py-6 flex flex-col md:flex-row gap-6 max-w-7xl mx-auto w-full h-full">
         
-        <!-- LEFT COLUMN: Controls & Instructions -->
-        <div class="w-full md:w-1/3 flex flex-col gap-6">
-            
-            <!-- Input Box -->
-            <div class="glass-panel p-6">
+        <!-- LEFT COLUMN: Controls -->
+        <div class="w-full md:w-1/3 flex flex-col gap-4">
+            <div class="glass-panel p-6 rounded-2xl h-full flex flex-col">
                 <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                     <i class="fa-solid fa-sliders text-purple-400"></i> Configuration
                 </h2>
-                
-                <div class="mb-4">
+
+                <!-- Prompt Input -->
+                <div class="mb-6">
                     <label class="text-xs text-gray-400 uppercase font-bold tracking-wider">Enter Prompt</label>
-                    <textarea id="promptInput" rows="4" class="w-full mt-2 bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 focus:outline-none transition resize-none" placeholder="A futuristic cyberpunk city with neon lights..."></textarea>
+                    <textarea id="promptInput" rows="5" class="w-full mt-2 bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 focus:outline-none transition resize-none" placeholder="Describe your imagination here... (e.g., A futuristic cyberpunk city with neon lights, 8k resolution)"></textarea>
                 </div>
 
-                <button id="generateBtn" class="btn-generate w-full py-4 rounded-xl text-lg flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-bolt"></i> Generate Art
-                </button>
-            </div>
-
-            <!-- ✅ HOW TO USE BOX -->
-            <div class="glass-panel p-6 border-l-4 border-l-yellow-500">
-                <h3 class="text-lg font-bold text-white mb-3 flex items-center">
-                    <i class="fa-regular fa-lightbulb text-yellow-400 mr-2"></i> How to Use
-                </h3>
-                <ul class="space-y-3 text-sm text-gray-400">
-                    <li class="flex gap-3">
-                        <span class="bg-white/10 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white">1</span>
-                        Type a detailed description of the image you want.
-                    </li>
-                    <li class="flex gap-3">
-                        <span class="bg-white/10 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white">2</span>
-                        Click the "Generate Art" button.
-                    </li>
-                    <li class="flex gap-3">
-                        <span class="bg-white/10 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white">3</span>
-                        Wait for the AI to process your request.
-                    </li>
-                </ul>
-            </div>
-
-        </div>
-
-        <!-- RIGHT COLUMN: Result Area -->
-        <div class="w-full md:w-2/3">
-            <div class="glass-panel h-[500px] md:h-full relative flex items-center justify-center p-8">
-                
-                <!-- 1. Placeholder (Initial State) -->
-                <div id="placeholder" class="text-center">
-                    <div class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-                        <i class="fa-regular fa-image text-4xl text-gray-600"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-300">Ready to Create?</h3>
-                    <p class="text-gray-500 mt-2">Enter a prompt and hit generate to see magic.</p>
-                </div>
-
-                <!-- 2. Loading State (Hidden) -->
-                <div id="loadingState" class="hidden flex flex-col items-center">
-                    <div class="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-6"></div>
-                    <p class="text-purple-300 animate-pulse text-lg font-bold">Initializing AI Core...</p>
-                    <p class="text-gray-500 text-sm mt-2">Allocating GPU resources...</p>
-                </div>
-
-                <!-- 3. ✅ TRUST MESSAGE (Hidden initially) -->
-                <div id="trustMessage" class="hidden message-card p-8 rounded-2xl max-w-md text-center">
-                    <div class="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-purple-400 text-2xl border border-purple-500/50">
-                        <i class="fa-solid fa-rocket"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-white mb-2">Something Big is Coming!</h2>
-                    <div class="h-1 w-20 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full mb-4"></div>
-                    
-                    <p class="text-gray-300 leading-relaxed mb-6">
-                        We are currently building our own <strong>Custom AI Engine</strong> to provide you with unlimited, high-quality image generation without relying on third-party APIs.
-                    </p>
-                    
-                    <div class="bg-black/40 p-4 rounded-lg border border-white/10 text-sm text-gray-400">
-                        <p class="mb-2"><i class="fa-solid fa-check text-green-400 mr-2"></i> No Server Limits</p>
-                        <p class="mb-2"><i class="fa-solid fa-check text-green-400 mr-2"></i> Higher Resolution</p>
-                        <p><i class="fa-solid fa-check text-green-400 mr-2"></i> Faster Generation</p>
-                    </div>
-
-                    <button onclick="location.reload()" class="mt-6 text-purple-400 hover:text-white text-sm font-bold transition">
-                        Try Another Prompt
+                <!-- Generate Button -->
+                <div class="mt-auto">
+                    <button id="generateBtn" class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl font-bold text-lg shadow-lg shadow-purple-500/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bolt"></i> Generate Art
                     </button>
                 </div>
-
             </div>
         </div>
 
+        <!-- RIGHT COLUMN: Preview & Info -->
+        <div class="w-full md:w-2/3 flex flex-col gap-4">
+            
+            <!-- Image Preview Area -->
+            <div class="glass-panel rounded-2xl h-[400px] md:h-[500px] relative flex items-center justify-center overflow-hidden group">
+                
+                <!-- Placeholder -->
+                <div id="placeholder" class="text-center">
+                    <div class="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                        <i class="fa-regular fa-image text-3xl text-gray-600"></i>
+                    </div>
+                    <p class="text-gray-500">Your masterpiece will appear here</p>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loadingState" class="hidden absolute inset-0 bg-black/80 z-20 flex flex-col items-center justify-center">
+                    <div class="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p class="text-purple-300 animate-pulse">AI is dreaming...</p>
+                    <div class="scanline"></div>
+                </div>
+
+                <!-- Result Image -->
+                <img id="resultImage" class="hidden w-full h-full object-contain z-10" src="" alt="Generated Art">
+
+                <!-- Download Button -->
+                <a id="downloadBtn" href="#" download="ai-art.jpg" class="hidden absolute bottom-6 right-6 bg-white text-black px-6 py-3 rounded-full font-bold shadow-xl z-30 hover:bg-gray-200 transition transform translate-y-20 group-hover:translate-y-0">
+                    <i class="fa-solid fa-download mr-2"></i> Download
+                </a>
+            </div>
+
+            <!-- 📢 TRUST MESSAGE BOX (Important) -->
+            <div class="trust-box flex items-start gap-4">
+                <div class="text-2xl">🚀</div>
+                <div>
+                    <h3 class="text-yellow-400 font-bold text-sm uppercase mb-1">Development Update</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        We are currently building our own <strong>High-Performance Custom AI Engine</strong>. It's going to be revolutionary! <br>
+                        Until then, please enjoy this <strong>Free Open-Source Generator</strong>. Trust us, the wait will be worth it!
+                    </p>
+                </div>
+            </div>
+
+            <!-- 💡 HOW TO USE BOX -->
+            <div class="glass-panel p-6 rounded-xl">
+                <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+                    <i class="fa-regular fa-lightbulb text-yellow-400"></i> How to Use
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold">1</span>
+                        <span class="text-sm text-gray-400">Type a detailed prompt</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold">2</span>
+                        <span class="text-sm text-gray-400">Click Generate button</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold">3</span>
+                        <span class="text-sm text-gray-400">Download & Share</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </main>
 
-    <!-- LOGIC SCRIPT -->
+    <!-- 🔥 GENERATION LOGIC 🔥 -->
     <script>
-        const generateBtn = document.getElementById('generateBtn');
         const promptInput = document.getElementById('promptInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const resultImage = document.getElementById('resultImage');
         const placeholder = document.getElementById('placeholder');
         const loadingState = document.getElementById('loadingState');
-        const trustMessage = document.getElementById('trustMessage');
+        const downloadBtn = document.getElementById('downloadBtn');
 
         generateBtn.addEventListener('click', () => {
             const prompt = promptInput.value.trim();
             if(!prompt) return alert("Please enter a prompt first!");
 
-            // 1. Hide Placeholder & Show Loader
+            // UI Updates
             placeholder.classList.add('hidden');
-            trustMessage.classList.add('hidden');
+            resultImage.classList.add('hidden');
+            downloadBtn.classList.add('hidden');
             loadingState.classList.remove('hidden');
             generateBtn.disabled = true;
-            generateBtn.innerText = "Processing...";
+            generateBtn.innerText = "Generating...";
 
-            // 2. Simulate Processing Delay (3 Seconds)
-            setTimeout(() => {
-                // 3. Hide Loader & Show Trust Message
+            // Pollinations AI Logic (No API Key)
+            const randomSeed = Math.floor(Math.random() * 10000);
+            const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${randomSeed}&nologo=true`;
+
+            const img = new Image();
+            img.src = imageUrl;
+            
+            img.onload = () => {
                 loadingState.classList.add('hidden');
-                trustMessage.classList.remove('hidden');
-                
+                resultImage.src = imageUrl;
+                resultImage.classList.remove('hidden');
+                downloadBtn.href = imageUrl;
+                downloadBtn.classList.remove('hidden');
                 generateBtn.disabled = false;
-                generateBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> Generate Art';
-            }, 3000); // 3000ms = 3 seconds
+                generateBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> Generate Again';
+            };
+
+            img.onerror = () => {
+                loadingState.classList.add('hidden');
+                alert("Server busy. Please try again.");
+                generateBtn.disabled = false;
+                generateBtn.innerText = "Generate Art";
+            };
         });
     </script>
 
-    <!-- 🔥 FIREBASE SECURITY SCRIPT 🔥 -->
+    <!-- 🔥 SECURITY CHECK SCRIPT 🔥 -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -242,4 +251,4 @@
     </script>
 
 </body>
-  </html>
+                        </html>

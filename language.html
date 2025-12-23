@@ -1,0 +1,190 @@
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9HXMZGYJRY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-9HXMZGYJRY');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Detector | AI ART HUB</title>
+    <style>
+        /* --- THEME --- */
+        :root { --bg-color: #050507; --card-bg: #121216; --input-bg: #1a1a20; --text-main: #ffffff; --text-muted: #a1a1aa; --accent-blue: #3b82f6; --accent-purple: #a855f7; --gradient-main: linear-gradient(135deg, #3b82f6 0%, #a855f7 100%); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        .bg-glow { position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none; }
+
+        nav { width: 100%; max-width: 1000px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-top: 10px; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
+        .back-btn { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .back-btn:hover { color: white; }
+
+        .tool-header { text-align: center; max-width: 700px; margin-bottom: 30px; }
+        .tool-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+
+        /* GUIDE */
+        .guide-box { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 25px; margin-bottom: 40px; width: 100%; max-width: 800px; }
+        .guide-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .step strong { display:block; margin-bottom:5px; color:white; } .step span{ color:var(--text-muted); font-size:0.9rem; }
+        .step-icon { font-size: 1.5rem; margin-bottom: 5px; }
+        @media (max-width: 600px) { .guide-steps { grid-template-columns: 1fr; } }
+
+        /* WORKSPACE */
+        .workspace { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 20px; }
+        
+        textarea { width: 100%; height: 150px; background: var(--input-bg); border: 2px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 16px; color: white; resize: none; font-size: 1.1rem; outline: none; transition: 0.3s; }
+        textarea:focus { border-color: var(--accent-blue); }
+
+        .btn-detect { background: var(--gradient-main); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); transition: 0.2s; }
+        .btn-detect:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* RESULT */
+        .result-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 30px; display: none; margin-top: 20px; animation: fadeIn 0.5s ease; text-align: center; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .lang-title { font-size: 2.5rem; font-weight: bold; color: var(--accent-blue); margin-bottom: 5px; }
+        .lang-script { font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
+        .confidence-bar { width: 100%; height: 8px; background: #333; border-radius: 10px; overflow: hidden; }
+        .confidence-fill { height: 100%; width: 0%; background: var(--accent-blue); transition: width 1s ease; }
+
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <nav>
+        <div class="logo">AI ART <span style="color:var(--accent-blue)">HUB</span></div>
+        <a href="index.html" class="back-btn">← Back to Hub</a>
+    </nav>
+    <header class="tool-header">
+        <h1>Language Identifier</h1>
+        <p>Instantly detect the language of any text using Pattern Recognition.</p>
+    </header>
+
+    <div class="guide-box">
+        <div class="guide-steps">
+            <div class="step"><div class="step-icon">✍️</div><strong>1. Paste Text</strong><span>Enter text in any language (e.g. Hindi, French).</span></div>
+            <div class="step"><div class="step-icon">🔍</div><strong>2. Analyze</strong><span>AI scans unique characters and grammar patterns.</span></div>
+            <div class="step"><div class="step-icon">🌐</div><strong>3. Result</strong><span>See which language matches the input best.</span></div>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <textarea id="inputText" placeholder="Paste your text here... (Example: 'Bonjour' or 'नमस्ते')"></textarea>
+        <button class="btn-detect" onclick="detectLanguage()">🔍 Identify Language</button>
+
+        <div class="result-card" id="resultCard">
+            <div class="lang-title" id="langName">English</div>
+            <div class="lang-script" id="langScript">LATIN SCRIPT</div>
+            <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:5px; color:#aaa;"><span>Confidence</span><span id="confValue">98%</span></div>
+            <div class="confidence-bar"><div class="confidence-fill" id="confFill"></div></div>
+        </div>
+    </div>
+
+    <script>
+        function detectLanguage() {
+            const text = document.getElementById('inputText').value.trim();
+            const resultCard = document.getElementById('resultCard');
+            
+            if(!text) { alert("Please enter some text!"); return; }
+
+            // LOGIC: Check Unicode Ranges & Common Words
+            let detected = "Unknown";
+            let script = "Unknown Script";
+            let confidence = 50;
+
+            // 1. Check Scripts (Unique Characters)
+            if (/[\u0900-\u097F]/.test(text)) { detected = "Hindi (Hindi)"; script = "Devanagari"; confidence = 99; }
+            else if (/[\u0600-\u06FF]/.test(text)) { detected = "Arabic (العربية)"; script = "Arabic"; confidence = 99; }
+            else if (/[\u0400-\u04FF]/.test(text)) { detected = "Russian (Русский)"; script = "Cyrillic"; confidence = 95; }
+            else if (/[\u3040-\u309F\u30A0-\u30FF]/.test(text)) { detected = "Japanese (日本語)"; script = "Hiragana/Katakana"; confidence = 99; }
+            else if (/[\u4E00-\u9FFF]/.test(text)) { detected = "Chinese (中文)"; script = "Hanzi"; confidence = 99; }
+            else if (/[\uAC00-\uD7AF]/.test(text)) { detected = "Korean (한국어)"; script = "Hangul"; confidence = 99; }
+            
+            // 2. Check Latin Languages (English, Spanish, French, etc.) based on stopwords
+            else if (/[a-zA-Z]/.test(text)) {
+                script = "Latin";
+                const lower = text.toLowerCase();
+                
+                // Simple keyword check
+                if (/\b(the|and|is|it|you|that)\b/.test(lower)) { detected = "English"; confidence = 90; }
+                else if (/\b(el|la|de|que|y|en)\b/.test(lower)) { detected = "Spanish (Español)"; confidence = 85; }
+                else if (/\b(le|la|les|et|est|je)\b/.test(lower)) { detected = "French (Français)"; confidence = 85; }
+                else if (/\b(der|die|das|und|ist)\b/.test(lower)) { detected = "German (Deutsch)"; confidence = 85; }
+                else if (/\b(il|lo|la|e|sono)\b/.test(lower)) { detected = "Italian (Italiano)"; confidence = 85; }
+                else if (/\b(o|a|e|que|do)\b/.test(lower)) { detected = "Portuguese (Português)"; confidence = 85; }
+                else { detected = "Latin Script (Unknown)"; confidence = 40; }
+            }
+
+            // Update UI
+            document.getElementById('langName').innerText = detected;
+            document.getElementById('langScript').innerText = script;
+            document.getElementById('confValue').innerText = confidence + "%";
+            document.getElementById('confFill').style.width = confidence + "%";
+            
+            resultCard.style.display = 'block';
+        }
+    </script>
+</body>
+  </html>
+
+
+
+
+
+
+
+  <!-- 👇 SECURITY CHECK CODE (इसे </body> से ठीक पहले पेस्ट करें) 👇 -->
+
+<!-- 1. Loading Screen (जब तक चेक हो रहा है) -->
+<div id="auth-loader" style="position: fixed; inset: 0; background: #050507; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div style="width: 50px; height: 50px; border: 4px solid #a855f7; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <p style="color: gray; margin-top: 10px; font-family: sans-serif; font-size: 12px; letter-spacing: 2px;">VERIFYING ACCESS...</p>
+    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+</div>
+
+<!-- 2. Logic Script -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    // आपकी API Keys (जो आपने दी थीं)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJDymW01_yensm3h-O8kO3kcYnKPb_NRE",
+      authDomain: "aiartwebsite.firebaseapp.com",
+      projectId: "aiartwebsite",
+      storageBucket: "aiartwebsite.firebasestorage.app",
+      messagingSenderId: "183698414868",
+      appId: "1:183698414868:web:a699d15b1f6c3c32123601"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // चेक करो: यूजर लॉगिन है या नहीं?
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // ✅ अगर लॉगिन है -> लोडिंग हटाओ और टूल दिखाओ
+            document.getElementById('auth-loader').style.display = 'none';
+        } else {
+            // ❌ अगर लॉगिन नहीं है -> लॉगिन पेज पर भेजो
+            window.location.href = "login.html";
+        }
+    });
+                       </script>

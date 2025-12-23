@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object Detection | AI ART HUB</title>
+    
+    <!-- Load TensorFlow.js and COCO-SSD Model -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+
+    <style>
+        /* --- THEME COLORS --- */
+        :root { --bg-color: #050507; --text-main: #ffffff; --text-muted: #a1a1aa; --accent-yellow: #eab308; --card-bg: #121216; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        .bg-glow { position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(circle, rgba(234, 179, 8, 0.15) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none; }
+
+        nav { width: 100%; max-width: 1000px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-top: 10px; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
+        .back-btn { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .back-btn:hover { color: white; }
+
+        .tool-header { text-align: center; max-width: 700px; margin-bottom: 30px; }
+        .tool-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+
+        /* HOW TO USE */
+        .guide-box { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(234, 179, 8, 0.2); border-radius: 12px; padding: 25px; margin-bottom: 40px; width: 100%; max-width: 800px; }
+        .guide-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .step strong { display:block; margin-bottom:5px; color:white; } .step span{ color:var(--text-muted); font-size:0.9rem; }
+        .step-icon { font-size: 1.5rem; margin-bottom: 5px; }
+        @media (max-width: 600px) { .guide-steps { grid-template-columns: 1fr; } }
+
+        /* VIDEO AREA */
+        .workspace { position: relative; width: 100%; max-width: 640px; background: #000; border-radius: 16px; overflow: hidden; border: 2px solid #333; min-height: 480px; display: flex; align-items: center; justify-content: center; }
+        .input_video { width: 100%; height: auto; display: block; }
+        .output_canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; }
+
+        /* Controls */
+        .controls-area { margin-top: 20px; display: flex; gap: 15px; align-items: center; justify-content: center; }
+        .btn-cam { background: linear-gradient(135deg, #eab308, #f59e0b); color: black; border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+        .btn-cam:hover { opacity: 0.9; transform: scale(1.05); }
+
+        .status-badge { background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+        .dot { width: 10px; height: 10px; background: #555; border-radius: 50%; }
+        .dot.active { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
+        .dot.loading { background: #eab308; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <nav>
+        <div class="logo">AI ART <span style="color:var(--accent-yellow)">HUB</span></div>
+        <a href="index.html" class="back-btn">← Back to Hub</a>
+    </nav>
+    <header class="tool-header">
+        <h1>Real-time Object Detection</h1>
+        <p>Identify everyday objects instantly using TensorFlow.js</p>
+    </header>
+
+    <div class="guide-box">
+        <div class="guide-steps">
+            <div class="step"><div class="step-icon">📸</div><strong>1. Start Camera</strong><span>Allow webcam access to begin scanning.</span></div>
+            <div class="step"><div class="step-icon">🧠</div><strong>2. Load Model</strong><span>Wait for the COCO-SSD model to initialize.</span></div>
+            <div class="step"><div class="step-icon">📦</div><strong>3. Detect</strong><span>Point camera at objects to see names & boxes.</span></div>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <video class="input_video" autoplay playsinline muted></video>
+        <canvas class="output_canvas"></canvas>
+        <div id="loaderMsg" style="color: #666; position:absolute; z-index:0;">Camera is off</div>
+    </div>
+
+    <div class="controls-area">
+        <div class="status-badge"><div class="dot" id="statusDot"></div><span id="statusText">Idle</span></div>
+        <button class="btn-cam" id="startBtn" onclick="startDetection()">📷 Start Camera</button>
+    </div>
+
+    <script>
+        const video = document.querySelector('.input_video');
+        const canvas = document.querySelector('.output_canvas');
+        const ctx = canvas.getContext('2d');
+        const statusText = document.getElementById('statusText');
+        const statusDot = document.getElementById('statusDot');
+        const startBtn = document.getElementById('startBtn');
+        const loaderMsg = document.getElementById('loaderMsg');
+        
+        let model = null;
+        let isRunning = false;
+
+        async function startDetection() {
+            if(isRunning) return;
+            startBtn.disabled = true;
+            statusText.innerText = "Loading Model...";
+            statusDot.className = "dot loading";
+
+            try {
+                // 1. Load Model
+                if(!model) {
+                    model = await cocoSsd.load();
+                }
+
+                statusText.innerText = "Starting Camera...";
+                
+                // 2. Start Camera
+                const stream = await navigator.mediaDevices.getUserMedia({ video: 'facingMode: "environment"' });
+                video.srcObject = stream;
+                
+                video.onloadeddata = () => {
+                    loaderMsg.style.display = 'none';
+                    statusText.innerText = "Detecting Objects...";
+                    statusDot.className = "dot active";
+                    startBtn.innerText = "Running...";
+                    startBtn.style.background = "#22c55e"; // Green
+                    startBtn.style.color = "white";
+                    
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    isRunning = true;
+                    predictLoop();
+                };
+
+            } catch (error) {
+                console.error(error);
+                alert("Error: " + error.message + "\nMake sure to Allow Camera Access.");
+                startBtn.disabled = false;
+                statusText.innerText = "Error";
+                statusDot.className = "dot";
+                statusDot.style.background = "red";
+            }
+        }
+
+        async function predictLoop() {
+            if(!isRunning) return;
+
+            // Detect Objects
+            const predictions = await model.detect(video);
+
+            // Clear Canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '16px Segoe UI';
+            ctx.textBaseline = 'top';
+
+            // Draw Boxes
+            predictions.forEach(prediction => {
+                const x = prediction.bbox[0];
+                const y = prediction.bbox[1];
+                const width = prediction.bbox[2];
+                const height = prediction.bbox[3];
+                const label = prediction.class.toUpperCase();
+                const score = Math.round(prediction.score * 100) + '%';
+
+                // Box
+                ctx.strokeStyle = '#eab308';
+                ctx.lineWidth = 4;
+                ctx.strokeRect(x, y, width, height);
+
+                // Label Background
+                ctx.fillStyle = '#eab308';
+                const textWidth = ctx.measureText(label + " " + score).width;
+                ctx.fillRect(x, y - 25, textWidth + 10, 25);
+
+                // Label Text
+                ctx.fillStyle = '#000000';
+                ctx.fillText(label + " " + score, x + 5, y - 20);
+            });
+
+            requestAnimationFrame(predictLoop);
+        }
+    </script>
+</body>
+  </html>

@@ -1,0 +1,339 @@
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9HXMZGYJRY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-9HXMZGYJRY');
+</script>
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Photo Editor | AI ART HUB</title>
+    <style>
+        /* --- THEME COLORS --- */
+        :root { --bg-color: #050507; --card-bg: #121216; --panel-bg: #1a1a20; --text-main: #ffffff; --text-muted: #a1a1aa; --accent-blue: #3b82f6; --accent-purple: #a855f7; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        
+        /* Glow Effect */
+        .bg-glow { position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none; }
+
+        /* NAV */
+        nav { width: 100%; max-width: 1200px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-top: 10px; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
+        .back-btn { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .back-btn:hover { color: white; }
+
+        .tool-header { text-align: center; margin-bottom: 30px; }
+        .tool-header h1 { font-size: 2.5rem; margin-bottom: 5px; }
+
+        /* HOW TO USE */
+        .guide-box { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 20px; margin-bottom: 30px; width: 100%; max-width: 1000px; }
+        .guide-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .step strong { display:block; margin-bottom:5px; color:white; } .step span{ color:var(--text-muted); font-size:0.9rem; }
+        @media (max-width: 600px) { .guide-steps { grid-template-columns: 1fr; } }
+
+        /* EDITOR WORKSPACE */
+        .workspace {
+            display: grid; grid-template-columns: 280px 1fr; gap: 20px;
+            width: 100%; max-width: 1200px; height: 600px;
+            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; overflow: hidden; padding: 20px;
+        }
+        @media (max-width: 800px) { .workspace { grid-template-columns: 1fr; height: auto; } }
+
+        /* LEFT PANEL (CONTROLS) */
+        .controls { display: flex; flex-direction: column; gap: 20px; overflow-y: auto; padding-right: 10px; }
+        
+        .control-group { background: var(--panel-bg); padding: 15px; border-radius: 10px; }
+        .group-title { font-size: 0.9rem; font-weight: bold; color: var(--accent-blue); margin-bottom: 10px; display: block; }
+        
+        .slider-box { margin-bottom: 15px; }
+        .label-flex { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; }
+        
+        input[type=range] { width: 100%; height: 5px; background: #333; border-radius: 5px; appearance: none; outline: none; }
+        input[type=range]::-webkit-slider-thumb { appearance: none; width: 15px; height: 15px; border-radius: 50%; background: var(--accent-blue); cursor: pointer; }
+
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-action { background: #333; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: 0.2s; }
+        .btn-action:hover { background: var(--accent-blue); }
+
+        /* FILE BUTTONS */
+        .file-controls { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+        .btn-upload { background: #333; color: white; padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; font-weight: bold; }
+        .btn-download { background: var(--accent-purple); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        input[type="file"] { display: none; }
+
+        /* RIGHT PANEL (CANVAS) */
+        .canvas-container {
+            background: #000; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; position: relative; border: 1px dashed #333;
+        }
+        canvas { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        .placeholder-text { position: absolute; color: #555; pointer-events: none; }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <nav>
+        <div class="logo">AI ART <span style="color:var(--accent-blue)">HUB</span></div>
+        <a href="index.html" class="back-btn">← Back to Hub</a>
+    </nav>
+
+    <header class="tool-header">
+        <h1>Pro Photo Editor</h1>
+        <p>Edit, Filter, and Enhance images directly in your browser.</p>
+    </header>
+
+    <div class="guide-box">
+        <div class="guide-steps">
+            <div class="step"><strong>1. Upload</strong><span>Click 'Choose Image' to load any photo.</span></div>
+            <div class="step"><strong>2. Adjust</strong><span>Use sliders for Brightness, Contrast & Saturation.</span></div>
+            <div class="step"><strong>3. Save</strong><span>Download the edited high-quality image.</span></div>
+        </div>
+    </div>
+
+    <div class="workspace">
+        
+        <!-- Controls Panel -->
+        <div class="controls">
+            
+            <!-- Filters -->
+            <div class="control-group">
+                <span class="group-title">Adjustments</span>
+                
+                <div class="slider-box">
+                    <div class="label-flex"><span>Brightness</span><span id="val-bright">100%</span></div>
+                    <input type="range" id="brightness" min="0" max="200" value="100">
+                </div>
+
+                <div class="slider-box">
+                    <div class="label-flex"><span>Contrast</span><span id="val-contrast">100%</span></div>
+                    <input type="range" id="contrast" min="0" max="200" value="100">
+                </div>
+
+                <div class="slider-box">
+                    <div class="label-flex"><span>Saturation</span><span id="val-saturate">100%</span></div>
+                    <input type="range" id="saturation" min="0" max="200" value="100">
+                </div>
+
+                <div class="slider-box">
+                    <div class="label-flex"><span>Grayscale</span><span id="val-gray">0%</span></div>
+                    <input type="range" id="grayscale" min="0" max="100" value="0">
+                </div>
+            </div>
+
+            <!-- Transform -->
+            <div class="control-group">
+                <span class="group-title">Transform</span>
+                <div class="btn-group">
+                    <button class="btn-action" onclick="rotate(-90)">↺ Left</button>
+                    <button class="btn-action" onclick="rotate(90)">↻ Right</button>
+                    <button class="btn-action" onclick="flip('h')">↔ Flip H</button>
+                    <button class="btn-action" onclick="flip('v')">↕ Flip V</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                 <button class="btn-action" onclick="resetFilters()" style="width:100%; background:#ef4444;">Reset All</button>
+            </div>
+
+            <!-- File Actions -->
+            <div class="file-controls">
+                <label for="uploadImg" class="btn-upload">📂 Choose Image</label>
+                <input type="file" id="uploadImg" accept="image/*">
+                <button class="btn-download" onclick="downloadImage()">⬇ Download Image</button>
+            </div>
+        </div>
+
+        <!-- Canvas Display -->
+        <div class="canvas-container">
+            <span class="placeholder-text" id="placeholder">No Image Loaded</span>
+            <canvas id="canvas"></canvas>
+        </div>
+
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('uploadImg');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const placeholder = document.getElementById('placeholder');
+
+        // Sliders
+        const brightness = document.getElementById('brightness');
+        const contrast = document.getElementById('contrast');
+        const saturation = document.getElementById('saturation');
+        const grayscale = document.getElementById('grayscale');
+
+        // Variables
+        let img = new Image();
+        let rotation = 0;
+        let flipH = 1;
+        let flipV = 1;
+
+        // 1. Upload Logic
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if(!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = () => {
+                img.src = reader.result;
+            }
+            reader.readAsDataURL(file);
+        });
+
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            placeholder.style.display = 'none';
+            resetFilters(); // Reset on new image
+            draw();
+        }
+
+        // 2. Draw Logic (Applies filters)
+        function draw() {
+            if(!img.src) return;
+
+            // Apply Filters via CSS syntax for Canvas
+            // Note: Canvas filter API is supported in modern browsers
+            const filterString = `brightness(${brightness.value}%) contrast(${contrast.value}%) saturate(${saturation.value}%) grayscale(${grayscale.value}%)`;
+            ctx.filter = filterString;
+
+            // Clear and Save
+            ctx.save();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Handle Rotation & Flip logic
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate(rotation * Math.PI / 180);
+            ctx.scale(flipH, flipV);
+            
+            // Draw Image Logic based on rotation to keep it centered
+            if(rotation === 90 || rotation === 270 || rotation === -90 || rotation === -270) {
+                 // Swap width/height for canvas if needed (Advanced logic skipped for simple square draw)
+                 // For simple version, we draw image centered
+            }
+            
+            ctx.drawImage(img, -img.width / 2, -img.height / 2);
+            
+            ctx.restore();
+        }
+
+        // 3. Event Listeners for Sliders
+        const sliders = [brightness, contrast, saturation, grayscale];
+        sliders.forEach(slider => {
+            slider.addEventListener('input', () => {
+                // Update text values
+                document.getElementById(`val-bright`).innerText = brightness.value + "%";
+                document.getElementById(`val-contrast`).innerText = contrast.value + "%";
+                document.getElementById(`val-saturate`).innerText = saturation.value + "%";
+                document.getElementById(`val-gray`).innerText = grayscale.value + "%";
+                draw();
+            });
+        });
+
+        // 4. Transform Functions
+        function rotate(deg) {
+            rotation += deg;
+            draw();
+        }
+
+        function flip(dir) {
+            if(dir === 'h') flipH = flipH === 1 ? -1 : 1;
+            if(dir === 'v') flipV = flipV === 1 ? -1 : 1;
+            draw();
+        }
+
+        function resetFilters() {
+            brightness.value = 100;
+            contrast.value = 100;
+            saturation.value = 100;
+            grayscale.value = 0;
+            rotation = 0;
+            flipH = 1;
+            flipV = 1;
+            // Update text
+            document.getElementById(`val-bright`).innerText = "100%";
+            document.getElementById(`val-contrast`).innerText = "100%";
+            document.getElementById(`val-saturate`).innerText = "100%";
+            document.getElementById(`val-gray`).innerText = "0%";
+            draw();
+        }
+
+        // 5. Download
+        function downloadImage() {
+            if(!img.src) { alert("Please upload an image first!"); return; }
+            
+            const link = document.createElement('a');
+            link.download = 'edited-photo.jpg';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+<!-- 👇 SECURITY CHECK CODE (इसे </body> से ठीक पहले पेस्ट करें) 👇 -->
+
+<!-- 1. Loading Screen (जब तक चेक हो रहा है) -->
+<div id="auth-loader" style="position: fixed; inset: 0; background: #050507; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div style="width: 50px; height: 50px; border: 4px solid #a855f7; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <p style="color: gray; margin-top: 10px; font-family: sans-serif; font-size: 12px; letter-spacing: 2px;">VERIFYING ACCESS...</p>
+    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+</div>
+
+<!-- 2. Logic Script -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    // आपकी API Keys (जो आपने दी थीं)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJDymW01_yensm3h-O8kO3kcYnKPb_NRE",
+      authDomain: "aiartwebsite.firebaseapp.com",
+      projectId: "aiartwebsite",
+      storageBucket: "aiartwebsite.firebasestorage.app",
+      messagingSenderId: "183698414868",
+      appId: "1:183698414868:web:a699d15b1f6c3c32123601"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // चेक करो: यूजर लॉगिन है या नहीं?
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // ✅ अगर लॉगिन है -> लोडिंग हटाओ और टूल दिखाओ
+            document.getElementById('auth-loader').style.display = 'none';
+        } else {
+            // ❌ अगर लॉगिन नहीं है -> लॉगिन पेज पर भेजो
+            window.location.href = "login.html";
+        }
+    });
+</script>

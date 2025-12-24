@@ -1,0 +1,272 @@
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9HXMZGYJRY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-9HXMZGYJRY');
+</script>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to PDF | AI ART HUB</title>
+    
+    <!-- jsPDF Library (No API Key Needed) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        /* --- THEME COLORS --- */
+        :root { --bg-color: #050507; --card-bg: #121216; --text-main: #ffffff; --text-muted: #a1a1aa; --accent-red: #ef4444; --accent-orange: #f97316; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        
+        /* Glow Effect */
+        .bg-glow { position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none; }
+
+        /* NAV */
+        nav { width: 100%; max-width: 1000px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-top: 10px; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
+        .back-btn { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .back-btn:hover { color: white; }
+
+        .tool-header { text-align: center; max-width: 700px; margin-bottom: 30px; }
+        .tool-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+
+        /* HOW TO USE */
+        .guide-box { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; padding: 25px; margin-bottom: 40px; width: 100%; max-width: 800px; }
+        .guide-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .step strong { display:block; margin-bottom:5px; color:white; } .step span{ color:var(--text-muted); font-size:0.9rem; }
+        .step-icon { font-size: 1.5rem; margin-bottom: 5px; }
+        @media (max-width: 600px) { .guide-steps { grid-template-columns: 1fr; } }
+
+        /* WORKSPACE */
+        .workspace { width: 100%; max-width: 800px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 30px; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed rgba(255,255,255,0.2); border-radius: 12px;
+            padding: 40px; text-align: center; cursor: pointer;
+            transition: 0.3s; background: rgba(255,255,255,0.02);
+        }
+        .upload-area:hover { border-color: var(--accent-red); background: rgba(239, 68, 68, 0.05); }
+        .file-input { display: none; }
+
+        /* Preview List */
+        .preview-list {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px; margin-top: 10px;
+        }
+        .preview-item {
+            position: relative; height: 100px; border-radius: 8px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+        .count-badge {
+            position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.7);
+            color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px;
+        }
+
+        /* Buttons */
+        .btn-convert {
+            background: linear-gradient(135deg, #ef4444, #f97316); color: white;
+            border: none; padding: 15px; border-radius: 8px; font-weight: bold;
+            cursor: pointer; width: 100%; font-size: 1.1rem; margin-top: 10px;
+            transition: 0.2s; opacity: 0.5; pointer-events: none; /* Disabled initially */
+        }
+        .btn-convert.active { opacity: 1; pointer-events: all; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+        .btn-convert:hover { transform: translateY(-2px); }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <nav>
+        <div class="logo">AI ART <span style="color:var(--accent-red)">HUB</span></div>
+        <a href="index.html" class="back-btn">← Back to Hub</a>
+    </nav>
+
+    <header class="tool-header">
+        <h1>Image to PDF Converter</h1>
+        <p>Convert multiple JPG/PNG images into a single professional PDF document.</p>
+    </header>
+
+    <div class="guide-box">
+        <div class="guide-steps">
+            <div class="step"><div class="step-icon">📂</div><strong>1. Select Images</strong><span>Upload multiple photos at once (JPG, PNG).</span></div>
+            <div class="step"><div class="step-icon">📄</div><strong>2. Auto-Format</strong><span>Tool automatically fits images to A4 pages.</span></div>
+            <div class="step"><div class="step-icon">⬇️</div><strong>3. Download PDF</strong><span>Get your combined PDF file instantly.</span></div>
+        </div>
+    </div>
+
+    <div class="workspace">
+        
+        <!-- Upload Zone -->
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <span style="font-size: 3rem;">☁️</span>
+            <h3 style="margin: 10px 0;">Click to Upload Images</h3>
+            <p style="color:var(--text-muted); font-size:0.9rem;">Supports multiple files selection</p>
+            <input type="file" id="fileInput" class="file-input" multiple accept="image/*">
+        </div>
+
+        <!-- Preview Area -->
+        <div class="preview-list" id="previewList"></div>
+
+        <button class="btn-convert" id="convertBtn" onclick="generatePDF()">📄 Convert to PDF</button>
+        <p id="statusMsg" style="text-align:center; color:var(--text-muted); font-size:0.9rem; display:none;">Generating PDF...</p>
+
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const previewList = document.getElementById('previewList');
+        const convertBtn = document.getElementById('convertBtn');
+        const statusMsg = document.getElementById('statusMsg');
+        
+        let loadedImages = [];
+
+        // 1. Handle File Selection
+        fileInput.addEventListener('change', (e) => {
+            const files = e.target.files;
+            if (files.length > 0) {
+                loadedImages = []; // Clear previous
+                previewList.innerHTML = ''; // Clear UI
+                
+                Array.from(files).forEach((file, index) => {
+                    if(!file.type.startsWith('image/')) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        // Store image data
+                        loadedImages.push(event.target.result);
+                        
+                        // Show Preview
+                        const div = document.createElement('div');
+                        div.className = 'preview-item';
+                        div.innerHTML = `<img src="${event.target.result}"><span class="count-badge">${index + 1}</span>`;
+                        previewList.appendChild(div);
+
+                        // Enable button if images exist
+                        if(loadedImages.length > 0) {
+                            convertBtn.classList.add('active');
+                            convertBtn.innerText = `Convert ${loadedImages.length} Images to PDF`;
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+
+        // 2. Generate PDF Logic
+        async function generatePDF() {
+            if(loadedImages.length === 0) return;
+
+            // UI Feedback
+            convertBtn.disabled = true;
+            statusMsg.style.display = 'block';
+            
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4'); // Portrait, Millimeters, A4 Size
+            
+            const pageWidth = 210;
+            const pageHeight = 297;
+            const margin = 10;
+
+            for (let i = 0; i < loadedImages.length; i++) {
+                const imgData = loadedImages[i];
+                
+                // Add new page for every image except the first one
+                if (i > 0) pdf.addPage();
+
+                // Get Image Properties to Maintain Aspect Ratio
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pageWidth - (margin * 2);
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                // Check if image is taller than page, then scale by height instead
+                let finalW = pdfWidth;
+                let finalH = pdfHeight;
+                
+                if (finalH > (pageHeight - margin * 2)) {
+                    finalH = pageHeight - (margin * 2);
+                    finalW = (imgProps.width * finalH) / imgProps.height;
+                }
+
+                // Center Image
+                const x = (pageWidth - finalW) / 2;
+                const y = (pageHeight - finalH) / 2;
+
+                pdf.addImage(imgData, 'JPEG', x, y, finalW, finalH);
+            }
+
+            // Save
+            pdf.save(`document-${Date.now()}.pdf`);
+            
+            // Reset UI
+            statusMsg.style.display = 'none';
+            convertBtn.disabled = false;
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 👇 SECURITY CHECK CODE (इसे </body> से ठीक पहले पेस्ट करें) 👇 -->
+
+<!-- 1. Loading Screen (जब तक चेक हो रहा है) -->
+<div id="auth-loader" style="position: fixed; inset: 0; background: #050507; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div style="width: 50px; height: 50px; border: 4px solid #a855f7; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <p style="color: gray; margin-top: 10px; font-family: sans-serif; font-size: 12px; letter-spacing: 2px;">VERIFYING ACCESS...</p>
+    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+</div>
+
+<!-- 2. Logic Script -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    // आपकी API Keys (जो आपने दी थीं)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJDymW01_yensm3h-O8kO3kcYnKPb_NRE",
+      authDomain: "aiartwebsite.firebaseapp.com",
+      projectId: "aiartwebsite",
+      storageBucket: "aiartwebsite.firebasestorage.app",
+      messagingSenderId: "183698414868",
+      appId: "1:183698414868:web:a699d15b1f6c3c32123601"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // चेक करो: यूजर लॉगिन है या नहीं?
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // ✅ अगर लॉगिन है -> लोडिंग हटाओ और टूल दिखाओ
+            document.getElementById('auth-loader').style.display = 'none';
+        } else {
+            // ❌ अगर लॉगिन नहीं है -> लॉगिन पेज पर भेजो
+            window.location.href = "login.html";
+        }
+    });
+              </script>

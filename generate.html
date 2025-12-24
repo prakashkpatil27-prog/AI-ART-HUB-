@@ -357,6 +357,133 @@
 
 
 
+
+
+
+
+
+
+
+
+  
+<!-- FUTURE UPDATES / TRUST BOX -->
+<style>
+    .roadmap-box {
+        background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(18, 18, 22, 0.8) 100%);
+        border: 1px solid rgba(168, 85, 247, 0.3); /* Purple Border */
+        border-radius: 16px;
+        padding: 40px;
+        margin-top: 60px;
+        margin-bottom: 40px;
+        width: 100%;
+        max-width: 1000px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    }
+
+    /* Animated Border Effect */
+    .roadmap-box::before {
+        content: '';
+        position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+        background: linear-gradient(to bottom, #a855f7, #ec4899);
+        box-shadow: 0 0 15px #a855f7;
+    }
+
+    .roadmap-header {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 30px; flex-wrap: wrap; gap: 15px;
+    }
+
+    .roadmap-title h2 { font-size: 2rem; margin-bottom: 5px; background: linear-gradient(to right, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .roadmap-title p { color: var(--text-muted); font-size: 1rem; }
+
+    .status-pill {
+        background: rgba(16, 185, 129, 0.15); color: #10b981;
+        padding: 8px 16px; border-radius: 30px; font-size: 0.85rem; font-weight: bold;
+        border: 1px solid rgba(16, 185, 129, 0.3); display: flex; align-items: center; gap: 8px;
+    }
+    .pulse-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse-green 2s infinite; }
+    @keyframes pulse-green { 0% { opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { opacity: 1; box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { opacity: 0; } }
+
+    /* GRID FOR FEATURES */
+    .roadmap-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+    }
+
+    .roadmap-item {
+        background: rgba(255,255,255,0.02);
+        padding: 20px; border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: transform 0.3s;
+    }
+    .roadmap-item:hover { transform: translateY(-3px); border-color: rgba(168, 85, 247, 0.3); }
+
+    .r-icon { font-size: 1.8rem; margin-bottom: 15px; display: block; }
+    .r-head { font-size: 1.1rem; font-weight: bold; color: white; margin-bottom: 8px; }
+    .r-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
+
+    .highlight { color: #ec4899; font-weight: 600; }
+</style>
+
+<div class="roadmap-box">
+    <div class="roadmap-header">
+        <div class="roadmap-title">
+            <h2>🚀 The Future is Loading...</h2>
+            <p>We are constantly expanding our AI ecosystem.</p>
+        </div>
+        <div class="status-pill">
+            <div class="pulse-dot"></div>
+            Development in Progress
+        </div>
+    </div>
+
+    <div class="roadmap-grid">
+        <!-- Item 1 -->
+        <div class="roadmap-item">
+            <span class="r-icon">🧪</span>
+            <div class="r-head">R&D Lab Active</div>
+            <p class="r-desc">
+                Our developers are currently experimenting with <span class="highlight">Video AI</span> and <span class="highlight">Audio Noise Removal</span> tools.
+            </p>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="roadmap-item">
+            <span class="r-icon">⚡</span>
+            <div class="r-head">Performance Boost</div>
+            <p class="r-desc">
+                We are optimizing the core engine to make these tools run 2x faster on <span class="highlight">Mobile Devices</span> without lag.
+            </p>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="roadmap-item">
+            <span class="r-icon">🔒</span>
+            <div class="r-head">Privacy First</div>
+            <p class="r-desc">
+                We guarantee that your data will <strong>never</strong> leave your device. We are building a truly <span class="highlight">Serverless Future</span>.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
     
 
     <!-- 🔥 FIREBASE SECURITY SCRIPT 🔥 -->

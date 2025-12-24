@@ -1,0 +1,275 @@
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9HXMZGYJRY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-9HXMZGYJRY');
+</script>
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live MarkNotes | AI ART HUB</title>
+    
+    <!-- Marked.js for Markdown Parsing (Lightweight CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        /* --- THEME COLORS --- */
+        :root { --bg-color: #050507; --card-bg: #121216; --input-bg: #1a1a20; --text-main: #ffffff; --text-muted: #a1a1aa; --accent-emerald: #10b981; --border: rgba(255, 255, 255, 0.1); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        
+        /* Glow Effect */
+        .bg-glow { position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none; }
+
+        /* NAV */
+        nav { width: 100%; max-width: 1200px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-top: 10px; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
+        .back-btn { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .back-btn:hover { color: white; }
+
+        .tool-header { text-align: center; margin-bottom: 30px; }
+        .tool-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+
+        /* HOW TO USE */
+        .guide-box { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 20px; margin-bottom: 30px; width: 100%; max-width: 1200px; }
+        .guide-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .step strong { display:block; margin-bottom:5px; color:white; } .step span{ color:var(--text-muted); font-size:0.9rem; }
+        .step-icon { font-size: 1.5rem; margin-bottom: 5px; }
+        @media (max-width: 600px) { .guide-steps { grid-template-columns: 1fr; } }
+
+        /* EDITOR WORKSPACE */
+        .workspace {
+            width: 100%; max-width: 1200px; height: 70vh;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; overflow: hidden;
+        }
+        @media (max-width: 768px) { .workspace { grid-template-columns: 1fr; height: auto; min-height: 800px; } }
+
+        /* LEFT: EDITOR */
+        .editor-pane { display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+        
+        .toolbar {
+            padding: 10px; background: var(--input-bg); border-bottom: 1px solid var(--border);
+            display: flex; gap: 8px; overflow-x: auto;
+        }
+        .tool-btn {
+            background: rgba(255,255,255,0.05); color: #ccc; border: none; padding: 5px 10px;
+            border-radius: 4px; cursor: pointer; font-weight: bold; font-family: monospace;
+        }
+        .tool-btn:hover { background: var(--accent-emerald); color: black; }
+
+        textarea {
+            flex-grow: 1; background: var(--card-bg); color: #e5e5e5; border: none;
+            padding: 20px; resize: none; outline: none; font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 1rem; line-height: 1.6;
+        }
+
+        /* RIGHT: PREVIEW */
+        .preview-pane {
+            padding: 30px; overflow-y: auto; background: #0d0d10;
+        }
+        
+        /* Markdown Styling inside Preview */
+        .preview-content h1, .preview-content h2 { border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; color: var(--accent-emerald); }
+        .preview-content p { margin-bottom: 15px; line-height: 1.7; color: #ddd; }
+        .preview-content code { background: #222; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #f97316; }
+        .preview-content pre { background: #1a1a1a; padding: 15px; border-radius: 8px; overflow-x: auto; margin-bottom: 20px; }
+        .preview-content blockquote { border-left: 4px solid var(--accent-emerald); padding-left: 15px; color: var(--text-muted); font-style: italic; }
+        .preview-content ul { padding-left: 20px; margin-bottom: 15px; }
+
+        /* FOOTER ACTIONS */
+        .action-bar {
+            width: 100%; max-width: 1200px; margin-top: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .status { color: var(--text-muted); font-size: 0.9rem; }
+        .btn-save {
+            background: var(--accent-emerald); color: black; border: none;
+            padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer;
+        }
+        .btn-save:hover { opacity: 0.9; }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <nav>
+        <div class="logo">AI ART <span style="color:var(--accent-emerald)">HUB</span></div>
+        <a href="index.html" class="back-btn">← Back to Hub</a>
+    </nav>
+
+    <header class="tool-header">
+        <h1>Live MarkNotes Editor</h1>
+        <p>Distraction-free writing with auto-save and real-time preview.</p>
+    </header>
+
+    <div class="guide-box">
+        <div class="guide-steps">
+            <div class="step"><div class="step-icon">📝</div><strong>1. Write</strong><span>Type on the left using Markdown (Use # for titles, ** for bold).</span></div>
+            <div class="step"><div class="step-icon">👁️</div><strong>2. Preview</strong><span>See your document formatted instantly on the right.</span></div>
+            <div class="step"><div class="step-icon">💾</div><strong>3. Auto-Save</strong><span>Text is saved to your browser automatically. Download anytime.</span></div>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <!-- Left Side -->
+        <div class="editor-pane">
+            <div class="toolbar">
+                <button class="tool-btn" onclick="insertText('# ')" title="Heading">H1</button>
+                <button class="tool-btn" onclick="insertText('## ')" title="Sub-heading">H2</button>
+                <button class="tool-btn" onclick="insertText('**Bold**')" title="Bold">B</button>
+                <button class="tool-btn" onclick="insertText('*Italic*')" title="Italic">I</button>
+                <button class="tool-btn" onclick="insertText('- ')" title="List">• List</button>
+                <button class="tool-btn" onclick="insertText('`Code`')" title="Code">Code</button>
+                <button class="tool-btn" onclick="insertText('[Link](url)')" title="Link">Link</button>
+            </div>
+            <textarea id="editor" placeholder="# Start writing here..."></textarea>
+        </div>
+
+        <!-- Right Side -->
+        <div class="preview-pane">
+            <div id="preview" class="preview-content"></div>
+        </div>
+    </div>
+
+    <div class="action-bar">
+        <div class="status" id="statusMsg">Autosaved just now</div>
+        <button class="btn-save" onclick="downloadFile()">⬇ Download .md File</button>
+    </div>
+
+    <script>
+        const editor = document.getElementById('editor');
+        const preview = document.getElementById('preview');
+        const statusMsg = document.getElementById('statusMsg');
+
+        // 1. Initial Load (Check LocalStorage)
+        window.onload = () => {
+            const savedData = localStorage.getItem('markNotes_data');
+            if (savedData) {
+                editor.value = savedData;
+            } else {
+                // Default Welcome Text
+                editor.value = "# Welcome to MarkNotes\n\nStart typing on the **left**, and see the result on the **right**.\n\n- It works offline\n- Auto-saves instantly\n- No servers involved\n\n## Happy Writing! 🚀";
+            }
+            updatePreview();
+        };
+
+        // 2. Real-time Update & Auto-Save
+        editor.addEventListener('input', () => {
+            updatePreview();
+            saveData();
+        });
+
+        function updatePreview() {
+            const text = editor.value;
+            // Use Marked.js to parse markdown to HTML
+            preview.innerHTML = marked.parse(text);
+        }
+
+        function saveData() {
+            localStorage.setItem('markNotes_data', editor.value);
+            
+            // Visual Feedback
+            const now = new Date();
+            statusMsg.innerText = "Autosaved at " + now.toLocaleTimeString();
+        }
+
+        // 3. Toolbar Logic
+        function insertText(syntax) {
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            const text = editor.value;
+            
+            const before = text.substring(0, start);
+            const after = text.substring(end, text.length);
+            
+            editor.value = before + syntax + after;
+            
+            updatePreview();
+            saveData();
+            editor.focus();
+        }
+
+        // 4. Download Logic
+        function downloadFile() {
+            const text = editor.value;
+            const blob = new Blob([text], { type: "text/markdown" });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "my-notes.md";
+            document.body.appendChild(a);
+            a.click();
+            
+            // Cleanup
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+<!-- 👇 SECURITY CHECK CODE (इसे </body> से ठीक पहले पेस्ट करें) 👇 -->
+
+<!-- 1. Loading Screen (जब तक चेक हो रहा है) -->
+<div id="auth-loader" style="position: fixed; inset: 0; background: #050507; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div style="width: 50px; height: 50px; border: 4px solid #a855f7; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <p style="color: gray; margin-top: 10px; font-family: sans-serif; font-size: 12px; letter-spacing: 2px;">VERIFYING ACCESS...</p>
+    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+</div>
+
+<!-- 2. Logic Script -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    // आपकी API Keys (जो आपने दी थीं)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJDymW01_yensm3h-O8kO3kcYnKPb_NRE",
+      authDomain: "aiartwebsite.firebaseapp.com",
+      projectId: "aiartwebsite",
+      storageBucket: "aiartwebsite.firebasestorage.app",
+      messagingSenderId: "183698414868",
+      appId: "1:183698414868:web:a699d15b1f6c3c32123601"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // चेक करो: यूजर लॉगिन है या नहीं?
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // ✅ अगर लॉगिन है -> लोडिंग हटाओ और टूल दिखाओ
+            document.getElementById('auth-loader').style.display = 'none';
+        } else {
+            // ❌ अगर लॉगिन नहीं है -> लॉगिन पेज पर भेजो
+            window.location.href = "login.html";
+        }
+    });
+</script>

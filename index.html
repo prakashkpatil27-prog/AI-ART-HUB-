@@ -246,7 +246,6 @@
 
 
 
-
   <!-- PLATFORM OVERVIEW & DETAILS SECTION -->
 <style>
     .about-section {
@@ -254,27 +253,40 @@
         max-width: 1000px;
         margin: 60px 0;
         padding: 40px;
-        background: linear-gradient(180deg, rgba(18, 18, 22, 0.6) 0%, rgba(5, 5, 7, 1) 100%);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        /* हल्का बैंगनी टोन बैकग्राउंड में */
+        background: linear-gradient(180deg, rgba(18, 18, 22, 0.8) 0%, rgba(5, 5, 7, 1) 100%);
+        border: 1px solid rgba(168, 85, 247, 0.2);
         border-radius: 20px;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 0 50px rgba(0,0,0,0.5);
     }
 
-    /* Subtle grid background pattern */
+    /* Background Pattern */
     .about-section::after {
         content: "";
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-image: linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
         background-size: 30px 30px;
         z-index: -1;
         opacity: 0.5;
     }
 
     .about-header { text-align: left; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
-    .about-header h2 { font-size: 2.2rem; margin-bottom: 10px; background: linear-gradient(to right, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .about-header .tagline { color: var(--accent-purple); font-weight: bold; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; }
+    
+    /* GRADIENT HEADLINE */
+    .about-header h2 { 
+        font-size: 2.5rem; 
+        margin-bottom: 10px; 
+        background: linear-gradient(135deg, #ffffff 0%, #a855f7 50%, #ec4899 100%);
+        -webkit-background-clip: text; 
+        -webkit-text-fill-color: transparent; 
+        font-weight: 800;
+    }
+    
+    .about-header .tagline { color: #ec4899; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; display: flex; align-items: center; gap: 10px; }
+    .tagline::before { content:''; width: 30px; height: 2px; background: #ec4899; display: block; }
 
     /* INFO GRID */
     .info-grid {
@@ -286,12 +298,20 @@
     .info-card {
         background: rgba(255, 255, 255, 0.02);
         padding: 25px; border-radius: 12px;
-        border-left: 3px solid var(--accent-pink);
-        transition: transform 0.3s;
+        border-left: 3px solid #a855f7; /* Default Purple */
+        transition: transform 0.3s, background 0.3s;
     }
-    .info-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.04); }
-    .info-card h3 { font-size: 1.2rem; margin-bottom: 10px; color: white; display: flex; align-items: center; gap: 10px; }
+    .info-card:hover { transform: translateY(-5px); background: rgba(168, 85, 247, 0.05); }
+    
+    .info-card h3 { font-size: 1.2rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+    
     .info-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+    
+    /* COLORFUL TEXT HIGHLIGHTS */
+    .txt-purple { color: #a855f7; font-weight: bold; }
+    .txt-green { color: #10b981; font-weight: bold; }
+    .txt-blue { color: #3b82f6; font-weight: bold; }
+    .txt-pink { color: #ec4899; font-weight: bold; }
 
     /* TOOL LIST STYLE */
     .tool-list {
@@ -300,22 +320,31 @@
         padding: 30px; border-radius: 15px;
         border: 1px solid rgba(168, 85, 247, 0.2);
     }
-    .list-header { font-size: 1.1rem; color: white; margin-bottom: 20px; font-weight: bold; }
+    .list-header { font-size: 1.1rem; color: white; margin-bottom: 20px; font-weight: bold; border-left: 4px solid #ec4899; padding-left: 10px; }
     
     .tech-tags { display: flex; flex-wrap: wrap; gap: 10px; }
     .tag {
         background: rgba(255,255,255,0.05); color: #ccc;
         padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.1);
+        transition: 0.3s;
     }
-    .tag.highlight { border-color: var(--accent-purple); color: var(--accent-purple); background: rgba(168, 85, 247, 0.1); }
+    .tag:hover { background: rgba(255,255,255,0.1); color: white; }
+    
+    /* Highlighted Tags */
+    .tag.highlight { border-color: #a855f7; color: #a855f7; background: rgba(168, 85, 247, 0.1); font-weight: bold; }
 
-    /* TRUST BADGE FOOTER */
+    /* TRUST FOOTER */
     .trust-footer {
         margin-top: 40px; text-align: center;
         padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);
     }
     .trust-text { color: var(--text-muted); font-size: 0.9rem; }
-    .trust-icons { font-size: 1.5rem; margin-top: 10px; letter-spacing: 15px; opacity: 0.7; }
+    .trust-icons { 
+        font-size: 1.5rem; margin-top: 10px; letter-spacing: 15px; 
+        background: linear-gradient(90deg, #a855f7, #ec4899); 
+        -webkit-background-clip: text; 
+        -webkit-text-fill-color: transparent;
+    }
 
 </style>
 
@@ -326,29 +355,29 @@
     </div>
 
     <div class="info-grid">
-        <!-- Card 1: Architecture -->
+        <!-- Card 1: Architecture (Purple Theme) -->
         <div class="info-card" style="border-left-color: #a855f7;">
-            <h3>⚡ Serverless Architecture</h3>
+            <h3 style="color: #a855f7;">⚡ Serverless Architecture</h3>
             <p>
-                Unlike traditional AI that relies on expensive cloud GPUs, our platform utilizes <strong>Edge Computing Technology</strong>. 
-                Every calculation, from <em>Face Mesh Detection</em> to <em>4K Image Upscaling</em>, is processed locally on your device's CPU/GPU via WebAssembly (WASM).
+                Unlike traditional AI that relies on expensive cloud GPUs, our platform utilizes <span class="txt-purple">Edge Computing Technology</span>. 
+                Every calculation, from <em>Face Mesh Detection</em> to <em>4K Image Upscaling</em>, is processed locally on your device's CPU/GPU via <span class="txt-purple">WebAssembly (WASM)</span>.
             </p>
         </div>
 
-        <!-- Card 2: Privacy -->
+        <!-- Card 2: Privacy (Green Theme) -->
         <div class="info-card" style="border-left-color: #10b981;">
-            <h3>🛡️ Zero-Knowledge Privacy</h3>
+            <h3 style="color: #10b981;">🛡️ Zero-Knowledge Privacy</h3>
             <p>
-                We adhere to a strict <strong>Client-Side Only</strong> protocol. Your photos, passwords, and documents never leave your browser session. 
-                We eliminate the risk of data breaches by ensuring no data transmission to external servers.
+                We adhere to a strict <span class="txt-green">Client-Side Only</span> protocol. Your photos, passwords, and documents never leave your browser session. 
+                We eliminate the risk of data breaches by ensuring <span class="txt-green">No Data Transmission</span> to external servers.
             </p>
         </div>
 
-        <!-- Card 3: Performance -->
+        <!-- Card 3: Performance (Blue Theme) -->
         <div class="info-card" style="border-left-color: #3b82f6;">
-            <h3>🚀 Neural Network Logic</h3>
+            <h3 style="color: #3b82f6;">🚀 Neural Network Logic</h3>
             <p>
-                We integrate advanced libraries like <strong>TensorFlow.js</strong> and <strong>MediaPipe</strong> directly into the DOM. 
+                We integrate advanced libraries like <span class="txt-blue">TensorFlow.js</span> and <span class="txt-blue">MediaPipe</span> directly into the DOM. 
                 This results in millisecond-latency performance for tools like <em>Reflex Titan</em> and <em>Real-time Object Detection</em>.
             </p>
         </div>
@@ -378,13 +407,17 @@
     <div class="trust-footer">
         <p class="trust-text">
             Engineered for Professionals, Creators, and Developers. <br>
-            <strong>Open Source Philosophy. Maximum Security. No Hidden APIs.</strong>
+            <strong class="txt-pink">Open Source Philosophy. Maximum Security. No Hidden APIs.</strong>
         </p>
         <div class="trust-icons">
             🔒 ⚡ 🤖 🌐 🛡️
         </div>
     </div>
 </div>
+
+
+  
+
 
 
 

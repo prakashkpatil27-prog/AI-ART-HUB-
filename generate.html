@@ -1,0 +1,346 @@
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9HXMZGYJRY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-9HXMZGYJRY');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Dashboard - AI ART HUB</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #050507;
+            --card-bg: #121216;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+            --gradient-main: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        /* Background Glow */
+        .bg-glow {
+            position: fixed; top: -10%; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1; pointer-events: none;
+        }
+
+        /* Header */
+        header { text-align: center; margin-bottom: 40px; max-width: 800px; padding: 0 20px; }
+        .badge {
+            background: rgba(255, 255, 255, 0.1); padding: 5px 15px; border-radius: 50px;
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+            border: 1px solid rgba(255, 255, 255, 0.1); color: var(--accent-pink);
+            display: inline-block; margin-bottom: 15px;
+        }
+        h1 { font-size: 3rem; line-height: 1.1; font-weight: 800; margin-bottom: 15px; }
+        .gradient-text {
+            background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block;
+        }
+        p.subtitle { color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin-bottom: 30px; }
+
+        /* Grid */
+        .tools-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px; width: 100%; max-width: 1200px; padding: 20px; padding-bottom: 50px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px; padding: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .card:hover {
+            transform: translateY(-5px); border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+        .card-icon { font-size: 2rem; margin-bottom: 15px; }
+        .card h3 { font-size: 1.25rem; margin-bottom: 10px; }
+        .card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; flex-grow: 1; }
+
+        /* Buttons */
+        .btn-launch {
+            background: var(--gradient-main); color: white; border: none; padding: 12px;
+            border-radius: 8px; font-weight: 600; text-align: center; text-decoration: none; display: block;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); transition: opacity 0.2s;
+        }
+        .btn-launch:hover { opacity: 0.9; box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5); }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-[#050507]/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+            <a href="index.html" class="flex items-center space-x-2 text-white no-underline">
+                <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-layer-group text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-bold">AI ART <span class="text-purple-400">HUB</span></span>
+            </a>
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-gray-400 hover:text-white text-sm no-underline">Home</a>
+                <!-- Profile Image (Will update if logged in) -->
+                <a href="profile.html" class="w-8 h-8 rounded-full bg-gray-700 overflow-hidden border border-white/20">
+                    <img id="navProfileImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-full h-full object-cover">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header>
+        <div class="badge">EXPLORE TOOLS</div>
+        <h1>
+            All Your Creative Tools <br>
+            <span class="gradient-text">In One Place</span>
+        </h1>
+        <p class="subtitle">
+            Browse our collection of powerful AI & Utility tools. <br>
+            <span class="text-purple-400 text-sm">(Login required to use tools)</span>
+        </p>
+    </header>
+
+    <!-- TOOLS GRID (Based on your Screenshot) -->
+    <section class="tools-grid">
+
+        <!-- 1. Image Generator -->
+        <div class="card" style="border-color: rgba(168, 85, 247, 0.6);">
+            <div class="card-icon">🎨</div>
+            <h3>AI Image Generator</h3>
+            <p>Create stunning 8K visuals and anime art from text.</p>
+            <a href="image-tool.html" class="btn-launch">Launch Generator</a>
+        </div>
+
+        <!-- 2. Prompt Generator -->
+        <div class="card">
+            <div class="card-icon">✨</div>
+            <h3>Prompt Enhancer</h3>
+            <p>Create professional inputs for Midjourney & Dall-E.</p>
+            <a href="prompt.html" class="btn-launch">Create Prompt</a>
+        </div>
+
+        <!-- 3. Bio Creator -->
+        <div class="card">
+            <div class="card-icon">📝</div>
+            <h3>Smart Bio Creator</h3>
+            <p>Generate catchy bios for Instagram & LinkedIn.</p>
+            <a href="bio.html" class="btn-launch">Generate Bio</a>
+        </div>
+
+        <!-- 4. Privacy Redactor -->
+        <div class="card">
+            <div class="card-icon">🛡️</div>
+            <h3>Privacy Redactor</h3>
+            <p>Hide emails and phone numbers from text automatically.</p>
+            <a href="redactor.html" class="btn-launch">Launch Redactor</a>
+        </div>
+
+        <!-- 5. Image Compressor -->
+        <div class="card">
+            <div class="card-icon">⚡</div>
+            <h3>Image Compressor</h3>
+            <p>Reduce image size without losing quality.</p>
+            <a href="compressor.html" class="btn-launch">Open Compressor</a>
+        </div>
+
+        <!-- 6. Password Check -->
+        <div class="card">
+            <div class="card-icon">🔐</div>
+            <h3>Password Security</h3>
+            <p>Check how strong your password really is.</p>
+            <a href="password.html" class="btn-launch">Check Strength</a>
+        </div>
+
+        <!-- 7. Palette Generator -->
+        <div class="card">
+            <div class="card-icon">🎨</div>
+            <h3>Color Palette</h3>
+            <p>Extract dominant colors from any image.</p>
+            <a href="palette.html" class="btn-launch">Get Colors</a>
+        </div>
+
+        <!-- 8. Voice Synthesizer -->
+        <div class="card">
+            <div class="card-icon">🗣️</div>
+            <h3>Voice Synthesizer</h3>
+            <p>Convert text to speech instantly.</p>
+            <a href="voice.html" class="btn-launch">Start Speaking</a>
+        </div>
+
+        <!-- 9. QR Generator -->
+        <div class="card">
+            <div class="card-icon">📱</div>
+            <h3>QR Code Matrix</h3>
+            <p>Generate secure QR codes for Links and Wi-Fi.</p>
+            <a href="qr.html" class="btn-launch">Create QR</a>
+        </div>
+
+        <!-- 10. Face Landmarks -->
+        <div class="card">
+            <div class="card-icon">👤</div>
+            <h3>Face Landmarks</h3>
+            <p>Detect face mesh using browser webcam.</p>
+            <a href="face.html" class="btn-launch">Scan Face</a>
+        </div>
+
+        <!-- 11. Sentiment Analysis -->
+        <div class="card">
+            <div class="card-icon">❤️</div>
+            <h3>Sentiment Scanner</h3>
+            <p>Analyze if text is Positive or Negative.</p>
+            <a href="sentiment.html" class="btn-launch">Analyze Text</a>
+        </div>
+
+        <!-- 12. Zen Breathing -->
+        <div class="card">
+            <div class="card-icon">🧘</div>
+            <h3>Zen Breath</h3>
+            <p>Reduce stress with guided visual breathing.</p>
+            <a href="breathe.html" class="btn-launch">Start Breathing</a>
+        </div>
+
+        <!-- 13. Reflex Test -->
+        <div class="card">
+            <div class="card-icon">⚡</div>
+            <h3>Reflex Titan</h3>
+            <p>Test your reaction speed (ms) for gaming.</p>
+            <a href="reflex.html" class="btn-launch">Test Reflex</a>
+        </div>
+
+        <!-- 14. Code Editor (New) -->
+        <div class="card">
+            <div class="card-icon">💻</div>
+            <h3>Code Editor</h3>
+            <p>Write and save HTML/CSS/JS code snippets.</p>
+            <a href="editor.html" class="btn-launch">Open Editor</a>
+        </div>
+
+        <!-- 15. Secure Notes (New) -->
+        <div class="card">
+            <div class="card-icon">🗒️</div>
+            <h3>Secure Notes</h3>
+            <p>Keep your ideas safe and encrypted.</p>
+            <a href="notes.html" class="btn-launch">Open Notes</a>
+        </div>
+
+        <!-- 16. PDF Converter (New) -->
+        <div class="card">
+            <div class="card-icon">📄</div>
+            <h3>PDF Converter</h3>
+            <p>Convert images or text to PDF format.</p>
+            <a href="pdf-converter.html" class="btn-launch">Convert PDF</a>
+        </div>
+
+        <!-- 17. Image Upscaler (New) -->
+        <div class="card">
+            <div class="card-icon">📈</div>
+            <h3>Image Upscaler</h3>
+            <p>Enhance low-res images to high quality.</p>
+            <a href="upscaler.html" class="btn-launch">Upscale Image</a>
+        </div>
+
+        <!-- 18. Object Detection (New) -->
+        <div class="card">
+            <div class="card-icon">🔍</div>
+            <h3>Object Detection</h3>
+            <p>Identify objects in images using AI.</p>
+            <a href="object.html" class="btn-launch">Detect Objects</a>
+        </div>
+
+        <!-- 19. Pose Detection (New) -->
+        <div class="card">
+            <div class="card-icon">💃</div>
+            <h3>Pose Detection</h3>
+            <p>Analyze body movements and poses.</p>
+            <a href="pose.html" class="btn-launch">Detect Pose</a>
+        </div>
+
+        <!-- 20. Image Segment (New) -->
+        <div class="card">
+            <div class="card-icon">✂️</div>
+            <h3>Image Segment</h3>
+            <p>Remove background or segment parts of an image.</p>
+            <a href="segment.html" class="btn-launch">Segment Image</a>
+        </div>
+
+        <!-- 21. Language Detector (New) -->
+        <div class="card">
+            <div class="card-icon">🌐</div>
+            <h3>Language Detector</h3>
+            <p>Identify which language a text is written in.</p>
+            <a href="language.html" class="btn-launch">Detect Language</a>
+        </div>
+
+    </section>
+
+    <!-- 🔥 PASSIVE FIREBASE SCRIPT (No Redirect) 🔥 -->
+    <!-- यह कोड सिर्फ प्रोफाइल फोटो अपडेट करेगा, लॉगिन के लिए फोर्स नहीं करेगा -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // 👇 YOUR CONFIG 👇
+        const firebaseConfig = {
+          apiKey: "AIzaSyCJDymW01_yensm3h-O8kO3kcYnKPb_NRE",
+          authDomain: "aiartwebsite.firebaseapp.com",
+          projectId: "aiartwebsite",
+          storageBucket: "aiartwebsite.firebasestorage.app",
+          messagingSenderId: "183698414868",
+          appId: "1:183698414868:web:a699d15b1f6c3c32123601"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.photoURL) {
+                document.getElementById('navProfileImg').src = user.photoURL;
+            }
+        });
+    </script>
+
+</body>
+              </html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Blog - Tips, Tricks & Future</title>
+    <meta name="description" content="Learn how to use AI art generators, write best prompts, and make money with AI tools.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- 👇 GOOGLE ANALYTICS CODE (यहाँ अपना G-XXXX कोड पेस्ट करें) 👇 -->
+    <!-- (Paste your Analytics code here) -->
+
+    <style>
+        :root { --bg-color: #050507; --text-main: #ffffff; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Outfit', sans-serif; }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover { border-color: rgba(168, 85, 247, 0.5); transform: translateY(-5px); }
+        
+        /* Modal for reading */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; background: #121216; border: 1px solid #333; border-radius: 20px; padding: 30px; }
+    </style>
+</head>
+<body class="pt-24 pb-10">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-[#050507]/90 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+            <a href="index.html" class="flex items-center space-x-2 text-white">
+                <i class="fa-solid fa-arrow-left"></i> <span class="font-bold">Back to Home</span>
+            </a>
+            <span class="text-purple-400 font-bold tracking-widest">AI INSIGHTS</span>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="text-center max-w-3xl mx-auto px-4 mb-12">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4">Master the Art of <span class="text-purple-500">AI</span></h1>
+        <p class="text-gray-400">Tutorials, Prompts, and Secrets to create better images.</p>
+    </div>
+
+    <!-- Blog Grid -->
+    <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <!-- Article 1 -->
+        <div class="glass-card p-6 rounded-2xl cursor-pointer group" onclick="openModal('modal1')">
+            <div class="h-40 bg-purple-900/20 rounded-xl mb-4 flex items-center justify-center text-4xl">🎨</div>
+            <span class="text-xs text-purple-400 font-bold uppercase">Tutorial</span>
+            <h2 class="text-xl font-bold mt-2 mb-2 group-hover:text-purple-400 transition">How to Write Perfect Prompts?</h2>
+            <p class="text-gray-400 text-sm">Stop getting bad results. Learn the secret formula for 8K realistic images.</p>
+            <div class="mt-4 text-sm font-bold text-white">Read Article &rarr;</div>
+        </div>
+
+        <!-- Article 2 -->
+        <div class="glass-card p-6 rounded-2xl cursor-pointer group" onclick="openModal('modal2')">
+            <div class="h-40 bg-pink-900/20 rounded-xl mb-4 flex items-center justify-center text-4xl">💰</div>
+            <span class="text-xs text-pink-400 font-bold uppercase">Money</span>
+            <h2 class="text-xl font-bold mt-2 mb-2 group-hover:text-pink-400 transition">Make Money with AI Art</h2>
+            <p class="text-gray-400 text-sm">5 ways to sell your AI generated images and start a side hustle today.</p>
+            <div class="mt-4 text-sm font-bold text-white">Read Article &rarr;</div>
+        </div>
+
+        <!-- Article 3 -->
+        <div class="glass-card p-6 rounded-2xl cursor-pointer group" onclick="openModal('modal3')">
+            <div class="h-40 bg-blue-900/20 rounded-xl mb-4 flex items-center justify-center text-4xl">🚀</div>
+            <span class="text-xs text-blue-400 font-bold uppercase">Future</span>
+            <h2 class="text-xl font-bold mt-2 mb-2 group-hover:text-blue-400 transition">The Future of AI Tools</h2>
+            <p class="text-gray-400 text-sm">What is coming next in 2025? Will AI replace artists? Let's discuss.</p>
+            <div class="mt-4 text-sm font-bold text-white">Read Article &rarr;</div>
+        </div>
+
+    </div>
+
+    <!-- MODALS (Full Articles) -->
+    
+    <!-- Article 1 Content -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <button onclick="closeModal()" class="float-right text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            <h2 class="text-3xl font-bold mb-4 text-purple-400">How to Write Perfect Prompts?</h2>
+            <div class="text-gray-300 space-y-4 leading-relaxed">
+                <p>Writing a prompt is like casting a spell. If you say "Cat", AI gives a cat. But if you say "A fluffy Persian cat sitting on a golden throne, cinematic lighting, 8k resolution", AI creates a masterpiece.</p>
+                <h3 class="text-xl font-bold text-white">The Formula:</h3>
+                <ul class="list-disc pl-5">
+                    <li><strong>Subject:</strong> What do you want? (e.g., A Robot)</li>
+                    <li><strong>Style:</strong> Cyberpunk, Oil Painting, Anime.</li>
+                    <li><strong>Lighting:</strong> Neon lights, Sunset, Studio lighting.</li>
+                    <li><strong>Quality:</strong> 4k, 8k, highly detailed, sharp focus.</li>
+                </ul>
+                <p>Try this in our generator: <em>"A futuristic city with flying cars, neon rain, blade runner style, hyper-realistic."</em></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Article 2 Content -->
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <button onclick="closeModal()" class="float-right text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            <h2 class="text-3xl font-bold mb-4 text-pink-400">Make Money with AI Art</h2>
+            <div class="text-gray-300 space-y-4 leading-relaxed">
+                <p>Did you know you can sell the images you generate here? Here are 3 ways:</p>
+                <h3 class="text-xl font-bold text-white">1. Print on Demand</h3>
+                <p>Upload your designs to Redbubble or Teespring. People buy t-shirts, you get paid.</p>
+                <h3 class="text-xl font-bold text-white">2. Stock Photos</h3>
+                <p>Sell realistic AI photos on Adobe Stock or Shutterstock.</p>
+                <h3 class="text-xl font-bold text-white">3. Freelancing</h3>
+                <p>Offer services on Fiverr to create custom AI characters for games or stories.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Article 3 Content -->
+    <div id="modal3" class="modal">
+        <div class="modal-content">
+            <button onclick="closeModal()" class="float-right text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            <h2 class="text-3xl font-bold mb-4 text-blue-400">The Future of AI Tools</h2>
+            <div class="text-gray-300 space-y-4 leading-relaxed">
+                <p>AI is evolving fast. In 2025, we expect tools that can generate full movies from text.</p>
+                <p>Our website "AI Art Hub" is constantly updating. Soon we will add Video Generation and 3D Model creation tools.</p>
+                <p>Stay tuned and keep creating!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal() { 
+            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); 
+        }
+    </script>
+
+</body>
+  </html>

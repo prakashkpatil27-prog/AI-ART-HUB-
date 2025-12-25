@@ -501,21 +501,4 @@
           appId: "1:183698414868:web:a699d15b1f6c3c32123601"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        onAuthStateChanged(auth, (user) => {
-            const loader = document.getElementById('auth-loader');
-            if (user) {
-                // ✅ User is logged in
-                if(user.photoURL) document.getElementById('navProfileImg').src = user.photoURL;
-                loader.style.display = 'none';
-            } else {
-                // ❌ User is NOT logged in
-                window.location.href = "login.html";
-            }
-        });
-    </script>
-
-</body>
-            </html>
+        

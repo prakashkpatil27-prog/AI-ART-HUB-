@@ -243,11 +243,17 @@
 
 
 
-  <!-- Navbar के अंदर जहां Links हैं -->
-<div class="hidden md:flex items-center space-x-8">
-    <a href="blog.html" class="text-gray-300 hover:text-white transition">Blog</a> <!-- यह लाइन जोड़ें -->
-    <a href="#features" class="text-gray-300 hover:text-white transition">Features</a>
-    <!-- ... -->
+<!-- Navbar Links Container -->
+<div style="display: flex; align-items: center;">
+    
+    <!-- Normal Link -->
+    <a href="#features" class="nav-link">Features</a>
+    
+    <!-- Professional Button Link -->
+    <a href="blog.html" class="nav-btn-highlight">
+        Blog <span style="font-size: 1.1rem; margin-left: 5px;">🚀</span>
+    </a>
+
 </div>
 
 

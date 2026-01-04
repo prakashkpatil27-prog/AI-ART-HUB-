@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Name Art - AI ART HUB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { background-color: #050507; color: white; font-family: 'Outfit', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .style-card {
+            cursor: pointer; border: 2px solid transparent; transition: all 0.3s;
+        }
+        .style-card:hover, .style-card.selected {
+            border-color: #a855f7; background: rgba(168, 85, 247, 0.2);
+        }
+        
+        /* Magic Message Animation */
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .magic-box-anim { animation: popIn 0.5s ease-out forwards; }
+        
+        /* Loader */
+        #auth-loader {
+            position: fixed; inset: 0; background: #050507; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pt-20 px-4 pb-10">
+
+    <!-- 🔒 SECURITY LOADER -->
+    <div id="auth-loader">
+        <div class="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p class="text-gray-400 text-xs tracking-widest animate-pulse">VERIFYING...</p>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="border-b border-white/10 bg-[#050507]/90 backdrop-blur-md fixed top-0 w-full z-50 left-0">
+        <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+            <a href="generate.html" class="flex items-center space-x-2 text-white">
+                <i class="fa-solid fa-arrow-left"></i> <span class="font-bold">Back</span>
+            </a>
+            <span class="text-purple-400 font-bold">3D NAME ART</span>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto w-full text-center mb-8">
+        <h1 class="text-3xl md:text-5xl font-bold mb-2">Your Name in <span class="text-purple-500">3D Style</span></h1>
+        <p class="text-gray-400">Create viral WhatsApp Status & DP in seconds.</p>
+    </div>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- LEFT COLUMN: Controls -->
+        <div class="flex flex-col gap-6">
+            
+            <!-- Input Box -->
+            <div class="glass-panel p-6 rounded-2xl">
+                <label class="text-xs text-gray-400 uppercase font-bold tracking-wider">Your Name</label>
+                <input type="text" id="nameInput" class="w-full mt-2 mb-6 bg-black/40 border border-white/20 rounded-xl p-4 text-white text-xl font-bold focus:border-purple-500 outline-none" placeholder="Ex: SWAYAM">
+
+                <label class="text-xs text-gray-400 uppercase font-bold tracking-wider">Choose Material</label>
+                <div class="grid grid-cols-3 gap-3 mt-2 mb-6">
+                    <div class="style-card p-3 rounded-lg text-center bg-white/5" onclick="selectStyle('Neon Lights')">
+                        <div class="text-2xl">💡</div><div class="text-xs mt-1">Neon</div>
+                    </div>
+                    <div class="style-card p-3 rounded-lg text-center bg-white/5" onclick="selectStyle('Burning Fire')">
+                        <div class="text-2xl">🔥</div><div class="text-xs mt-1">Fire</div>
+                    </div>
+                    <div class="style-card p-3 rounded-lg text-center bg-white/5" onclick="selectStyle('Shiny Gold')">
+                        <div class="text-2xl">👑</div><div class="text-xs mt-1">Gold</div>
+                    </div>
+                    <div class="style-card p-3 rounded-lg text-center bg-white/5" onclick="selectStyle('Green Jungle Vines')">
+                        <div class="text-2xl">🌿</div><div class="text-xs mt-1">Jungle</div>
+                    </div>
+                    <div class="style-card p-3 rounded-lg text-center bg-white/5" onclick="selectStyle('Blue Ice Crystals')">
+                        <div class="text-2xl">❄️</div><div class="text-xs mt-1">Ice</div>
+                    </div>
+                    <div class="style-card p-3 rounded-lg text-center bg-white/5" onclick="selectStyle('Cyberpunk Circuit')">
+                        <div class="text-2xl">🤖</div><div class="text-xs mt-1">Tech</div>
+                    </div>
+                </div>
+
+                <button id="generateBtn" class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-bold text-lg shadow-lg hover:scale-[1.02] transition">
+                    Create Magic ✨
+                </button>
+            </div>
+
+            <!-- 💡 HOW TO USE BOX (New) -->
+            <div class="glass-panel p-5 rounded-xl border-l-4 border-yellow-500">
+                <h3 class="text-white font-bold mb-3 flex items-center gap-2">
+                    <i class="fa-regular fa-circle-question text-yellow-400"></i> How to Use?
+                </h3>
+                <ul class="space-y-2 text-sm text-gray-300">
+                    <li class="flex gap-2"><span class="text-yellow-500">1.</span> Type your name (Short names work best).</li>
+                    <li class="flex gap-2"><span class="text-yellow-500">2.</span> Select a cool style (Fire, Gold, etc).</li>
+                    <li class="flex gap-2"><span class="text-yellow-500">3.</span> Click 'Create Magic' & wait 5 seconds.</li>
+                    <li class="flex gap-2"><span class="text-yellow-500">4.</span> Read your <b>Secret Message</b> below!</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Preview -->
+        <div class="flex flex-col gap-4">
+            
+            <!-- Image Area -->
+            <div class="glass-panel rounded-2xl h-[400px] relative flex items-center justify-center overflow-hidden bg-black/30">
+                <div id="placeholder" class="text-center">
+                    <div class="text-6xl mb-2">🎨</div>
+                    <p class="text-gray-500">Your 3D Name will appear here</p>
+                </div>
+
+                <div id="loadingState" class="absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-20 hidden">
+                    <div class="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p class="text-purple-300 animate-pulse">Designing your name...</p>
+                </div>
+
+                <img id="resultImage" class="hidden w-full h-full object-contain z-10" src="">
+                
+                <a id="downloadBtn" href="#" download="name-art.jpg" class="hidden absolute bottom-6 right-6 bg-white text-black px-6 py-2 rounded-full font-bold shadow-xl z-30 hover:bg-gray-200">
+                    Download
+                </a>
+            </div>
+
+            <!-- ✨ MAGIC MESSAGE BOX (New) -->
+            <div id="magicBox" class="hidden glass-panel p-6 rounded-2xl text-center border border-purple-500/50 bg-purple-900/10 magic-box-anim">
+                <div class="text-3xl mb-2">🔮</div>
+                <h3 class="text-purple-300 font-bold text-sm uppercase tracking-widest mb-2">AI Prediction for You</h3>
+                <p id="magicText" class="text-xl text-white font-bold italic">"You are destined for greatness!"</p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- LOGIC -->
+    <script>
+        let selectedStyle = 'Neon Lights';
+
+        // Messages Array (AI Predictions)
+        const magicMessages = [
+            "You are so lucky! Great things are coming.",
+            "Your creative energy is on fire today! 🔥",
+            "A big surprise is waiting for you this week.",
+            "You have a heart of gold. Stay kind! 💛",
+            "Success is chasing you. Don't stop now!",
+            "Your name shines brighter than the stars. ✨",
+            "You are a born leader. Believe in yourself!",
+            "Today is your lucky day! Make it count.",
+            "You inspire people around you. Keep going!",
+            "Your future is as bright as this Neon light!"
+        ];
+
+        function selectStyle(style) {
+            selectedStyle = style;
+            document.querySelectorAll('.style-card').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+        }
+
+        document.getElementById('generateBtn').addEventListener('click', () => {
+            const name = document.getElementById('nameInput').value.trim();
+            if(!name) return alert("Please enter your name!");
+
+            // UI Updates
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('resultImage').classList.add('hidden');
+            document.getElementById('downloadBtn').classList.add('hidden');
+            document.getElementById('magicBox').classList.add('hidden'); // Hide old message
+            document.getElementById('loadingState').style.display = 'flex';
+            document.getElementById('loadingState').classList.remove('hidden');
+
+            // Prompt Logic
+            const prompt = `3D typography text "${name}" made of ${selectedStyle}, centered, black background, 8k resolution, cinematic lighting, high detail, masterpiece, 3d render`;
+            const randomSeed = Math.floor(Math.random() * 10000);
+            const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${randomSeed}&nologo=true`;
+
+            const img = new Image();
+            img.src = imageUrl;
+            
+            img.onload = () => {
+                document.getElementById('loadingState').style.display = 'none';
+                
+                // Show Image
+                const resImg = document.getElementById('resultImage');
+                resImg.src = imageUrl;
+                resImg.classList.remove('hidden');
+                
+                // Show Download
+                const dlBtn = document.getElementById('downloadBtn');
+                dlBtn.href = imageUrl;
+                dlBtn.classList.remove('hidden');
+
+                // ✨ Show Magic Message
+                const randomMsg = magicMessages[Math.floor(Math.random() * magicMessages.length)];
+                document.getElementById('magicText').innerText = `"${randomMsg}"`;
+                document.getElementById('magicBox').classList.remove('hidden');
+            };
+        });
+    </script>
+
+    <!-- 🔥 SECURITY SCRIPT 🔥 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyCJDymW01_yensm3h-O8kO3kcYnKPb_NRE",
+          authDomain: "aiartwebsite.firebaseapp.com",
+          projectId: "aiartwebsite",
+          storageBucket: "aiartwebsite.firebasestorage.app",
+          messagingSenderId: "183698414868",
+          appId: "1:183698414868:web:a699d15b1f6c3c32123601"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('auth-loader').style.display = 'none';
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+<!-- 👇 DONATION BUTTON CODE 👇 -->
+<a href="https://www.buymeacoffee.com/Swayambhoo" target="_blank" style="position: fixed; bottom: 20px; left: 20px; z-index: 9999; background-color: #FFDD00; color: #000000; padding: 12px 20px; border-radius: 50px; font-family: sans-serif; font-weight: bold; text-decoration: none; box-shadow: 0px 4px 15px rgba(255, 221, 0, 0.4); display: flex; align-items: center; gap: 10px; transition: transform 0.2s;">
+    <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee" style="height: 25px !important; width: auto !important;">
+    <span style="font-size: 14px;">Support My Dream</span>
+</a>
+
+<script>
+    // Button Animation Effect
+    const btn = document.querySelector('a[href*="buymeacoffee"]');
+    setInterval(() => {
+        btn.style.transform = 'scale(1.1)';
+        setTimeout(() => btn.style.transform = 'scale(1)', 200);
+    }, 3000);
+</script>
+  
+
+
+  
+
+
+  
+</body>
+  </html>

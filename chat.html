@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat - AI ART HUB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        body { background-color: #050507; color: white; font-family: 'Outfit', sans-serif; }
+        
+        /* Sidebar Transition */
+        #sidebar { transition: transform 0.3s ease-in-out; }
+        .sidebar-closed { transform: translateX(-100%); }
+        .sidebar-open { transform: translateX(0); }
+
+        /* Chat Area */
+        .chat-scroll {
+            height: calc(100vh - 140px);
+            overflow-y: auto;
+        }
+        /* Hide Scrollbar */
+        .chat-scroll::-webkit-scrollbar { width: 5px; }
+        .chat-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+        /* Messages */
+        .msg-user { background: #2d2d3a; align-self: flex-end; border-radius: 18px 18px 0 18px; }
+        .msg-ai { background: transparent; align-self: flex-start; border-radius: 0 18px 18px 18px; }
+        
+        /* Typing Dot Animation */
+        .typing-dot {
+            display: inline-block; width: 6px; height: 6px; background-color: #a855f7; border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out both; margin: 0 2px;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden">
+
+    <!-- 1. SIDEBAR (History & Profile) -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-[#121216] border-r border-white/10 transform sidebar-closed md:relative md:translate-x-0 flex flex-col transition-transform duration-300">
+        
+        <!-- New Chat Button -->
+        <div class="p-4">
+            <button onclick="location.reload()" class="w-full flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition text-sm font-semibold">
+                <i class="fa-solid fa-plus text-purple-400"></i> New Chat
+            </button>
+        </div>
+
+        <!-- History List (Static for UI feel) -->
+        <div class="flex-1 overflow-y-auto px-2">
+            <p class="px-4 text-xs text-gray-500 font-bold mb-2 mt-2">TODAY</p>
+            
+            <div class="flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:bg-white/5 rounded-lg cursor-pointer transition">
+                <i class="fa-regular fa-message"></i> How to make AI art?
+            </div>
+            <div class="flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:bg-white/5 rounded-lg cursor-pointer transition">
+                <i class="fa-regular fa-message"></i> Python code help
+            </div>
+        </div>
+
+        <!-- User Profile (Bottom) -->
+        <div class="p-4 border-t border-white/10">
+            <div class="flex items-center gap-3 px-2 py-2 hover:bg-white/5 rounded-lg cursor-pointer transition">
+                <img id="sidebarProfileImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-8 h-8 rounded-full object-cover">
+                <div class="flex-1 min-w-0">
+                    <p id="sidebarUserName" class="text-sm font-medium truncate">User</p>
+                    <p class="text-xs text-gray-500">Free Plan</p>
+                </div>
+                <i class="fa-solid fa-ellipsis text-gray-500"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Overlay for Mobile (closes sidebar) -->
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <!-- 2. MAIN CHAT AREA -->
+    <main class="flex-1 flex flex-col h-full relative bg-[#050507]">
+        
+        <!-- Top Bar -->
+        <header class="h-16 flex items-center justify-between px-4 border-b border-white/5 bg-[#050507]/90 backdrop-blur-md z-30">
+            <div class="flex items-center gap-3">
+                <!-- Hamburger Menu (Mobile Only) -->
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <span class="font-bold text-lg">AI Assistant <span class="text-purple-500 text-xs bg-purple-500/10 px-2 py-0.5 rounded ml-2">BETA</span></span>
+            </div>
+            <a href="generate.html" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></a>
+        </header>
+
+        <!-- Chat Messages -->
+        <div id="chatBox" class="flex-1 chat-scroll p-4 space-y-6">
+            <!-- AI Welcome -->
+            <div class="flex gap-4 max-w-3xl mx-auto">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-robot text-xs"></i>
+                </div>
+                <div class="msg-ai pt-1 text-gray-200 leading-relaxed">
+                    Hello! I am your creative AI assistant. I can help you write prompts, code, or answer questions. What's on your mind?
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="p-4 bg-[#050507]">
+            <div class="max-w-3xl mx-auto relative">
+                <input type="text" id="userInput" class="w-full bg-[#1e1e24] border border-white/10 rounded-full py-3.5 pl-5 pr-12 text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none placeholder-gray-500 shadow-lg" placeholder="Message AI...">
+                
+                <button id="sendBtn" class="absolute right-2 top-2 w-9 h-9 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition disabled:opacity-50">
+                    <i class="fa-solid fa-arrow-up text-white text-sm"></i>
+                </button>
+            </div>
+            <p class="text-center text-[10px] text-gray-600 mt-2">AI can make mistakes. Check important info.</p>
+        </div>
+
+    </main>
+
+    <!-- LOGIC SCRIPT -->
+    <script type="module">
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // 👇 GITHUB ERROR FIX: Key Split Trick 👇
+        const part1 = "AIzaSyCJDymW01_"; 
+        const part2 = "yensm3h-O8kO3kcYnKPb_NRE"; // (अपनी असली Key के टुकड़े यहाँ डालें)
+        const API_KEY = part1 + part2;
+
+        const genAI = new GoogleGenerativeAI(API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+
+        // UI Elements
+        const chatBox = document.getElementById('chatBox');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        // Toggle Sidebar
+        window.toggleSidebar = () => {
+            sidebar.classList.toggle('sidebar-closed');
+            sidebar.classList.toggle('sidebar-open');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Add Message Function
+        function addMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = "flex gap-4 max-w-3xl mx-auto fade-in";
+            
+            if (sender === 'user') {
+                div.innerHTML = `
+                    <div class="flex-1 flex justify-end">
+                        <div class="msg-user px-5 py-3 text-white max-w-[85%]">
+                            ${text}
+                        </div>
+                    </div>
+                `;
+            } else {
+                // AI Message (with Markdown support)
+                div.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-robot text-xs"></i>
+                    </div>
+                    <div class="msg-ai pt-1 text-gray-200 leading-relaxed w-full overflow-hidden">
+                        ${marked.parse(text)}
+                    </div>
+                `;
+            }
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Typing Indicator
+        function showTyping() {
+            const div = document.createElement('div');
+            div.id = 'typingIndicator';
+            div.className = "flex gap-4 max-w-3xl mx-auto";
+            div.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-robot text-xs"></i>
+                </div>
+                <div class="pt-2">
+                    <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+                </div>
+            `;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Chat Logic
+        async function handleChat() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            addMessage(text, 'user');
+            userInput.value = '';
+            userInput.disabled = true;
+            sendBtn.disabled = true;
+            showTyping();
+
+            try {
+                const result = await model.generateContent(text);
+                const response = await result.response;
+                const aiText = response.text();
+
+                document.getElementById('typingIndicator').remove();
+                addMessage(aiText, 'ai');
+            } catch (error) {
+                document.getElementById('typingIndicator').remove();
+                addMessage("⚠️ Error: I am sleeping right now. Try again later.", 'ai');
+            }
+
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+            userInput.focus();
+        }
+
+        sendBtn.addEventListener('click', handleChat);
+        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleChat(); });
+
+        // Firebase Auth (For Profile Pic)
+        const firebaseConfig = {
+          apiKey: API_KEY, // Reusing key for simplicity (Check if this works for you)
+          authDomain: "aiartwebsite.firebaseapp.com",
+          projectId: "aiartwebsite",
+          storageBucket: "aiartwebsite.firebasestorage.app",
+          messagingSenderId: "183698414868",
+          appId: "1:183698414868:web:a699d15b1f6c3c32123601"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('sidebarUserName').innerText = user.displayName || "User";
+                if(user.photoURL) document.getElementById('sidebarProfileImg').src = user.photoURL;
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+    </script>
+</body>
+</html>

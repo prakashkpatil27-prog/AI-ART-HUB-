@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sticker Maker - AI ART HUB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { background-color: #050507; color: white; font-family: 'Outfit', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Sticker Glow Effect */
+        .sticker-preview {
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+            transition: transform 0.3s;
+        }
+        .sticker-preview:hover { transform: scale(1.05); }
+        
+        #auth-loader {
+            position: fixed; inset: 0; background: #050507; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pt-20 px-4 pb-10">
+
+    <!-- 🔒 SECURITY LOADER -->
+    <div id="auth-loader">
+        <div class="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p class="text-gray-400 text-xs tracking-widest animate-pulse">VERIFYING...</p>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="border-b border-white/10 bg-[#050507]/90 backdrop-blur-md fixed top-0 w-full z-50 left-0">
+        <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+            <a href="generate.html" class="flex items-center space-x-2 text-white">
+                <i class="fa-solid fa-arrow-left"></i> <span class="font-bold">Back</span>
+            </a>
+            <span class="text-purple-400 font-bold">STICKER MAKER</span>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto w-full text-center mb-8">
+        <h1 class="text-3xl md:text-5xl font-bold mb-2">Create Viral <span class="text-purple-500">Stickers</span></h1>
+        <p class="text-gray-400">Generate die-cut stickers for WhatsApp, Telegram, or Selling.</p>
+    </div>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- CONTROLS -->
+        <div class="glass-panel p-6 rounded-2xl">
+            <label class="text-xs text-gray-400 uppercase font-bold tracking-wider">Sticker Idea</label>
+            <input type="text" id="promptInput" class="w-full mt-2 mb-4 bg-black/40 border border-white/20 rounded-xl p-4 text-white text-lg focus:border-purple-500 outline-none" placeholder="Ex: Cute cat drinking coffee">
+
+            <label class="text-xs text-gray-400 uppercase font-bold tracking-wider">Style</label>
+            <div class="grid grid-cols-2 gap-3 mt-2 mb-6">
+                <button onclick="setStyle('Vector Art')" class="p-3 bg-white/5 rounded-lg hover:bg-purple-500/20 border border-white/10 text-sm">🎨 Vector (Clean)</button>
+                <button onclick="setStyle('3D Render')" class="p-3 bg-white/5 rounded-lg hover:bg-purple-500/20 border border-white/10 text-sm">🧊 3D Cute</button>
+                <button onclick="setStyle('Pixel Art')" class="p-3 bg-white/5 rounded-lg hover:bg-purple-500/20 border border-white/10 text-sm">👾 Pixel Art</button>
+                <button onclick="setStyle('Anime')" class="p-3 bg-white/5 rounded-lg hover:bg-purple-500/20 border border-white/10 text-sm">🌸 Anime</button>
+            </div>
+
+            <button id="generateBtn" class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-bold text-lg shadow-lg hover:scale-[1.02] transition">
+                Generate Sticker ✨
+            </button>
+        </div>
+
+        <!-- PREVIEW -->
+        <div class="glass-panel rounded-2xl h-[400px] relative flex items-center justify-center overflow-hidden bg-black/30">
+            
+            <div id="placeholder" class="text-center">
+                <div class="text-6xl mb-2">🏷️</div>
+                <p class="text-gray-500">Sticker will appear here</p>
+            </div>
+
+            <div id="loadingState" class="absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-20 hidden">
+                <div class="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p class="text-purple-300 animate-pulse">Cutting sticker...</p>
+            </div>
+
+            <img id="resultImage" class="hidden w-2/3 h-auto object-contain z-10 sticker-preview" src="">
+            
+            <a id="downloadBtn" href="#" download="sticker.png" class="hidden absolute bottom-6 right-6 bg-white text-black px-6 py-2 rounded-full font-bold shadow-xl z-30 hover:bg-gray-200">
+                Download PNG
+            </a>
+        </div>
+
+    </div>
+
+    <!-- LOGIC -->
+    <script>
+        let selectedStyle = 'Vector Art';
+
+        function setStyle(style) {
+            selectedStyle = style;
+            alert("Style Selected: " + style);
+        }
+
+        document.getElementById('generateBtn').addEventListener('click', () => {
+            const input = document.getElementById('promptInput').value.trim();
+            if(!input) return alert("Please enter an idea!");
+
+            // UI Updates
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('resultImage').classList.add('hidden');
+            document.getElementById('downloadBtn').classList.add('hidden');
+            document.getElementById('loadingState').classList.remove('hidden');
+
+            // 🔥 STICKER FORMULA (White Border + Die Cut)
+            const finalPrompt = `die-cut sticker of ${input}, ${selectedStyle}, white border, white background, high quality, vector style, isolated, no shadow`;
+
+            const randomSeed = Math.floor(Math.random() * 10000);
+            const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}?width=1024&height=1024&seed=${randomSeed}&nologo=true`;
+
+            const img = new Image();
+            img.src = imageUrl;
+            
+            img.onload = () => {
+                document.getElementById('loadingState').classList.add('hidden');
+                const resImg = document.getElementById('resultImage');
+                resImg.src = imageUrl;
+                resImg.classList.remove('hidden');
+                
+                const dlBtn = document.getElementById('downloadBtn');
+                dlBtn.href = imageUrl;
+                dlBtn.classList.remove('hidden');
+            };
+        });
+    </script>
+
+    <!-- 👇 SECURITY CODE यहाँ पेस्ट करें 👇 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyCJDymW01_yensm3h-O8kO3kcYnKPb_NRE",
+          authDomain: "aiartwebsite.firebaseapp.com",
+          projectId: "aiartwebsite",
+          storageBucket: "aiartwebsite.firebasestorage.app",
+          messagingSenderId: "183698414868",
+          appId: "1:183698414868:web:a699d15b1f6c3c32123601"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('auth-loader').style.display = 'none';
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+    </script>
+
+</body>
+</html>

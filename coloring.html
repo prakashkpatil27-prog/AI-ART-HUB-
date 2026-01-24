@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Coloring Page Generator - AI ART HUB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { background-color: #ffffff; color: #333; font-family: 'Outfit', sans-serif; } /* White theme for Coloring vibe */
+        .glass-panel {
+            background: #f3f4f6;
+            border: 2px solid #e5e7eb;
+            border-radius: 20px;
+        }
+        .btn-generate {
+            background: #000; color: #fff; transition: transform 0.2s;
+        }
+        .btn-generate:hover { transform: scale(1.02); background: #333; }
+        
+        /* Loader */
+        #auth-loader {
+            position: fixed; inset: 0; background: #fff; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pt-20 px-4 pb-10">
+
+    <!-- 🔒 SECURITY LOADER -->
+    <div id="auth-loader">
+        <div class="w-12 h-12 border-4 border-black border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p class="text-gray-500 text-xs tracking-widest animate-pulse">VERIFYING...</p>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="border-b border-gray-200 bg-white/90 backdrop-blur-md fixed top-0 w-full z-50 left-0">
+        <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+            <a href="generate.html" class="flex items-center space-x-2 text-black">
+                <i class="fa-solid fa-arrow-left"></i> <span class="font-bold">Back</span>
+            </a>
+            <span class="text-black font-bold uppercase tracking-wider">Coloring Book AI</span>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto w-full text-center mb-8">
+        <h1 class="text-3xl md:text-5xl font-bold mb-2 text-black">Create <span class="text-blue-600">Coloring Pages</span></h1>
+        <p class="text-gray-600">Generate high-quality black & white line art for Amazon KDP or Kids.</p>
+    </div>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- CONTROLS -->
+        <div class="glass-panel p-6">
+            <label class="text-xs text-gray-500 uppercase font-bold tracking-wider">What do you want to color?</label>
+            <input type="text" id="promptInput" class="w-full mt-2 mb-6 bg-white border-2 border-gray-300 rounded-xl p-4 text-black text-lg focus:border-black outline-none" placeholder="Ex: A cute baby dragon sitting on a cloud">
+
+            <div class="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-6">
+                <p class="text-xs text-yellow-800">💡 <b>Tip:</b> Use simple words like "Cute cat", "Mandala pattern", "Flower garden".</p>
+            </div>
+
+            <button id="generateBtn" class="w-full py-4 btn-generate rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2">
+                <i class="fa-solid fa-pencil"></i> Create Page
+            </button>
+        </div>
+
+        <!-- PREVIEW -->
+        <div class="glass-panel h-[500px] relative flex items-center justify-center overflow-hidden bg-white">
+            
+            <div id="placeholder" class="text-center opacity-50">
+                <div class="text-6xl mb-2">🖍️</div>
+                <p class="text-gray-500">Page will appear here</p>
+            </div>
+
+            <div id="loadingState" class="absolute inset-0 bg-white/90 flex flex-col items-center justify-center z-20 hidden">
+                <div class="w-12 h-12 border-4 border-black border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p class="text-black animate-pulse">Drawing lines...</p>
+            </div>
+
+            <img id="resultImage" class="hidden w-full h-full object-contain z-10" src="">
+            
+            <a id="downloadBtn" href="#" download="coloring-page.jpg" class="hidden absolute bottom-6 right-6 bg-black text-white px-6 py-2 rounded-full font-bold shadow-xl z-30 hover:bg-gray-800">
+                Download PDF/JPG
+            </a>
+        </div>
+
+    </div>
+
+    <!-- LOGIC -->
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', () => {
+            const input = document.getElementById('promptInput').value.trim();
+            if(!input) return alert("Please type something!");
+
+            // UI Updates
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('resultImage').classList.add('hidden');
+            document.getElementById('downloadBtn').classList.add('hidden');
+            document.getElementById('loadingState').classList.remove('hidden');
+
+            // 🔥 SECRET PROMPT FOR COLORING PAGES
+            // यह प्रॉम्प्ट नार्मल फोटो को "Coloring Page" में बदल देता है
+            const finalPrompt = `black and white line art coloring page of ${input}, clean lines, white background, no shading, high quality, vector style, kids coloring book style`;
+
+            const randomSeed = Math.floor(Math.random() * 10000);
+            const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}?width=1024&height=1448&seed=${randomSeed}&nologo=true`; // A4 Size Ratio
+
+            const img = new Image();
+            img.src = imageUrl;
+            
+            img.onload = () => {
+                document.getElementById('loadingState').classList.add('hidden');
+                const resImg = document.getElementById('resultImage');
+                resImg.src = imageUrl;
+                resImg.classList.remove('hidden');
+                
+                const dlBtn = document.getElementById('downloadBtn');
+                dlBtn.href = imageUrl;
+                dlBtn.classList.remove('hidden');
+            };
+        });
+    </script>
+
+    <!-- 👇 SECURITY CODE यहाँ पेस्ट करें 👇 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyCJDymW01_yensm3h-O8kO3kcYnKPb_NRE",
+          authDomain: "aiartwebsite.firebaseapp.com",
+          projectId: "aiartwebsite",
+          storageBucket: "aiartwebsite.firebasestorage.app",
+          messagingSenderId: "183698414868",
+          appId: "1:183698414868:web:a699d15b1f6c3c32123601"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('auth-loader').style.display = 'none';
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+    </script>
+
+</body>
+</html>

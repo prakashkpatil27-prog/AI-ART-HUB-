@@ -1,42 +1,68 @@
-<!-- code-helper.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>AI Code Expert</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Architect | High-End Coding AI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #0d1117; color: #c9d1d9; font-family: sans-serif; padding: 20px; }
-        .container { max-width: 900px; margin: auto; }
-        textarea { width: 100%; height: 100px; background: #161b22; color: white; border: 1px solid #30363d; border-radius: 8px; padding: 15px; margin-bottom: 10px; }
-        pre { background: #000; padding: 20px; border-radius: 8px; border: 1px solid #00f2fe; overflow-x: auto; position: relative; }
-        .copy-btn { position: absolute; top: 10px; right: 10px; background: #333; border: none; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
-        button.main-btn { background: #238636; border: none; color: white; padding: 12px 25px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; }
+        body { background: #08080a; color: #d1d1d1; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 40px; }
+        .app-shell { max-width: 1000px; margin: auto; }
+        .hero { margin-bottom: 40px; }
+        .hero h1 { color: #fff; font-size: 2rem; margin: 0; }
+        
+        .code-grid { background: #111114; border: 1px solid #222; border-radius: 20px; overflow: hidden; }
+        .input-bar { padding: 25px; border-bottom: 1px solid #222; background: #16161a; }
+        textarea { width: 100%; height: 80px; background: transparent; border: 1px solid #333; border-radius: 12px; color: #00ffa3; padding: 15px; font-family: monospace; outline: none; resize: none; }
+        
+        .gen-btn { background: #00ffa3; color: #000; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; transition: 0.3s; }
+        .gen-btn:hover { background: #00d98a; box-shadow: 0 0 20px rgba(0,255,163,0.3); }
+
+        .output-panel { padding: 25px; position: relative; }
+        pre { background: #000; padding: 20px; border-radius: 12px; overflow-x: auto; color: #e0e0e0; min-height: 200px; line-height: 1.5; border: 1px solid #1a1a1a; }
+        .copy-trigger { position: absolute; top: 35px; right: 40px; color: #555; cursor: pointer; transition: 0.2s; }
+        .copy-trigger:hover { color: #00ffa3; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1><i class="fas fa-code"></i> AI Code Helper</h1>
-        <p>how can I help in coding:</p>
-        <textarea id="codePrompt" placeholder="Example: Create a login form using Tailwind CSS..."></textarea>
-        <button class="main-btn" onclick="generateCode()">Generate Expert Code</button>
-        <h3>Response:</h3>
-        <pre id="output"><button class="copy-btn" onclick="copy()">Copy</button><code id="codeResult">कोड यहाँ दिखाई देगा...</code></pre>
+    <div class="app-shell">
+        <div class="hero">
+            <h1><i class="fas fa-terminal" style="color:#00ffa3"></i> Code Architect</h1>
+            <p style="color:#666">Describe the logic, and let AI build the source code.</p>
+        </div>
+
+        <div class="code-grid">
+            <div class="input-bar">
+                <textarea id="codeQuery" placeholder="Example: Create a modern dark-mode landing page using Tailwind CSS..."></textarea>
+                <button class="gen-btn" onclick="buildCode()">COMPILE SOURCE CODE <i class="fas fa-bolt"></i></button>
+            </div>
+            <div class="output-panel">
+                <i class="far fa-copy copy-trigger" onclick="copyContent()"></i>
+                <pre id="displayArea">Source code will be generated here...</pre>
+            </div>
+        </div>
     </div>
 
     <script>
-        async function generateCode() {
-            const prompt = document.getElementById('codePrompt').value;
-            const resArea = document.getElementById('codeResult');
-            resArea.innerText = "Processing Code Logic...";
+        async function buildCode() {
+            const prompt = document.getElementById('codeQuery').value;
+            const display = document.getElementById('displayArea');
+            if(!prompt) return;
+
+            display.innerText = "// Architecting the code structures...\n// Optimized algorithms being written...";
             
-            const response = await fetch(`https://text.pollinations.ai/Write professional code for: ${encodeURIComponent(prompt)}?model=qwen-coder`);
-            const data = await response.text();
-            resArea.innerText = data;
+            try {
+                const res = await fetch(`https://text.pollinations.ai/Write high quality clean code for: ${encodeURIComponent(prompt)}?model=qwen-coder`);
+                const data = await res.text();
+                display.innerText = data;
+            } catch {
+                display.innerText = "// ERROR: Could not connect to Neural Engine.";
+            }
         }
-        function copy() {
-            const code = document.getElementById('codeResult').innerText;
-            navigator.clipboard.writeText(code);
-            alert("Code Copied!");
+        function copyContent() {
+            const text = document.getElementById('displayArea').innerText;
+            navigator.clipboard.writeText(text);
+            alert("Copied to Clipboard!");
         }
     </script>
 </body>

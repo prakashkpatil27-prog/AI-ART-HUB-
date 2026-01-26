@@ -1,0 +1,36 @@
+<!-- voice.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Smart Voice</title>
+    <style>
+        body { background: #111; color: #fff; text-align: center; padding: 50px; font-family: sans-serif; }
+        .speaker-box { background: #222; padding: 30px; border-radius: 20px; box-shadow: 0 0 30px #00f2fe; max-width: 500px; margin: auto; }
+        textarea { width: 100%; background: transparent; color: #00f2fe; border: 1px solid #333; border-radius: 10px; padding: 10px; margin: 20px 0; font-size: 18px; }
+        .wave { height: 50px; display: flex; justify-content: center; align-items: center; gap: 5px; visibility: hidden; }
+        .bar { width: 5px; background: #00f2fe; animation: wave 1s infinite; }
+        @keyframes wave { 0%, 100% { height: 10px; } 50% { height: 40px; } }
+    </style>
+</head>
+<body>
+    <div class="speaker-box">
+        <h2>AI Speech Producer</h2>
+        <textarea id="voiceText">नमस्ते, मैं आपकी वेबसाइट का आवाज हूँ।</textarea>
+        <div class="wave" id="wave">
+            <div class="bar"></div><div class="bar" style="animation-delay: 0.1s"></div><div class="bar" style="animation-delay: 0.2s"></div>
+        </div>
+        <button onclick="speakText()" style="padding:15px 40px; border-radius:50px; background:#00f2fe; border:none; cursor:pointer; font-weight:bold;">सुनें (Listen AI Voice)</button>
+    </div>
+
+    <script>
+        function speakText() {
+            const text = document.getElementById('voiceText').value;
+            const synth = window.speechSynthesis;
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.onstart = () => document.getElementById('wave').style.visibility = 'visible';
+            utter.onend = () => document.getElementById('wave').style.visibility = 'hidden';
+            synth.speak(utter);
+        }
+    </script>
+</body>
+</html>

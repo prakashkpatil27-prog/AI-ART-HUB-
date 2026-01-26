@@ -44,28 +44,32 @@
     </div>
 
     <script>
-        async function sendMsg() {
-            const input = document.getElementById('userInput');
-            const chat = document.getElementById('chat-container');
-            const status = document.getElementById('status-msg');
-            if(!input.value) return;
+        
+// कोडिंग के अंदर सिर्फ इस हिस्से को अपडेट करें:
+async function sendMsg() {
+    const input = document.getElementById('userInput');
+    const chat = document.getElementById('chat-container');
+    const status = document.getElementById('status-msg');
+    
+    if(!input.value) return;
 
-            chat.innerHTML += `<div class="msg user">${input.value}</div>`;
-            const prompt = input.value;
-            input.value = '';
-            status.style.display = 'block';
-            chat.scrollTop = chat.scrollHeight;
+    chat.innerHTML += `<div class="msg user">${input.value}</div>`;
+    const prompt = input.value;
+    input.value = '';
+    status.style.display = 'block';
 
-            try {
-                const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=llama`);
-                const text = await res.text();
-                status.style.display = 'none';
-                chat.innerHTML += `<div class="msg ai">${text}</div>`;
-                chat.scrollTop = chat.scrollHeight;
-            } catch { status.innerText = "Error!"; }
-        }
-    </script>
-
+    try {
+        // मॉडल का नाम हटाकर 'search' या डिफ़ॉल्ट रखा गया है ताकि Error न आये
+        const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=search&json=false`);
+        const text = await res.text();
+        
+        status.style.display = 'none';
+        chat.innerHTML += `<div class="msg ai">${text}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+    } catch (e) { 
+        status.innerText = "Connection Error! Try again."; 
+    }
+      }
         
 
 

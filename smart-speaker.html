@@ -1,34 +1,85 @@
-<!-- voice.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>AI Smart Voice</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocalize | AI Voice Lab</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #111; color: #fff; text-align: center; padding: 50px; font-family: sans-serif; }
-        .speaker-box { background: #222; padding: 30px; border-radius: 20px; box-shadow: 0 0 30px #00f2fe; max-width: 500px; margin: auto; }
-        textarea { width: 100%; background: transparent; color: #00f2fe; border: 1px solid #333; border-radius: 10px; padding: 10px; margin: 20px 0; font-size: 18px; }
-        .wave { height: 50px; display: flex; justify-content: center; align-items: center; gap: 5px; visibility: hidden; }
-        .bar { width: 5px; background: #00f2fe; animation: wave 1s infinite; }
-        @keyframes wave { 0%, 100% { height: 10px; } 50% { height: 40px; } }
+        body { background: #050505; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .voice-card { width: 350px; background: #111; border-radius: 40px; padding: 30px; border: 1px solid #222; text-align: center; }
+        
+        .brand { color: #00ffa3; font-weight: bold; letter-spacing: 2px; margin-bottom: 40px; display: block; }
+        
+        /* Pulse Visualizer Animation */
+        .visualizer { height: 100px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 40px; }
+        .bar { width: 6px; height: 20px; background: #00ffa3; border-radius: 10px; transition: 0.2s; }
+        .playing .bar { animation: pulse 0.5s ease-in-out infinite alternate; }
+        .bar:nth-child(2) { animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-delay: 0.2s; }
+        .bar:nth-child(4) { animation-delay: 0.3s; }
+
+        textarea { 
+            width: 100%; height: 120px; background: #000; border: 1px solid #333; 
+            border-radius: 20px; color: #fff; padding: 15px; font-size: 16px; outline: none; box-sizing: border-box;
+        }
+
+        .voice-btn { 
+            margin-top: 30px; width: 80px; height: 80px; background: #00ffa3; 
+            border-radius: 50%; border: none; cursor: pointer; font-size: 25px;
+            box-shadow: 0 10px 30px rgba(0, 255, 163, 0.3); transition: 0.3s;
+        }
+        .voice-btn:hover { transform: scale(1.1); }
+
+        @keyframes pulse { 
+            0% { height: 20px; opacity: 0.5; }
+            100% { height: 70px; opacity: 1; }
+        }
     </style>
 </head>
 <body>
-    <div class="speaker-box">
-        <h2>AI Speech Producer</h2>
-        <textarea id="voiceText">नमस्ते, मैं आपकी वेबसाइट का आवाज हूँ।</textarea>
-        <div class="wave" id="wave">
-            <div class="bar"></div><div class="bar" style="animation-delay: 0.1s"></div><div class="bar" style="animation-delay: 0.2s"></div>
+    <div class="voice-card">
+        <span class="brand">VOICE LAB PRO</span>
+        
+        <div class="visualizer" id="viz">
+            <div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div>
         </div>
-        <button onclick="speakText()" style="padding:15px 40px; border-radius:50px; background:#00f2fe; border:none; cursor:pointer; font-weight:bold;">सुनें (Listen AI Voice)</button>
+
+        <textarea id="speechText" placeholder="Enter text to convert into professional AI voice..."></textarea>
+
+        <button class="voice-btn" onclick="startTalking()">
+            <i class="fas fa-play" id="icon"></i>
+        </button>
+        <p style="font-size: 12px; color: #555; margin-top: 20px;">Neural Speech Engine Online</p>
     </div>
 
     <script>
-        function speakText() {
-            const text = document.getElementById('voiceText').value;
+        function startTalking() {
+            const text = document.getElementById('speechText').value;
+            const viz = document.getElementById('viz');
+            const icon = document.getElementById('icon');
+            
+            if(!text) return;
+
             const synth = window.speechSynthesis;
             const utter = new SpeechSynthesisUtterance(text);
-            utter.onstart = () => document.getElementById('wave').style.visibility = 'visible';
-            utter.onend = () => document.getElementById('wave').style.visibility = 'hidden';
+            
+            // Premium Voice Settings
+            utter.pitch = 0.9;
+            utter.rate = 1.0;
+
+            utter.onstart = () => {
+                viz.classList.add('playing');
+                icon.className = "fas fa-waveform";
+            };
+
+            utter.onend = () => {
+                viz.classList.remove('playing');
+                icon.className = "fas fa-play";
+            };
+
             synth.speak(utter);
         }
     </script>

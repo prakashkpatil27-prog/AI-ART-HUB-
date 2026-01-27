@@ -1,43 +1,89 @@
-<!-- analyzer.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>AI Vision | Scanner</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision Analyzer | AI Scanner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
     <style>
-        body { background: #111; color: white; font-family: sans-serif; text-align: center; }
-        .upload-area { border: 2px dashed #00f2fe; padding: 40px; margin: 30px auto; max-width: 400px; cursor: pointer; }
-        #resText { background: #222; padding: 20px; border-radius: 10px; margin-top: 20px; text-align: left; }
+        :root { --neon: #00fff2; --bg: #030303; }
+        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; padding: 20px; text-align: center; }
+        
+        .scanner-card { max-width: 450px; margin: auto; background: #0a0a0a; border-radius: 35px; border: 1px solid #1a1a1a; padding: 25px; overflow: hidden; }
+        .viewport { 
+            width: 100%; height: 300px; background: #000; border-radius: 20px; border: 2px dashed #333;
+            position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+        }
+        
+        #preview { width: 100%; height: 100%; object-fit: contain; display: none; z-index: 1; }
+        
+        /* High-Tech Scan Line */
+        .scan-line {
+            position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--neon); box-shadow: 0 0 20px var(--neon);
+            display: none; z-index: 10; animation: scanMove 2s linear infinite;
+        }
+        @keyframes scanMove { 0% { top: 0; } 100% { top: 100%; } }
+
+        .upload-btn {
+            background: var(--neon); color: #000; border: none; width: 60px; height: 60px;
+            border-radius: 50%; font-size: 20px; margin: 20px 0; cursor: pointer; box-shadow: 0 0 15px var(--neon);
+        }
+        .result-panel { background: #111; padding: 15px; border-radius: 15px; text-align: left; min-height: 80px; font-size: 14px; border-left: 3px solid var(--neon); margin-top: 15px; display: none;}
     </style>
 </head>
 <body>
-    <h1><i class="fas fa-eye"></i> AI Vision (Text & Image)</h1>
-    <p>कोई भी इमेज अपलोड करें, AI उसमें लिखा हुआ टेक्स्ट बताएगा:</p>
-    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-        यहाँ क्लिक करें या इमेज डालें
-        <input type="file" id="fileInput" hidden onchange="analyzeImage()">
+    <div class="scanner-card">
+        <h3>SCANNERS AI <span style="color:var(--neon)">PRO</span></h3>
+        <p style="font-size:12px; color:#555">Vision Intelligence Engine</p>
+
+        <div class="viewport" id="dropZone">
+            <div class="scan-line" id="line"></div>
+            <i class="fas fa-expand-arrows-alt" id="placeholderIcon" style="font-size:40px; color:#222"></i>
+            <img id="preview" src="">
+        </div>
+
+        <input type="file" id="imageInput" hidden onchange="processImage()">
+        <button class="upload-btn" onclick="document.getElementById('imageInput').click()">
+            <i class="fas fa-plus"></i>
+        </button>
+
+        <div class="result-panel" id="resultBox">
+            <p style="color:#555">Analysis Result:</p>
+            <div id="statusText">System Ready...</div>
+        </div>
     </div>
-    <div id="loading" style="display:none">AI Scanning in progress...</div>
-    <div id="resText">रिजल्ट यहाँ दिखेगा...</div>
 
     <script>
-        async function analyzeImage() {
-            const file = document.getElementById('fileInput').files[0];
-            const log = document.getElementById('resText');
-            const loader = document.getElementById('loading');
-            
-            if(!file) return;
-            loader.style.display = 'block';
-            log.innerText = "Analyzing pixels...";
+        function processImage() {
+            const file = document.getElementById('imageInput').files[0];
+            const img = document.getElementById('preview');
+            const line = document.getElementById('line');
+            const icon = document.getElementById('placeholderIcon');
+            const status = document.getElementById('statusText');
+            const resBox = document.getElementById('resultBox');
 
-            Tesseract.recognize(file, 'eng+hin').then(({ data: { text } }) => {
-                loader.style.display = 'none';
-                log.innerText = text ? text : "टेक्स्ट नहीं मिला।";
+            if(!file) return;
+            
+            resBox.style.display = 'block';
+            status.innerText = "Extracting Metadata...";
+            icon.style.display = 'none';
+            img.style.display = 'block';
+            line.style.display = 'block';
+            img.src = URL.createObjectURL(file);
+
+            // Using Tesseract for Premium OCR scanning
+            Tesseract.recognize(file, 'eng').then(({ data: { text } }) => {
+                line.style.display = 'none';
+                status.innerHTML = `<span style="color:#00fff2">AI Inference Success:</span><br>${text || "No legible text found in visual data."}`;
             });
         }
     </script>
 </body>
 </html>
+
+
 
 
 

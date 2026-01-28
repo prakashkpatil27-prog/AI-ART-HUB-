@@ -17,76 +17,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus AI | Intelligent Chat</title>
+    <title>Nexus Chat | Neural Intelligence</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #007AFF; --bg: #010101; --panel: #121214; --text: #ececec; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; }
+        :root { --accent: #00d2ff; --bg: #050505; --card: #121214; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        header { padding: 15px 25px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-weight: 600; font-size: 1.2rem; color: var(--primary); letter-spacing: -0.5px; }
+        /* Header */
+        header { padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; backdrop-filter: blur(20px); }
+        .logo { font-weight: 700; letter-spacing: -1px; font-size: 1.2rem; color: var(--accent); }
+        .download-btn { background: none; border: 1px solid #333; color: #555; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; }
 
-        #chat-window { flex: 1; overflow-y: auto; padding: 40px 15%; display: flex; flex-direction: column; gap: 24px; scroll-behavior: smooth; }
-        .msg { max-width: 85%; padding: 16px 20px; border-radius: 18px; line-height: 1.6; font-size: 15px; animation: slideUp 0.3s ease; }
-        .user { align-self: flex-end; background: #2b2b2b; color: #fff; border-bottom-right-radius: 4px; border: 1px solid #444; }
-        .ai { align-self: flex-start; background: var(--panel); border: 1px solid #222; border-bottom-left-radius: 4px; position: relative; }
+        /* Chat Body */
+        #chat-window { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 20px; }
+        .msg { max-width: 80%; padding: 14px 18px; border-radius: 22px; line-height: 1.6; font-size: 15px; position: relative; }
+        .user { align-self: flex-end; background: linear-gradient(135deg, #00d2ff, #3a7bd5); color: #000; font-weight: 500; border-bottom-right-radius: 4px; }
+        .ai { align-self: flex-start; background: var(--card); border: 1px solid #222; border-bottom-left-radius: 4px; color: #ececec; }
         
-        .input-box { padding: 30px 15%; background: linear-gradient(transparent, var(--bg)); }
-        .container { background: var(--panel); border: 1px solid #333; border-radius: 20px; display: flex; align-items: center; padding: 8px 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        input { flex: 1; background: transparent; border: none; color: white; padding: 12px; font-size: 15px; outline: none; }
-        .btn-send { background: var(--primary); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; }
-        .btn-send:hover { transform: scale(1.05); background: #0062cc; }
+        /* Thinking Indicator */
+        .typing { display: none; padding: 10px; color: var(--accent); font-size: 12px; animation: pulse 1s infinite; }
 
-        .loader { display: none; margin-left: 20px; color: var(--primary); font-size: 13px; font-style: italic; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        /* Bottom Input */
+        .input-box { padding: 20px; background: rgba(0,0,0,0.8); border-top: 1px solid #222; display: flex; gap: 10px; }
+        input { flex: 1; background: #1a1a1c; border: 1px solid #333; border-radius: 15px; padding: 14px; color: #fff; outline: none; }
+        button#send { background: var(--accent); border: none; width: 48px; height: 48px; border-radius: 15px; cursor: pointer; color: #000; transition: 0.3s; }
+
+        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo"><i class="fas fa-microchip"></i> NEXUS AI</div>
-        <div class="status" style="font-size: 12px; color: #555;">Online · Secure</div>
+        <div class="logo">NEXUS AI</div>
+        <button class="download-btn" onclick="saveChat()"><i class="fas fa-file-export"></i> EXPORT HISTORY</button>
     </header>
 
     <div id="chat-window">
-        <div class="msg ai">Hello! I am Nexus, your high-performance AI. How can I assist you today?</div>
+        <div class="msg ai">Hello! I am Nexus. How can I enhance your intelligence today?</div>
     </div>
-
-    <div class="loader" id="loader">Nexus is processing your request...</div>
+    
+    <div id="typing" class="typing" style="margin-left: 25px;">[Neural Core Processing...]</div>
 
     <div class="input-box">
-        <div class="container">
-            <input type="text" id="query" placeholder="Type your message here..." onkeypress="handleKey(event)">
-            <button class="btn-send" onclick="askNexus()"><i class="fas fa-arrow-up"></i></button>
-        </div>
+        <input type="text" id="userInput" placeholder="Ask anything...">
+        <button id="send" onclick="askAI()"><i class="fas fa-paper-plane"></i></button>
     </div>
 
     <script>
-        const chatWin = document.getElementById('chat-window');
-        const loader = document.getElementById('loader');
+        async function askAI() {
+            const input = document.getElementById('userInput');
+            const chat = document.getElementById('chat-window');
+            const typing = document.getElementById('typing');
+            if(!input.value) return;
 
-        async function askNexus() {
-            const prompt = document.getElementById('query').value;
-            if(!prompt) return;
-
-            chatWin.innerHTML += `<div class="msg user">${prompt}</div>`;
-            document.getElementById('query').value = '';
-            loader.style.display = 'block';
-            chatWin.scrollTop = chatWin.scrollHeight;
+            const prompt = input.value;
+            chat.innerHTML += `<div class="msg user">${prompt}</div>`;
+            input.value = '';
+            typing.style.display = 'block';
+            chat.scrollTop = chat.scrollHeight;
 
             try {
-                // Simplified URL to prevent 'Model Not Found' errors
-                const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai`);
-                const data = await res.text();
+                // Stabilized fetch with error handling and fallback models
+                const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=search&json=false`);
+                if (!res.ok) throw new Error();
+                const text = await res.text();
                 
-                loader.style.display = 'none';
-                chatWin.innerHTML += `<div class="msg ai">${data}</div>`;
-                chatWin.scrollTop = chatWin.scrollHeight;
-            } catch {
-                loader.innerText = "Connection failed. Please check your internet.";
+                typing.style.display = 'none';
+                chat.innerHTML += `<div class="msg ai">${text}</div>`;
+            } catch (err) {
+                typing.style.display = 'none';
+                chat.innerHTML += `<div class="msg ai" style="border-color: red;">Connectivity interrupted. Retrying with local node... [Error Handler]</div>`;
             }
+            chat.scrollTop = chat.scrollHeight;
         }
-        function handleKey(e) { if(e.key === 'Enter') askNexus(); }
+
+        function saveChat() {
+            const data = document.getElementById('chat-window').innerText;
+            const blob = new Blob([data], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "Nexus_Chat_History.txt";
+            a.click();
+        }
     </script>
 </body>
 </html>

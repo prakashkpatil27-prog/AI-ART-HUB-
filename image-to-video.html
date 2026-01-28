@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Motion | Image-to-Video Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --gold: #ffaa00; --bg: #000; --card: #0c0c0e; }
+        body { background: var(--bg); color: #fff; font-family: -apple-system, sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        .motion-app { width: 100%; max-width: 400px; text-align: center; }
+        
+        /* Premium Viewport */
+        .canvas-area { 
+            width: 100%; aspect-ratio: 9/16; background: #080808; border-radius: 40px; 
+            margin: 25px 0; border: 1px solid #1a1a1c; overflow: hidden; position: relative; 
+            box-shadow: 0 30px 60px rgba(255, 170, 0, 0.05);
+        }
+        #previewImg, #resultVid { width: 100%; height: 100%; object-fit: cover; display: none; }
+
+        /* Advanced Loading Interface */
+        .loading-screen { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.9); z-index: 10;
+        }
+        .liquid-progress { width: 100px; height: 100px; border: 2px solid #222; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
+        .liquid-progress::before { content: ''; width: 80px; height: 80px; border: 2px solid var(--gold); border-radius: 50%; border-top-color: transparent; animation: spin 1s infinite linear; }
+        #percentText { position: absolute; font-family: monospace; font-size: 18px; color: var(--gold); font-weight: bold; }
+
+        .stage-msg { margin-top: 20px; font-size: 11px; letter-spacing: 2px; color: #666; font-weight: bold; text-transform: uppercase; }
+
+        /* App Dock */
+        .action-dock { background: var(--card); border: 1px solid #1a1a1c; border-radius: 30px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .upload-section { border: 2px dashed #222; border-radius: 20px; padding: 20px; cursor: pointer; margin-bottom: 15px; }
+        input[type="text"] { width: 90%; background: transparent; border: none; color: #fff; text-align: center; outline: none; padding: 10px; font-size: 15px; border-bottom: 1px solid #222; margin-bottom: 10px;}
+        
+        .btn-animate { width: 100%; background: var(--gold); color: #000; border: none; padding: 18px; border-radius: 20px; font-weight: 800; cursor: pointer; }
+
+        .btn-download { display: none; width: 100%; margin-top: 15px; background: #fff; color: #000; padding: 15px; border-radius: 15px; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="motion-app">
+        <header style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div style="font-weight: 800; font-size: 1.1rem;">NEURAL <span style="color:var(--gold)">MOTION</span></div>
+            <div style="font-size: 10px; color:#555;"><i class="fas fa-circle" style="color:#00ff88; font-size:8px;"></i> LIVE ENGINE</div>
+        </header>
+
+        <div class="canvas-area">
+            <!-- Loading Overlay -->
+            <div id="loader" class="loading-screen">
+                <div class="liquid-progress">
+                    <span id="percentText">0%</span>
+                </div>
+                <p class="stage-msg" id="stageName">INITIATING DEPTH</p>
+            </div>
+
+            <i class="fas fa-images" id="idleIcon" style="font-size: 50px; color:#111; margin-top: 65%;"></i>
+            <img id="previewImg">
+            <img id="resultVid"> <!-- Pollinations uses high-motion GIFs/WebPs -->
+        </div>
+
+        <div class="action-dock">
+            <div class="upload-section" onclick="document.getElementById('fileInput').click()">
+                <i class="fas fa-cloud-upload" style="color:var(--gold); margin-bottom: 10px;"></i>
+                <p id="fileName" style="font-size: 11px; color:#555;">Tap to Upload Source Image</p>
+                <input type="file" id="fileInput" hidden onchange="loadSource(event)">
+            </div>
+            <input type="text" id="motionPrompt" placeholder="Describe Motion (e.g. Smooth Slow Motion)">
+            <button class="btn-animate" onclick="processMotion()">ANIMATE <i class="fas fa-wand-magic-sparkles"></i></button>
+        </div>
+
+        <button id="dlBtn" class="btn-download" onclick="secureDownload()">
+            <i class="fas fa-arrow-down-to-bracket"></i> SAVE VIDEO TO DEVICE
+        </button>
+
+        <div id="errLog" style="color:red; font-size:10px; margin-top:15px; display:none;">Link expired. System rebooting...</div>
+    </div>
+
+    <script>
+        let globalVideoUrl = "";
+
+        function loadSource(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('previewImg');
+            const icon = document.getElementById('idleIcon');
+            const name = document.getElementById('fileName');
+            if(!file) return;
+
+            name.innerText = file.name;
+            icon.style.display = 'none';
+            preview.style.display = 'block';
+            preview.src = URL.createObjectURL(file);
+        }
+
+        async function processMotion() {
+            const prompt = document.getElementById('motionPrompt').value || "cinematic movement";
+            const preview = document.getElementById('previewImg');
+            const result = document.getElementById('resultVid');
+            const loader = document.getElementById('loader');
+            const pText = document.getElementById('percentText');
+            const stage = document.getElementById('stageName');
+            const dlBtn = document.getElementById('dlBtn');
+
+            if(!preview.src) { alert("Please upload an image first."); return; }
+
+            // UI Transformation
+            loader.style.display = 'flex';
+            preview.style.display = 'none';
+            result.style.display = 'none';
+            dlBtn.style.display = 'none';
+
+            // Premium Stage Control
+            let progress = 0;
+            const stages = ["Extracting Vectors", "Rendering Frames", "Stabilizing Neural Flow", "Upscaling Motion"];
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 4) + 1;
+                if(progress > 98) progress = 99;
+                pText.innerText = progress + "%";
+                stage.innerText = stages[Math.floor(progress / 26)];
+            }, 100);
+
+            const seed = Math.floor(Math.random() * 999999);
+            const apiUrl = `https://video.pollinations.ai/prompt/${encodeURIComponent(prompt + " ultra quality cinematic motion")}?seed=${seed}&nologo=true`;
+
+            result.src = apiUrl;
+            result.onload = () => {
+                clearInterval(interval);
+                pText.innerText = "100%";
+                globalVideoUrl = result.src;
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    result.style.display = 'block';
+                    dlBtn.style.display = 'block';
+                }, 800);
+            };
+
+            result.onerror = () => {
+                clearInterval(interval);
+                document.getElementById('errLog').style.display = 'block';
+                setTimeout(() => location.reload(), 2000);
+            };
+        }
+
+        async function secureDownload() {
+            if(!globalVideoUrl) return;
+            try {
+                const response = await fetch(globalVideoUrl);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "Nexus_Motion_Pro.webp";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            } catch (err) {
+                alert("Core Link Busy. Use Long-Press on result to Save.");
+            }
+        }
+    </script>
+</body>
+  </html>

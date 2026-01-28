@@ -3,71 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code Architect | High-End Coding AI</title>
+    <title>Architect AI | Source Generator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #08080a; color: #d1d1d1; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 40px; }
-        .app-shell { max-width: 1000px; margin: auto; }
-        .hero { margin-bottom: 40px; }
-        .hero h1 { color: #fff; font-size: 2rem; margin: 0; }
+        body { background: #000; color: #fff; font-family: 'JetBrains Mono', monospace; margin: 0; padding: 25px; }
+        .pro-shell { max-width: 800px; margin: auto; }
         
-        .code-grid { background: #111114; border: 1px solid #222; border-radius: 20px; overflow: hidden; }
-        .input-bar { padding: 25px; border-bottom: 1px solid #222; background: #16161a; }
-        textarea { width: 100%; height: 80px; background: transparent; border: 1px solid #333; border-radius: 12px; color: #00ffa3; padding: 15px; font-family: monospace; outline: none; resize: none; }
+        /* App UI */
+        .glass-box { background: #0d0d0f; border: 1px solid #1a1a1c; border-radius: 30px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+        textarea { width: 100%; height: 80px; background: transparent; border: 1px solid #333; border-radius: 15px; color: #00ffa3; padding: 15px; resize: none; outline: none; box-sizing: border-box; }
         
-        .gen-btn { background: #00ffa3; color: #000; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; transition: 0.3s; }
-        .gen-btn:hover { background: #00d98a; box-shadow: 0 0 20px rgba(0,255,163,0.3); }
-
-        .output-panel { padding: 25px; position: relative; }
-        pre { background: #000; padding: 20px; border-radius: 12px; overflow-x: auto; color: #e0e0e0; min-height: 200px; line-height: 1.5; border: 1px solid #1a1a1a; }
-        .copy-trigger { position: absolute; top: 35px; right: 40px; color: #555; cursor: pointer; transition: 0.2s; }
-        .copy-trigger:hover { color: #00ffa3; }
+        .generate-btn { width: 100%; background: #fff; color: #000; border: none; padding: 15px; border-radius: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        
+        /* Output */
+        .output-title { margin-top: 30px; display: flex; justify-content: space-between; font-size: 14px; color: #666; }
+        pre { background: #000; padding: 20px; border-radius: 20px; border: 1px solid #1a1a1c; overflow-x: auto; font-size: 13px; line-height: 1.7; color: #e0e0e0; min-height: 150px; }
+        
+        .dl-icon { color: #00ffa3; cursor: pointer; display: none; }
+        #loader { display: none; color: #00ffa3; font-size: 12px; }
     </style>
 </head>
 <body>
-    <div class="app-shell">
-        <div class="hero">
-            <h1><i class="fas fa-terminal" style="color:#00ffa3"></i> Code Architect</h1>
-            <p style="color:#666">Describe the logic, and let AI build the source code.</p>
+    <div class="pro-shell">
+        <h2 style="letter-spacing: -1px; margin-bottom: 30px;"><i class="fas fa-terminal"></i> Code <span style="font-weight: 200;">Architect</span></h2>
+        
+        <div class="glass-box">
+            <textarea id="codeQuery" placeholder="Define the program logic... (e.g. Simple Web Scraper in Python)"></textarea>
+            <button class="generate-btn" onclick="buildCode()">
+                GENERATE SOURCE CODE <i class="fas fa-code-merge"></i>
+            </button>
         </div>
 
-        <div class="code-grid">
-            <div class="input-bar">
-                <textarea id="codeQuery" placeholder="Example: Create a modern dark-mode landing page using Tailwind CSS..."></textarea>
-                <button class="gen-btn" onclick="buildCode()">COMPILE SOURCE CODE <i class="fas fa-bolt"></i></button>
-            </div>
-            <div class="output-panel">
-                <i class="far fa-copy copy-trigger" onclick="copyContent()"></i>
-                <pre id="displayArea">Source code will be generated here...</pre>
-            </div>
+        <div class="output-title">
+            <span>TERMINAL OUTPUT:</span>
+            <i class="fas fa-cloud-download-alt dl-icon" id="dlBtn" onclick="saveSource()" title="Download as .txt"></i>
         </div>
+        <div id="loader">Architecting Neural Path...</div>
+        <pre id="output">Waiting for command inputs...</pre>
     </div>
 
     <script>
         async function buildCode() {
-            const prompt = document.getElementById('codeQuery').value;
-            const display = document.getElementById('displayArea');
-            if(!prompt) return;
+            const query = document.getElementById('codeQuery').value;
+            const output = document.getElementById('output');
+            const loader = document.getElementById('loader');
+            const dlBtn = document.getElementById('dlBtn');
 
-            display.innerText = "// Architecting the code structures...\n// Optimized algorithms being written...";
-            
+            if(!query) return;
+
+            loader.style.display = 'block';
+            output.innerText = "// Generating logical clusters...";
+            dlBtn.style.display = 'none';
+
             try {
-                const res = await fetch(`https://text.pollinations.ai/Write high quality clean code for: ${encodeURIComponent(prompt)}?model=qwen-coder`);
+                // Fixed Coding Endpoint with qwen-coder model for high accuracy
+                const res = await fetch(`https://text.pollinations.ai/Write professional source code with detailed comments for: ${encodeURIComponent(query)}?model=qwen-coder&json=false`);
+                if(!res.ok) throw new Error();
                 const data = await res.text();
-                display.innerText = data;
-            } catch {
-                display.innerText = "// ERROR: Could not connect to Neural Engine.";
+                
+                loader.style.display = 'none';
+                output.innerText = data;
+                dlBtn.style.display = 'block';
+            } catch (err) {
+                loader.innerText = "Execution failed. Retrying...";
+                output.innerText = "// Connection timed out. AI Engine offline.";
             }
         }
-        function copyContent() {
-            const text = document.getElementById('displayArea').innerText;
-            navigator.clipboard.writeText(text);
-            alert("Copied to Clipboard!");
+
+        function saveSource() {
+            const content = document.getElementById('output').innerText;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = "source_code.txt";
+            a.click();
         }
     </script>
 </body>
 </html>
-
 
 
 

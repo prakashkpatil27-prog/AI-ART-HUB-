@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Architect | Advanced AI Render</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #ffffff; --bg: #000000; --card: #111111; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        .pro-app { width: 100%; max-width: 400px; text-align: center; }
+        
+        /* Render Viewport */
+        .render-stage { 
+            width: 100%; aspect-ratio: 1/1.2; background: #080808; border-radius: 40px; 
+            margin: 25px 0; border: 1px solid #1a1a1a; overflow: hidden; position: relative;
+        }
+        #resultImg { width: 100%; height: 100%; object-fit: cover; display: none; }
+
+        /* Loader Animation */
+        .render-overlay { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.9);
+        }
+        .render-bar-box { width: 60%; height: 4px; background: #222; border-radius: 10px; overflow: hidden; margin-top: 15px; }
+        .fill-bar { width: 0%; height: 100%; background: #fff; box-shadow: 0 0 10px #fff; }
+
+        .input-box { background: var(--card); border-radius: 30px; padding: 20px; border: 1px solid #222; }
+        textarea { width: 100%; background: transparent; border: none; color: #fff; font-size: 15px; outline: none; height: 60px; resize: none; text-align: center; }
+        
+        .btn-render { width: 100%; background: #fff; color: #000; border: none; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer; margin-top: 15px; }
+
+        #downloadBtn { 
+            margin-top: 20px; display: none; background: transparent; color: #00ffa3; 
+            border: 1px solid #00ffa344; padding: 12px; width: 100%; border-radius: 15px; cursor: pointer; font-size: 13px; font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="pro-app">
+        <h3 style="font-weight: 800;">ART ARCHITECT <span style="font-weight: 200; font-size: 12px; border: 1px solid #333; padding: 2px 8px; border-radius: 10px; margin-left: 5px;">ULTRA V4</span></h3>
+
+        <div class="render-stage">
+            <div class="render-overlay" id="loader">
+                <div class="render-bar-box"><div class="fill-bar" id="fill"></div></div>
+                <p style="font-size: 11px; margin-top: 15px; color: #fff; letter-spacing: 2px;" id="renderStatus">RENDERING IMAGE...</p>
+            </div>
+            <i class="fas fa-brush" id="idleIcon" style="margin-top: 55%; color: #111; font-size: 50px;"></i>
+            <img id="resultImg">
+        </div>
+
+        <div class="input-box">
+            <textarea id="prompt" placeholder="Describe your ultra-HD vision..."></textarea>
+            <button class="btn-render" onclick="renderImage()">START RENDER</button>
+        </div>
+
+        <button id="downloadBtn" onclick="initDownload()">
+            <i class="fas fa-arrow-down"></i> DOWNLOAD AS ULTRA 4K (WEBP)
+        </button>
+    </div>
+
+    <script>
+        async function renderImage() {
+            const prompt = document.getElementById('prompt').value;
+            const loader = document.getElementById('loader');
+            const bar = document.getElementById('fill');
+            const img = document.getElementById('resultImg');
+            const dlBtn = document.getElementById('downloadBtn');
+            const status = document.getElementById('renderStatus');
+            if(!prompt) return;
+
+            // Reset UI
+            loader.style.display = 'flex';
+            img.style.display = 'none';
+            dlBtn.style.display = 'none';
+            document.getElementById('idleIcon').style.display = 'none';
+
+            // Phase Animation
+            let progress = 0;
+            const timer = setInterval(() => {
+                progress += 1;
+                bar.style.width = progress + "%";
+                if(progress > 40) status.innerText = "DENOISING PARAMS";
+                if(progress > 75) status.innerText = "UPSCALING TO 8K";
+                if(progress >= 100) clearInterval(timer);
+            }, 50);
+
+            const seed = Math.floor(Math.random() * 999999);
+            const highResUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt + ", masterpiece, high quality, photorealistic, cinematic")}?width=1024&height=1280&seed=${seed}&nologo=true`;
+            
+            img.src = highResUrl;
+            img.onload = () => {
+                bar.style.width = "100%";
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    img.style.display = 'block';
+                    dlBtn.style.display = 'block';
+                }, 800);
+            };
+
+            img.onerror = () => {
+                alert("Neural Frame Lost. Re-rendering...");
+                location.reload();
+            };
+        }
+
+        async function initDownload() {
+            const img = document.getElementById('resultImg');
+            try {
+                const response = await fetch(img.src);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "Nexus_Ultra_AI.webp";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            } catch (err) {
+                alert("Download failed. Long press the image to save.");
+            }
+        }
+    </script>
+</body>
+</html>

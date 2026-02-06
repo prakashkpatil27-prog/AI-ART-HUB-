@@ -72,7 +72,7 @@
 
             try {
                 // Fixed Coding Endpoint with qwen-coder model for high accuracy
-                const res = await fetch(`https://text.pollinations.ai/Write professional source code with detailed comments for: ${encodeURIComponent(query)}?model=qwen-coder&json=false`);
+                const res = await fetch(`https://text.pollinations.ai/Write professional code for: ${encodeURIComponent(prompt)}?model=qwen-coder&json=false`);
                 if(!res.ok) throw new Error();
                 const data = await res.text();
                 

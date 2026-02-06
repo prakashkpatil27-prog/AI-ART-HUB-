@@ -99,7 +99,7 @@
             }, 100);
 
             const seed = Math.floor(Math.random() * 99999);
-            const url = `https://video.pollinations.ai/prompt/${encodeURIComponent(prompt + " cinematic")}?seed=${seed}&nologo=true`;
+            const url = `https://video.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&seed=${Math.floor(Math.random()*100000)}`;
             
             img.src = url;
             img.onload = () => {

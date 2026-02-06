@@ -140,7 +140,7 @@
             }, 100);
 
             const seed = Math.floor(Math.random() * 999999);
-            const apiUrl = `https://video.pollinations.ai/prompt/${encodeURIComponent(prompt + " ultra quality cinematic motion")}?seed=${seed}&nologo=true`;
+            const apiUrl = `https://video.pollinations.ai/prompt/${encodeURIComponent(prompt + " high quality motion")}?nologo=true&seed=${Math.floor(Math.random()*100000)}`;
 
             result.src = apiUrl;
             result.onload = () => {

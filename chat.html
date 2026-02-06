@@ -77,7 +77,7 @@
 
             try {
                 // Stabilized fetch with error handling and fallback models
-                const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=search&json=false`);
+                const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai&json=false`);
                 if (!res.ok) throw new Error();
                 const text = await res.text();
                 
